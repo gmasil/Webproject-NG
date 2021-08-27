@@ -1,0 +1,109 @@
+<!--
+
+    Webproject NG
+    Copyright © 2021 Gmasil
+
+    This file is part of Webproject NG.
+
+    Webproject NG is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Webproject NG is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Webproject NG. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>de.gmasil</groupId>
+    <artifactId>webproject-ng</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>Webproject NG</name>
+    <inceptionYear>2021</inceptionYear>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.4.5</version>
+    </parent>
+
+    <modules>
+        <module>webproject-backend</module>
+    </modules>
+
+    <properties>
+        <license-plugin.version>4.1</license-plugin.version>
+    </properties>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <!-- configure license plugin and disable for child modules -->
+                <plugin>
+                    <groupId>com.mycila</groupId>
+                    <artifactId>license-maven-plugin</artifactId>
+                    <version>${license-plugin.version}</version>
+                    <inherited>true</inherited>
+                    <configuration>
+                        <skip>true</skip>
+                        <aggregate>true</aggregate>
+                        <licenseSets>
+                            <licenseSet>
+                                <header>${project.basedir}/license/header/gnu_gpl_v3.txt</header>
+                                <includes>
+                                    <include>**/pom.xml</include>
+                                    <include>**/src/main/java/**</include>
+                                    <include>**/src/main/resources/**</include>
+                                    <include>**/src/test/java/**</include>
+                                    <include>**/src/test/resources/**</include>
+                                </includes>
+                                <excludes>
+                                    <exclude>**/LICENSE.txt</exclude>
+                                </excludes>
+                                <properties>
+                                    <owner>Gmasil</owner>
+                                    <software.name>${project.name}</software.name>
+                                </properties>
+                            </licenseSet>
+                        </licenseSets>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>check</id>
+                            <phase>validate</phase>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <!-- enable license plugin for parent only -->
+            <plugin>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <inherited>false</inherited>
+                <configuration>
+                    <skip>false</skip>
+                </configuration>
+            </plugin>
+            <!-- disable deployment of java artifact -->
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

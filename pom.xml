@@ -26,8 +26,24 @@
     <artifactId>webproject-ng</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
+
     <name>Webproject NG</name>
+    <description>Next Generation of Webproject using Vue.js frontend</description>
+
     <inceptionYear>2021</inceptionYear>
+    <url>https://github.com/gmasil/Webproject-NG</url>
+
+    <organization>
+        <name>Gmasil</name>
+        <url>https://gmasil.de</url>
+    </organization>
+
+    <licenses>
+        <license>
+            <name>GNU General Public License v3 (GPLv3)</name>
+            <url>https://www.gnu.org/licenses/gpl-3.0.txt</url>
+        </license>
+    </licenses>
 
     <parent>
         <groupId>org.springframework.boot</groupId>

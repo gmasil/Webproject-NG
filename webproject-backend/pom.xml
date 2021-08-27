@@ -138,13 +138,6 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-            <!-- disable deployment of java artifact -->
-            <plugin>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
             <!-- docker image deploy -->
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>

@@ -74,6 +74,10 @@
                                 </properties>
                             </licenseSet>
                         </licenseSets>
+                        <mapping>
+                            <factories>SCRIPT_STYLE</factories>
+                            <scss>DOUBLESLASH_STYLE</scss>
+                        </mapping>
                     </configuration>
                     <executions>
                         <execution>

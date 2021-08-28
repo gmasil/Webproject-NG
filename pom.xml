@@ -77,13 +77,14 @@
                                 <header>${project.basedir}/license/header/gnu_gpl_v3.txt</header>
                                 <includes>
                                     <include>**/pom.xml</include>
-                                    <include>**/src/main/java/**</include>
-                                    <include>**/src/main/resources/**</include>
-                                    <include>**/src/test/java/**</include>
-                                    <include>**/src/test/resources/**</include>
+                                    <include>webproject-backend/src/**</include>
+                                    <include>webproject-frontend/**</include>
                                 </includes>
                                 <excludes>
                                     <exclude>**/LICENSE.txt</exclude>
+                                    <exclude>**/target/**</exclude>
+                                    <exclude>**/dist/**</exclude>
+                                    <exclude>**/.babelrc</exclude>
                                 </excludes>
                                 <properties>
                                     <owner>Gmasil</owner>
@@ -94,6 +95,7 @@
                         <mapping>
                             <factories>SCRIPT_STYLE</factories>
                             <scss>DOUBLESLASH_STYLE</scss>
+                            <vue>XML_STYLE</vue>
                         </mapping>
                     </configuration>
                     <executions>

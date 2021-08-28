@@ -20,5 +20,6 @@
 package de.gmasil.webproject.jpa.artist;
 
 public interface ArtistRepositoryExtension {
-	public ArtistDAO findAnyByNameOrCreate(String name);
+
+    public Artist findAnyByNameOrCreate(String name);
 }

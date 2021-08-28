@@ -35,7 +35,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import de.gmasil.webproject.jpa.PersistenceObject;
-import de.gmasil.webproject.jpa.artist.ArtistDAO;
+import de.gmasil.webproject.jpa.artist.Artist;
 import de.gmasil.webproject.jpa.category.CategoryDAO;
 import de.gmasil.webproject.jpa.comment.CommentDAO;
 import de.gmasil.webproject.jpa.videofile.VideoFileDAO;
@@ -61,7 +61,7 @@ public class VideoDAO extends PersistenceObject {
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "VIDEO_ARTISTS", joinColumns = @JoinColumn(name = "VIDEO_ID"), inverseJoinColumns = @JoinColumn(name = "ARTIST_ID"))
-    private List<ArtistDAO> artists = new LinkedList<>();
+    private List<Artist> artists = new LinkedList<>();
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "VIDEO_CATEGORIES", joinColumns = @JoinColumn(name = "VIDEO_ID"), inverseJoinColumns = @JoinColumn(name = "CATEGORY_ID"))
@@ -140,7 +140,7 @@ public class VideoDAO extends PersistenceObject {
         return files;
     }
 
-    public List<ArtistDAO> getArtists() {
+    public List<Artist> getArtists() {
         return artists;
     }
 
@@ -197,7 +197,7 @@ public class VideoDAO extends PersistenceObject {
 
         public IBuildStage withFiles(List<VideoFileDAO> files);
 
-        public IBuildStage withArtists(List<ArtistDAO> artists);
+        public IBuildStage withArtists(List<Artist> artists);
 
         public IBuildStage withCategories(List<CategoryDAO> categories);
 
@@ -221,7 +221,7 @@ public class VideoDAO extends PersistenceObject {
         private float length;
         private String thumbnail;
         private List<VideoFileDAO> files = new LinkedList<>();
-        private List<ArtistDAO> artists = new LinkedList<>();
+        private List<Artist> artists = new LinkedList<>();
         private List<CategoryDAO> categories = new LinkedList<>();
         private List<CommentDAO> comments = new LinkedList<>();
         private List<VideoRatingDAO> ratings = new LinkedList<>();
@@ -272,7 +272,7 @@ public class VideoDAO extends PersistenceObject {
         }
 
         @Override
-        public IBuildStage withArtists(List<ArtistDAO> artists) {
+        public IBuildStage withArtists(List<Artist> artists) {
             this.artists = artists;
             return this;
         }

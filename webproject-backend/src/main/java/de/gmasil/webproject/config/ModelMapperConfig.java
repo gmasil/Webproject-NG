@@ -17,15 +17,22 @@
  * You should have received a copy of the GNU General Public License
  * along with Webproject NG. If not, see <https://www.gnu.org/licenses/>.
  */
-package de.gmasil.webproject.jpa.artist;
+package de.gmasil.webproject.config;
 
-import java.util.List;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+@Configuration
+public class ModelMapperConfig {
 
-@Repository
-public interface ArtistRepository extends JpaRepository<Artist, Long>, ArtistRepositoryExtension {
-
-    public List<Artist> findByName(String name);
+    @Bean
+    public ModelMapper modelMapper() {
+        ModelMapper mapper = new ModelMapper();
+        mapper.getConfiguration() //
+                .setFieldMatchingEnabled(false) //
+                .setMatchingStrategy(MatchingStrategies.STRICT);
+        return mapper;
+    }
 }

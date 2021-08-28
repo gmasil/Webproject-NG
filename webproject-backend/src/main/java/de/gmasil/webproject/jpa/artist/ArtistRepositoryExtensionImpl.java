@@ -29,22 +29,23 @@ import javax.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class ArtistRepositoryExtensionImpl implements ArtistRepositoryExtension {
-	@Autowired
-	private EntityManager entityManager;
 
-	@Override
-	public ArtistDAO findAnyByNameOrCreate(String name) {
-		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-		CriteriaQuery<ArtistDAO> criteria = builder.createQuery(ArtistDAO.class);
-		Root<ArtistDAO> root = criteria.from(ArtistDAO.class);
-		criteria.where(builder.equal(root.get("name"), name));
-		List<ArtistDAO> resultList = entityManager.createQuery(criteria).getResultList();
-		if (resultList.isEmpty()) {
-			ArtistDAO artist = new ArtistDAO(name);
-			entityManager.persist(artist);
-			return artist;
-		} else {
-			return resultList.get(0);
-		}
-	}
+    @Autowired
+    private EntityManager entityManager;
+
+    @Override
+    public Artist findAnyByNameOrCreate(String name) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Artist> criteria = builder.createQuery(Artist.class);
+        Root<Artist> root = criteria.from(Artist.class);
+        criteria.where(builder.equal(root.get("name"), name));
+        List<Artist> resultList = entityManager.createQuery(criteria).getResultList();
+        if (resultList.isEmpty()) {
+            Artist artist = Artist.builder().name(name).build();
+            entityManager.persist(artist);
+            return artist;
+        } else {
+            return resultList.get(0);
+        }
+    }
 }

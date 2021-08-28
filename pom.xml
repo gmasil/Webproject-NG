@@ -52,6 +52,7 @@
     </parent>
 
     <modules>
+        <module>webproject-frontend</module>
         <module>webproject-backend</module>
     </modules>
 

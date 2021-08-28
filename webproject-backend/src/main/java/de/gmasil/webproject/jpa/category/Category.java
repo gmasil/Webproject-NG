@@ -17,22 +17,18 @@
  * You should have received a copy of the GNU General Public License
  * along with Webproject NG. If not, see <https://www.gnu.org/licenses/>.
  */
-package de.gmasil.webproject.jpa.artist;
+package de.gmasil.webproject.jpa.category;
 
 import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.PreRemove;
 import javax.persistence.Table;
 
-import de.gmasil.webproject.jpa.Auditable;
+import de.gmasil.webproject.jpa.PersistenceObject;
 import de.gmasil.webproject.jpa.video.VideoDAO;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -44,27 +40,20 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "ARTIST")
-@Table(name = "ARTIST")
-public class Artist extends Auditable {
+@Entity(name = "CATEGORY")
+@Table(name = "CATEGORY")
+public class Category extends PersistenceObject {
 
-    @Id
-    @Setter(AccessLevel.NONE)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
 
-    private String profilePictureFile;
-
-    @ManyToMany(mappedBy = "artists")
+    @ManyToMany(mappedBy = "categories")
     private Set<VideoDAO> videos;
 
     @PreRemove
     private void preRemove() {
         for (VideoDAO video : videos) {
-            video.getArtists().remove(this);
+            video.getCategories().remove(this);
         }
     }
 

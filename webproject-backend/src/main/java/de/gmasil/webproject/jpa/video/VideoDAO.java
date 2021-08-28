@@ -36,7 +36,7 @@ import javax.persistence.Table;
 
 import de.gmasil.webproject.jpa.PersistenceObject;
 import de.gmasil.webproject.jpa.artist.Artist;
-import de.gmasil.webproject.jpa.category.CategoryDAO;
+import de.gmasil.webproject.jpa.category.Category;
 import de.gmasil.webproject.jpa.comment.CommentDAO;
 import de.gmasil.webproject.jpa.videofile.VideoFileDAO;
 import de.gmasil.webproject.jpa.videorating.VideoRatingDAO;
@@ -65,7 +65,7 @@ public class VideoDAO extends PersistenceObject {
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "VIDEO_CATEGORIES", joinColumns = @JoinColumn(name = "VIDEO_ID"), inverseJoinColumns = @JoinColumn(name = "CATEGORY_ID"))
-    private List<CategoryDAO> categories = new LinkedList<>();
+    private List<Category> categories = new LinkedList<>();
 
     @OneToMany(mappedBy = "video", cascade = CascadeType.ALL)
     private List<CommentDAO> comments = new LinkedList<>();
@@ -144,7 +144,7 @@ public class VideoDAO extends PersistenceObject {
         return artists;
     }
 
-    public List<CategoryDAO> getCategories() {
+    public List<Category> getCategories() {
         return categories;
     }
 
@@ -199,7 +199,7 @@ public class VideoDAO extends PersistenceObject {
 
         public IBuildStage withArtists(List<Artist> artists);
 
-        public IBuildStage withCategories(List<CategoryDAO> categories);
+        public IBuildStage withCategories(List<Category> categories);
 
         public IBuildStage withComments(List<CommentDAO> comments);
 
@@ -222,7 +222,7 @@ public class VideoDAO extends PersistenceObject {
         private String thumbnail;
         private List<VideoFileDAO> files = new LinkedList<>();
         private List<Artist> artists = new LinkedList<>();
-        private List<CategoryDAO> categories = new LinkedList<>();
+        private List<Category> categories = new LinkedList<>();
         private List<CommentDAO> comments = new LinkedList<>();
         private List<VideoRatingDAO> ratings = new LinkedList<>();
 
@@ -278,7 +278,7 @@ public class VideoDAO extends PersistenceObject {
         }
 
         @Override
-        public IBuildStage withCategories(List<CategoryDAO> categories) {
+        public IBuildStage withCategories(List<Category> categories) {
             this.categories = categories;
             return this;
         }

@@ -25,7 +25,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CategoryRepository extends JpaRepository<CategoryDAO, Long>, CategoryRepositoryExtension {
+public interface CategoryRepository extends JpaRepository<Category, Long>, CategoryRepositoryExtension {
 
-    public Optional<CategoryDAO> findByName(String name);
+    public Optional<Category> findByName(String name);
 }

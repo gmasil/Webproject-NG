@@ -35,15 +35,15 @@ public class CategoryRepositoryExtensionImpl implements CategoryRepositoryExtens
     private EntityManager entityManager;
 
     @Override
-    public CategoryDAO findByNameOrCreate(String name) {
+    public Category findByNameOrCreate(String name) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<CategoryDAO> criteria = builder.createQuery(CategoryDAO.class);
-        Root<CategoryDAO> root = criteria.from(CategoryDAO.class);
+        CriteriaQuery<Category> criteria = builder.createQuery(Category.class);
+        Root<Category> root = criteria.from(Category.class);
         criteria.where(builder.equal(root.get("name"), name));
         try {
             return entityManager.createQuery(criteria).getSingleResult();
         } catch (NoResultException e) {
-            CategoryDAO category = new CategoryDAO(name);
+            Category category = Category.builder().name(name).build();
             entityManager.persist(category);
             return category;
         }

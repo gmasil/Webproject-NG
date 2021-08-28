@@ -26,5 +26,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<CategoryDAO, Long>, CategoryRepositoryExtension {
-	public Optional<CategoryDAO> findByName(String name);
+
+    public Optional<CategoryDAO> findByName(String name);
 }

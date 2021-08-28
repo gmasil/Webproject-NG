@@ -20,5 +20,6 @@
 package de.gmasil.webproject.jpa.category;
 
 public interface CategoryRepositoryExtension {
-	public CategoryDAO findByNameOrCreate(String name);
+
+    public CategoryDAO findByNameOrCreate(String name);
 }

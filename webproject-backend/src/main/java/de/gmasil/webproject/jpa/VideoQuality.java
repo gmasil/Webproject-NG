@@ -20,5 +20,5 @@
 package de.gmasil.webproject.jpa;
 
 public enum VideoQuality {
-	SD, HD, UHD
+    SD, HD, UHD
 }

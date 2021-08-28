@@ -32,16 +32,17 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class UserRepositoryExtensionImpl implements UserRepositoryExtension {
-	@Autowired
-	private EntityManager entityManager;
 
-	@Override
-	public List<UserDAO> findAllWithRole(String role) {
-		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-		CriteriaQuery<UserDAO> criteria = builder.createQuery(UserDAO.class);
-		Root<UserDAO> from = criteria.from(UserDAO.class);
-		Join<Object, Object> roles = from.join("roles");
-		criteria.where(builder.equal(roles.get("name"), role));
-		return entityManager.createQuery(criteria).getResultList();
-	}
+    @Autowired
+    private EntityManager entityManager;
+
+    @Override
+    public List<UserDAO> findAllWithRole(String role) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<UserDAO> criteria = builder.createQuery(UserDAO.class);
+        Root<UserDAO> from = criteria.from(UserDAO.class);
+        Join<Object, Object> roles = from.join("roles");
+        criteria.where(builder.equal(roles.get("name"), role));
+        return entityManager.createQuery(criteria).getResultList();
+    }
 }

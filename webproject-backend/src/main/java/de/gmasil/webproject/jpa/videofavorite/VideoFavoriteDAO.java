@@ -36,111 +36,114 @@ import de.gmasil.webproject.jpa.video.VideoDAO;
 @Entity(name = "VIDEO_FAVORITES")
 @Table(name = "VIDEO_FAVORITES")
 public class VideoFavoriteDAO extends PersistenceObject {
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	@JoinColumn(name = "VIDEO_ID")
-	private VideoDAO video;
 
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	@JoinColumn(name = "USER_ID")
-	private UserDAO user;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "VIDEO_ID")
+    private VideoDAO video;
 
-	@Generated("SparkTools")
-	private VideoFavoriteDAO(Builder builder) {
-		this.id = builder.id;
-		this.created = builder.created;
-		this.video = builder.video;
-		this.user = builder.user;
-	}
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "USER_ID")
+    private UserDAO user;
 
-	public VideoFavoriteDAO() {
-	}
+    @Generated("SparkTools")
+    private VideoFavoriteDAO(Builder builder) {
+        this.id = builder.id;
+        this.created = builder.created;
+        this.video = builder.video;
+        this.user = builder.user;
+    }
 
-	public VideoFavoriteDAO(VideoDAO video, UserDAO user) {
-		this.video = video;
-		this.user = user;
-	}
+    public VideoFavoriteDAO() {
+    }
 
-	public VideoDAO getVideo() {
-		return video;
-	}
+    public VideoFavoriteDAO(VideoDAO video, UserDAO user) {
+        this.video = video;
+        this.user = user;
+    }
 
-	public UserDAO getUser() {
-		return user;
-	}
+    public VideoDAO getVideo() {
+        return video;
+    }
 
-	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
+    public UserDAO getUser() {
+        return user;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		return super.equals(obj);
-	}
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 
-	/**
-	 * Creates builder to build {@link VideoFavoriteDAO}.
-	 * 
-	 * @return created builder
-	 */
-	@Generated("SparkTools")
-	public static IBuildStage builder() {
-		return new Builder();
-	}
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
 
-	@Generated("SparkTools")
-	public interface IBuildStage {
-		public IBuildStage withId(Long id);
+    /**
+     * Creates builder to build {@link VideoFavoriteDAO}.
+     *
+     * @return created builder
+     */
+    @Generated("SparkTools")
+    public static IBuildStage builder() {
+        return new Builder();
+    }
 
-		public IBuildStage withCreated(LocalDateTime created);
+    @Generated("SparkTools")
+    public interface IBuildStage {
 
-		public IBuildStage withVideo(VideoDAO video);
+        public IBuildStage withId(Long id);
 
-		public IBuildStage withUser(UserDAO user);
+        public IBuildStage withCreated(LocalDateTime created);
 
-		public VideoFavoriteDAO build();
-	}
+        public IBuildStage withVideo(VideoDAO video);
 
-	/**
-	 * Builder to build {@link VideoFavoriteDAO}.
-	 */
-	@Generated("SparkTools")
-	public static final class Builder implements IBuildStage {
-		private Long id;
-		private LocalDateTime created;
-		private VideoDAO video;
-		private UserDAO user;
+        public IBuildStage withUser(UserDAO user);
 
-		private Builder() {
-		}
+        public VideoFavoriteDAO build();
+    }
 
-		@Override
-		public IBuildStage withId(Long id) {
-			this.id = id;
-			return this;
-		}
+    /**
+     * Builder to build {@link VideoFavoriteDAO}.
+     */
+    @Generated("SparkTools")
+    public static final class Builder implements IBuildStage {
 
-		@Override
-		public IBuildStage withCreated(LocalDateTime created) {
-			this.created = created;
-			return this;
-		}
+        private Long id;
+        private LocalDateTime created;
+        private VideoDAO video;
+        private UserDAO user;
 
-		@Override
-		public IBuildStage withVideo(VideoDAO video) {
-			this.video = video;
-			return this;
-		}
+        private Builder() {
+        }
 
-		@Override
-		public IBuildStage withUser(UserDAO user) {
-			this.user = user;
-			return this;
-		}
+        @Override
+        public IBuildStage withId(Long id) {
+            this.id = id;
+            return this;
+        }
 
-		@Override
-		public VideoFavoriteDAO build() {
-			return new VideoFavoriteDAO(this);
-		}
-	}
+        @Override
+        public IBuildStage withCreated(LocalDateTime created) {
+            this.created = created;
+            return this;
+        }
+
+        @Override
+        public IBuildStage withVideo(VideoDAO video) {
+            this.video = video;
+            return this;
+        }
+
+        @Override
+        public IBuildStage withUser(UserDAO user) {
+            this.user = user;
+            return this;
+        }
+
+        @Override
+        public VideoFavoriteDAO build() {
+            return new VideoFavoriteDAO(this);
+        }
+    }
 }

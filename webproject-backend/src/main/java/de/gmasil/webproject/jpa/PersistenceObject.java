@@ -30,53 +30,51 @@ import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
 public class PersistenceObject implements Serializable {
-	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
-	protected Long id;
 
-	protected LocalDateTime created = LocalDateTime.now();
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    protected Long id;
 
-	public Long getId() {
-		return id;
-	}
+    protected LocalDateTime created = LocalDateTime.now();
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public LocalDateTime getCreated() {
-		return created;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	@Override
-	@Generated("Eclipse")
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
-	}
+    public LocalDateTime getCreated() {
+        return created;
+    }
 
-	@Override
-	@Generated("Eclipse")
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		PersistenceObject other = (PersistenceObject) obj;
-		if (id == null) {
-			if (other.id != null) {
-				return false;
-			}
-		} else if (!id.equals(other.id)) {
-			return false;
-		}
-		return true;
-	}
+    @Override
+    @Generated("Eclipse")
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
+    }
+
+    @Override
+    @Generated("Eclipse")
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if ((obj == null) || (getClass() != obj.getClass())) {
+            return false;
+        }
+        PersistenceObject other = (PersistenceObject) obj;
+        if (id == null) {
+            if (other.id != null) {
+                return false;
+            }
+        } else if (!id.equals(other.id)) {
+            return false;
+        }
+        return true;
+    }
 }

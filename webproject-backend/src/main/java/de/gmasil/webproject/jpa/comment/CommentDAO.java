@@ -37,141 +37,144 @@ import de.gmasil.webproject.jpa.video.VideoDAO;
 @Entity(name = "COMMENT")
 @Table(name = "COMMENT")
 public class CommentDAO extends PersistenceObject {
-	@Lob
-	private String comment;
 
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	@JoinColumn(name = "VIDEO_ID")
-	private VideoDAO video;
+    @Lob
+    private String comment;
 
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	@JoinColumn(name = "USER_ID")
-	private UserDAO user;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "VIDEO_ID")
+    private VideoDAO video;
 
-	@Generated("SparkTools")
-	private CommentDAO(Builder builder) {
-		this.id = builder.id;
-		this.created = builder.created;
-		this.comment = builder.comment;
-		this.video = builder.video;
-		this.user = builder.user;
-	}
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "USER_ID")
+    private UserDAO user;
 
-	public CommentDAO() {
-	}
+    @Generated("SparkTools")
+    private CommentDAO(Builder builder) {
+        this.id = builder.id;
+        this.created = builder.created;
+        this.comment = builder.comment;
+        this.video = builder.video;
+        this.user = builder.user;
+    }
 
-	public CommentDAO(String comment, VideoDAO video, UserDAO user) {
-		this.comment = comment;
-		this.video = video;
-		this.user = user;
-	}
+    public CommentDAO() {
+    }
 
-	public String getComment() {
-		return comment;
-	}
+    public CommentDAO(String comment, VideoDAO video, UserDAO user) {
+        this.comment = comment;
+        this.video = video;
+        this.user = user;
+    }
 
-	public void setComment(String comment) {
-		this.comment = comment;
-	}
+    public String getComment() {
+        return comment;
+    }
 
-	public VideoDAO getVideo() {
-		return video;
-	}
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 
-	public void setVideo(VideoDAO video) {
-		this.video = video;
-	}
+    public VideoDAO getVideo() {
+        return video;
+    }
 
-	public UserDAO getUser() {
-		return user;
-	}
+    public void setVideo(VideoDAO video) {
+        this.video = video;
+    }
 
-	public void setUser(UserDAO user) {
-		this.user = user;
-	}
+    public UserDAO getUser() {
+        return user;
+    }
 
-	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
+    public void setUser(UserDAO user) {
+        this.user = user;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		return super.equals(obj);
-	}
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 
-	/**
-	 * Creates builder to build {@link CommentDAO}.
-	 * 
-	 * @return created builder
-	 */
-	@Generated("SparkTools")
-	public static IBuildStage builder() {
-		return new Builder();
-	}
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
 
-	@Generated("SparkTools")
-	public interface IBuildStage {
-		public IBuildStage withId(Long id);
+    /**
+     * Creates builder to build {@link CommentDAO}.
+     *
+     * @return created builder
+     */
+    @Generated("SparkTools")
+    public static IBuildStage builder() {
+        return new Builder();
+    }
 
-		public IBuildStage withCreated(LocalDateTime created);
+    @Generated("SparkTools")
+    public interface IBuildStage {
 
-		public IBuildStage withComment(String comment);
+        public IBuildStage withId(Long id);
 
-		public IBuildStage withVideo(VideoDAO video);
+        public IBuildStage withCreated(LocalDateTime created);
 
-		public IBuildStage withUser(UserDAO user);
+        public IBuildStage withComment(String comment);
 
-		public CommentDAO build();
-	}
+        public IBuildStage withVideo(VideoDAO video);
 
-	/**
-	 * Builder to build {@link CommentDAO}.
-	 */
-	@Generated("SparkTools")
-	public static final class Builder implements IBuildStage {
-		private Long id;
-		private LocalDateTime created;
-		private String comment;
-		private VideoDAO video;
-		private UserDAO user;
+        public IBuildStage withUser(UserDAO user);
 
-		private Builder() {
-		}
+        public CommentDAO build();
+    }
 
-		@Override
-		public IBuildStage withId(Long id) {
-			this.id = id;
-			return this;
-		}
+    /**
+     * Builder to build {@link CommentDAO}.
+     */
+    @Generated("SparkTools")
+    public static final class Builder implements IBuildStage {
 
-		@Override
-		public IBuildStage withCreated(LocalDateTime created) {
-			this.created = created;
-			return this;
-		}
+        private Long id;
+        private LocalDateTime created;
+        private String comment;
+        private VideoDAO video;
+        private UserDAO user;
 
-		@Override
-		public IBuildStage withComment(String comment) {
-			this.comment = comment;
-			return this;
-		}
+        private Builder() {
+        }
 
-		@Override
-		public IBuildStage withVideo(VideoDAO video) {
-			this.video = video;
-			return this;
-		}
+        @Override
+        public IBuildStage withId(Long id) {
+            this.id = id;
+            return this;
+        }
 
-		@Override
-		public IBuildStage withUser(UserDAO user) {
-			this.user = user;
-			return this;
-		}
+        @Override
+        public IBuildStage withCreated(LocalDateTime created) {
+            this.created = created;
+            return this;
+        }
 
-		@Override
-		public CommentDAO build() {
-			return new CommentDAO(this);
-		}
-	}
+        @Override
+        public IBuildStage withComment(String comment) {
+            this.comment = comment;
+            return this;
+        }
+
+        @Override
+        public IBuildStage withVideo(VideoDAO video) {
+            this.video = video;
+            return this;
+        }
+
+        @Override
+        public IBuildStage withUser(UserDAO user) {
+            this.user = user;
+            return this;
+        }
+
+        @Override
+        public CommentDAO build() {
+            return new CommentDAO(this);
+        }
+    }
 }

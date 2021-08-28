@@ -30,21 +30,22 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class CategoryRepositoryExtensionImpl implements CategoryRepositoryExtension {
-	@Autowired
-	private EntityManager entityManager;
 
-	@Override
-	public CategoryDAO findByNameOrCreate(String name) {
-		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-		CriteriaQuery<CategoryDAO> criteria = builder.createQuery(CategoryDAO.class);
-		Root<CategoryDAO> root = criteria.from(CategoryDAO.class);
-		criteria.where(builder.equal(root.get("name"), name));
-		try {
-			return entityManager.createQuery(criteria).getSingleResult();
-		} catch (NoResultException e) {
-			CategoryDAO category = new CategoryDAO(name);
-			entityManager.persist(category);
-			return category;
-		}
-	}
+    @Autowired
+    private EntityManager entityManager;
+
+    @Override
+    public CategoryDAO findByNameOrCreate(String name) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<CategoryDAO> criteria = builder.createQuery(CategoryDAO.class);
+        Root<CategoryDAO> root = criteria.from(CategoryDAO.class);
+        criteria.where(builder.equal(root.get("name"), name));
+        try {
+            return entityManager.createQuery(criteria).getSingleResult();
+        } catch (NoResultException e) {
+            CategoryDAO category = new CategoryDAO(name);
+            entityManager.persist(category);
+            return category;
+        }
+    }
 }

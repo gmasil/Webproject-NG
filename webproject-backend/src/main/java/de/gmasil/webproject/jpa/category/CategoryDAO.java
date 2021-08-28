@@ -36,115 +36,119 @@ import de.gmasil.webproject.jpa.video.VideoDAO;
 @Entity(name = "CATEGORY")
 @Table(name = "CATEGORY")
 public class CategoryDAO extends PersistenceObject {
-	@Column(nullable = false, unique = true)
-	private String name;
 
-	@ManyToMany(mappedBy = "categories", cascade = CascadeType.ALL)
-	private List<VideoDAO> videos = new LinkedList<>();
+    @Column(nullable = false, unique = true)
+    private String name;
 
-	@Generated("SparkTools")
-	private CategoryDAO(Builder builder) {
-		this.name = builder.name;
-		this.id = builder.id;
-		this.created = builder.created;
-		this.videos = builder.videos;
-	}
+    @ManyToMany(mappedBy = "categories", cascade = CascadeType.ALL)
+    private List<VideoDAO> videos = new LinkedList<>();
 
-	public CategoryDAO() {
-	}
+    @Generated("SparkTools")
+    private CategoryDAO(Builder builder) {
+        this.name = builder.name;
+        this.id = builder.id;
+        this.created = builder.created;
+        this.videos = builder.videos;
+    }
 
-	public CategoryDAO(String name) {
-		this.name = name;
-	}
+    public CategoryDAO() {
+    }
 
-	public String getName() {
-		return name;
-	}
+    public CategoryDAO(String name) {
+        this.name = name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public List<VideoDAO> getVideos() {
-		return videos;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
+    public List<VideoDAO> getVideos() {
+        return videos;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		return super.equals(obj);
-	}
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 
-	/**
-	 * Creates builder to build {@link CategoryDAO}.
-	 * 
-	 * @return created builder
-	 */
-	@Generated("SparkTools")
-	public static INameStage builder() {
-		return new Builder();
-	}
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
 
-	@Generated("SparkTools")
-	public interface INameStage {
-		public IBuildStage withName(String name);
-	}
+    /**
+     * Creates builder to build {@link CategoryDAO}.
+     *
+     * @return created builder
+     */
+    @Generated("SparkTools")
+    public static INameStage builder() {
+        return new Builder();
+    }
 
-	@Generated("SparkTools")
-	public interface IBuildStage {
-		public IBuildStage withId(Long id);
+    @Generated("SparkTools")
+    public interface INameStage {
 
-		public IBuildStage withCreated(LocalDateTime created);
+        public IBuildStage withName(String name);
+    }
 
-		public IBuildStage withVideos(List<VideoDAO> videos);
+    @Generated("SparkTools")
+    public interface IBuildStage {
 
-		public CategoryDAO build();
-	}
+        public IBuildStage withId(Long id);
 
-	/**
-	 * Builder to build {@link CategoryDAO}.
-	 */
-	@Generated("SparkTools")
-	public static final class Builder implements INameStage, IBuildStage {
-		private String name;
-		private Long id;
-		private LocalDateTime created;
-		private List<VideoDAO> videos = new LinkedList<>();
+        public IBuildStage withCreated(LocalDateTime created);
 
-		private Builder() {
-		}
+        public IBuildStage withVideos(List<VideoDAO> videos);
 
-		@Override
-		public IBuildStage withName(String name) {
-			this.name = name;
-			return this;
-		}
+        public CategoryDAO build();
+    }
 
-		@Override
-		public IBuildStage withId(Long id) {
-			this.id = id;
-			return this;
-		}
+    /**
+     * Builder to build {@link CategoryDAO}.
+     */
+    @Generated("SparkTools")
+    public static final class Builder implements INameStage, IBuildStage {
 
-		@Override
-		public IBuildStage withCreated(LocalDateTime created) {
-			this.created = created;
-			return this;
-		}
+        private String name;
+        private Long id;
+        private LocalDateTime created;
+        private List<VideoDAO> videos = new LinkedList<>();
 
-		@Override
-		public IBuildStage withVideos(List<VideoDAO> videos) {
-			this.videos = videos;
-			return this;
-		}
+        private Builder() {
+        }
 
-		@Override
-		public CategoryDAO build() {
-			return new CategoryDAO(this);
-		}
-	}
+        @Override
+        public IBuildStage withName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        @Override
+        public IBuildStage withId(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        @Override
+        public IBuildStage withCreated(LocalDateTime created) {
+            this.created = created;
+            return this;
+        }
+
+        @Override
+        public IBuildStage withVideos(List<VideoDAO> videos) {
+            this.videos = videos;
+            return this;
+        }
+
+        @Override
+        public CategoryDAO build() {
+            return new CategoryDAO(this);
+        }
+    }
 }

@@ -38,145 +38,149 @@ import de.gmasil.webproject.jpa.video.VideoDAO;
 @Entity(name = "VIDEO_RATING")
 @Table(name = "VIDEO_RATING")
 public class VideoRatingDAO extends PersistenceObject {
-	@Min(1)
-	@Max(5)
-	private int rating;
 
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	@JoinColumn(name = "VIDEO_ID")
-	private VideoDAO video;
+    @Min(1)
+    @Max(5)
+    private int rating;
 
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	@JoinColumn(name = "USER_ID")
-	private UserDAO user;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "VIDEO_ID")
+    private VideoDAO video;
 
-	@Generated("SparkTools")
-	private VideoRatingDAO(Builder builder) {
-		this.rating = builder.rating;
-		this.id = builder.id;
-		this.created = builder.created;
-		this.video = builder.video;
-		this.user = builder.user;
-	}
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "USER_ID")
+    private UserDAO user;
 
-	public VideoRatingDAO() {
-	}
+    @Generated("SparkTools")
+    private VideoRatingDAO(Builder builder) {
+        this.rating = builder.rating;
+        this.id = builder.id;
+        this.created = builder.created;
+        this.video = builder.video;
+        this.user = builder.user;
+    }
 
-	public VideoRatingDAO(VideoDAO video, UserDAO user, int rating) {
-		this.video = video;
-		this.user = user;
-		this.rating = rating;
-	}
+    public VideoRatingDAO() {
+    }
 
-	public VideoDAO getVideo() {
-		return video;
-	}
+    public VideoRatingDAO(VideoDAO video, UserDAO user, int rating) {
+        this.video = video;
+        this.user = user;
+        this.rating = rating;
+    }
 
-	public void setVideo(VideoDAO video) {
-		this.video = video;
-	}
+    public VideoDAO getVideo() {
+        return video;
+    }
 
-	public UserDAO getUser() {
-		return user;
-	}
+    public void setVideo(VideoDAO video) {
+        this.video = video;
+    }
 
-	public void setUser(UserDAO user) {
-		this.user = user;
-	}
+    public UserDAO getUser() {
+        return user;
+    }
 
-	public int getRating() {
-		return rating;
-	}
+    public void setUser(UserDAO user) {
+        this.user = user;
+    }
 
-	public void setRating(int rating) {
-		this.rating = rating;
-	}
+    public int getRating() {
+        return rating;
+    }
 
-	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		return super.equals(obj);
-	}
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 
-	/**
-	 * Creates builder to build {@link VideoRatingDAO}.
-	 * 
-	 * @return created builder
-	 */
-	@Generated("SparkTools")
-	public static IRatingStage builder() {
-		return new Builder();
-	}
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
 
-	@Generated("SparkTools")
-	public interface IRatingStage {
-		public IBuildStage withRating(int rating);
-	}
+    /**
+     * Creates builder to build {@link VideoRatingDAO}.
+     *
+     * @return created builder
+     */
+    @Generated("SparkTools")
+    public static IRatingStage builder() {
+        return new Builder();
+    }
 
-	@Generated("SparkTools")
-	public interface IBuildStage {
-		public IBuildStage withId(Long id);
+    @Generated("SparkTools")
+    public interface IRatingStage {
 
-		public IBuildStage withCreated(LocalDateTime created);
+        public IBuildStage withRating(int rating);
+    }
 
-		public IBuildStage withVideo(VideoDAO video);
+    @Generated("SparkTools")
+    public interface IBuildStage {
 
-		public IBuildStage withUser(UserDAO user);
+        public IBuildStage withId(Long id);
 
-		public VideoRatingDAO build();
-	}
+        public IBuildStage withCreated(LocalDateTime created);
 
-	/**
-	 * Builder to build {@link VideoRatingDAO}.
-	 */
-	@Generated("SparkTools")
-	public static final class Builder implements IRatingStage, IBuildStage {
-		private int rating;
-		private Long id;
-		private LocalDateTime created;
-		private VideoDAO video;
-		private UserDAO user;
+        public IBuildStage withVideo(VideoDAO video);
 
-		private Builder() {
-		}
+        public IBuildStage withUser(UserDAO user);
 
-		@Override
-		public IBuildStage withRating(int rating) {
-			this.rating = rating;
-			return this;
-		}
+        public VideoRatingDAO build();
+    }
 
-		@Override
-		public IBuildStage withId(Long id) {
-			this.id = id;
-			return this;
-		}
+    /**
+     * Builder to build {@link VideoRatingDAO}.
+     */
+    @Generated("SparkTools")
+    public static final class Builder implements IRatingStage, IBuildStage {
 
-		@Override
-		public IBuildStage withCreated(LocalDateTime created) {
-			this.created = created;
-			return this;
-		}
+        private int rating;
+        private Long id;
+        private LocalDateTime created;
+        private VideoDAO video;
+        private UserDAO user;
 
-		@Override
-		public IBuildStage withVideo(VideoDAO video) {
-			this.video = video;
-			return this;
-		}
+        private Builder() {
+        }
 
-		@Override
-		public IBuildStage withUser(UserDAO user) {
-			this.user = user;
-			return this;
-		}
+        @Override
+        public IBuildStage withRating(int rating) {
+            this.rating = rating;
+            return this;
+        }
 
-		@Override
-		public VideoRatingDAO build() {
-			return new VideoRatingDAO(this);
-		}
-	}
+        @Override
+        public IBuildStage withId(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        @Override
+        public IBuildStage withCreated(LocalDateTime created) {
+            this.created = created;
+            return this;
+        }
+
+        @Override
+        public IBuildStage withVideo(VideoDAO video) {
+            this.video = video;
+            return this;
+        }
+
+        @Override
+        public IBuildStage withUser(UserDAO user) {
+            this.user = user;
+            return this;
+        }
+
+        @Override
+        public VideoRatingDAO build() {
+            return new VideoRatingDAO(this);
+        }
+    }
 }

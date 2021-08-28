@@ -30,21 +30,22 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class RoleRepositoryExtensionImpl implements RoleRepositoryExtension {
-	@Autowired
-	private EntityManager entityManager;
 
-	@Override
-	public RoleDAO findByNameOrCreate(String name) {
-		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-		CriteriaQuery<RoleDAO> criteria = builder.createQuery(RoleDAO.class);
-		Root<RoleDAO> root = criteria.from(RoleDAO.class);
-		criteria.where(builder.equal(root.get("name"), name));
-		try {
-			return entityManager.createQuery(criteria).getSingleResult();
-		} catch (NoResultException e) {
-			RoleDAO role = new RoleDAO(name);
-			entityManager.persist(role);
-			return role;
-		}
-	}
+    @Autowired
+    private EntityManager entityManager;
+
+    @Override
+    public RoleDAO findByNameOrCreate(String name) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<RoleDAO> criteria = builder.createQuery(RoleDAO.class);
+        Root<RoleDAO> root = criteria.from(RoleDAO.class);
+        criteria.where(builder.equal(root.get("name"), name));
+        try {
+            return entityManager.createQuery(criteria).getSingleResult();
+        } catch (NoResultException e) {
+            RoleDAO role = new RoleDAO(name);
+            entityManager.persist(role);
+            return role;
+        }
+    }
 }

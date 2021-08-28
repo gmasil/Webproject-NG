@@ -22,5 +22,6 @@ package de.gmasil.webproject.jpa.user;
 import java.util.List;
 
 public interface UserRepositoryExtension {
-	public List<UserDAO> findAllWithRole(String role);
+
+    public List<UserDAO> findAllWithRole(String role);
 }

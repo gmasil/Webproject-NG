@@ -26,9 +26,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface RoleRepository extends JpaRepository<RoleDAO, Long>, RoleRepositoryExtension {
+public interface RoleRepository extends JpaRepository<Role, Long>, RoleRepositoryExtension {
 
-    public Optional<RoleDAO> findByName(String name);
+    public Optional<Role> findByName(String name);
 
-    public List<RoleDAO> findAllByNameLike(String name);
+    public List<Role> findAllByNameLike(String name);
 }

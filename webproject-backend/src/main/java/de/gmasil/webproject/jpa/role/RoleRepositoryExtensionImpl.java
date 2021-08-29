@@ -35,15 +35,15 @@ public class RoleRepositoryExtensionImpl implements RoleRepositoryExtension {
     private EntityManager entityManager;
 
     @Override
-    public RoleDAO findByNameOrCreate(String name) {
+    public Role findByNameOrCreate(String name) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<RoleDAO> criteria = builder.createQuery(RoleDAO.class);
-        Root<RoleDAO> root = criteria.from(RoleDAO.class);
+        CriteriaQuery<Role> criteria = builder.createQuery(Role.class);
+        Root<Role> root = criteria.from(Role.class);
         criteria.where(builder.equal(root.get("name"), name));
         try {
             return entityManager.createQuery(criteria).getSingleResult();
         } catch (NoResultException e) {
-            RoleDAO role = new RoleDAO(name);
+            Role role = Role.builder().name(name).build();
             entityManager.persist(role);
             return role;
         }

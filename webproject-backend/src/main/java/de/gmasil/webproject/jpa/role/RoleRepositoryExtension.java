@@ -21,5 +21,5 @@ package de.gmasil.webproject.jpa.role;
 
 public interface RoleRepositoryExtension {
 
-    public RoleDAO findByNameOrCreate(String name);
+    public Role findByNameOrCreate(String name);
 }

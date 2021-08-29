@@ -39,7 +39,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import de.gmasil.webproject.jpa.PersistenceObject;
 import de.gmasil.webproject.jpa.comment.Comment;
-import de.gmasil.webproject.jpa.role.RoleDAO;
+import de.gmasil.webproject.jpa.role.Role;
 import de.gmasil.webproject.jpa.videorating.VideoRatingDAO;
 
 @Entity(name = "USER")
@@ -54,7 +54,7 @@ public class UserDAO extends PersistenceObject implements UserDetails {
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "USER_ROLES", joinColumns = @JoinColumn(name = "USER_ID"), inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
-    private List<RoleDAO> roles = new LinkedList<>();
+    private List<Role> roles = new LinkedList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Comment> comments = new LinkedList<>();
@@ -105,7 +105,7 @@ public class UserDAO extends PersistenceObject implements UserDetails {
         this.password = password;
     }
 
-    public List<RoleDAO> getRoles() {
+    public List<Role> getRoles() {
         return roles;
     }
 
@@ -148,7 +148,7 @@ public class UserDAO extends PersistenceObject implements UserDetails {
 
         public IBuildStage withCreated(LocalDateTime created);
 
-        public IBuildStage withRoles(List<RoleDAO> roles);
+        public IBuildStage withRoles(List<Role> roles);
 
         public IBuildStage withComments(List<Comment> comments);
 
@@ -167,7 +167,7 @@ public class UserDAO extends PersistenceObject implements UserDetails {
         private String password;
         private Long id;
         private LocalDateTime created;
-        private List<RoleDAO> roles = new LinkedList<>();
+        private List<Role> roles = new LinkedList<>();
         private List<Comment> comments = new LinkedList<>();
         private List<VideoRatingDAO> ratings = new LinkedList<>();
 
@@ -199,7 +199,7 @@ public class UserDAO extends PersistenceObject implements UserDetails {
         }
 
         @Override
-        public IBuildStage withRoles(List<RoleDAO> roles) {
+        public IBuildStage withRoles(List<Role> roles) {
             this.roles = roles;
             return this;
         }

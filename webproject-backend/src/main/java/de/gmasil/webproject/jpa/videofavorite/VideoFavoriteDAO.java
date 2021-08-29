@@ -31,7 +31,7 @@ import javax.persistence.Table;
 
 import de.gmasil.webproject.jpa.PersistenceObject;
 import de.gmasil.webproject.jpa.user.User;
-import de.gmasil.webproject.jpa.video.VideoDAO;
+import de.gmasil.webproject.jpa.video.Video;
 
 @Entity(name = "VIDEO_FAVORITES")
 @Table(name = "VIDEO_FAVORITES")
@@ -39,7 +39,7 @@ public class VideoFavoriteDAO extends PersistenceObject {
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "VIDEO_ID")
-    private VideoDAO video;
+    private Video video;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "USER_ID")
@@ -56,12 +56,12 @@ public class VideoFavoriteDAO extends PersistenceObject {
     public VideoFavoriteDAO() {
     }
 
-    public VideoFavoriteDAO(VideoDAO video, User user) {
+    public VideoFavoriteDAO(Video video, User user) {
         this.video = video;
         this.user = user;
     }
 
-    public VideoDAO getVideo() {
+    public Video getVideo() {
         return video;
     }
 
@@ -96,7 +96,7 @@ public class VideoFavoriteDAO extends PersistenceObject {
 
         public IBuildStage withCreated(LocalDateTime created);
 
-        public IBuildStage withVideo(VideoDAO video);
+        public IBuildStage withVideo(Video video);
 
         public IBuildStage withUser(User user);
 
@@ -111,7 +111,7 @@ public class VideoFavoriteDAO extends PersistenceObject {
 
         private Long id;
         private LocalDateTime created;
-        private VideoDAO video;
+        private Video video;
         private User user;
 
         private Builder() {
@@ -130,7 +130,7 @@ public class VideoFavoriteDAO extends PersistenceObject {
         }
 
         @Override
-        public IBuildStage withVideo(VideoDAO video) {
+        public IBuildStage withVideo(Video video) {
             this.video = video;
             return this;
         }

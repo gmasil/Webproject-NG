@@ -31,7 +31,7 @@ import javax.persistence.PreRemove;
 import javax.persistence.Table;
 
 import de.gmasil.webproject.jpa.Auditable;
-import de.gmasil.webproject.jpa.video.VideoDAO;
+import de.gmasil.webproject.jpa.video.Video;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -57,11 +57,11 @@ public class Category extends Auditable {
     private String name;
 
     @ManyToMany(mappedBy = "categories")
-    private Set<VideoDAO> videos;
+    private Set<Video> videos;
 
     @PreRemove
     private void preRemove() {
-        for (VideoDAO video : videos) {
+        for (Video video : videos) {
             video.getCategories().remove(this);
         }
     }

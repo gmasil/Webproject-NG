@@ -33,7 +33,7 @@ import javax.validation.constraints.Min;
 
 import de.gmasil.webproject.jpa.PersistenceObject;
 import de.gmasil.webproject.jpa.user.User;
-import de.gmasil.webproject.jpa.video.VideoDAO;
+import de.gmasil.webproject.jpa.video.Video;
 
 @Entity(name = "VIDEO_RATING")
 @Table(name = "VIDEO_RATING")
@@ -45,7 +45,7 @@ public class VideoRatingDAO extends PersistenceObject {
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "VIDEO_ID")
-    private VideoDAO video;
+    private Video video;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "USER_ID")
@@ -63,17 +63,17 @@ public class VideoRatingDAO extends PersistenceObject {
     public VideoRatingDAO() {
     }
 
-    public VideoRatingDAO(VideoDAO video, User user, int rating) {
+    public VideoRatingDAO(Video video, User user, int rating) {
         this.video = video;
         this.user = user;
         this.rating = rating;
     }
 
-    public VideoDAO getVideo() {
+    public Video getVideo() {
         return video;
     }
 
-    public void setVideo(VideoDAO video) {
+    public void setVideo(Video video) {
         this.video = video;
     }
 
@@ -126,7 +126,7 @@ public class VideoRatingDAO extends PersistenceObject {
 
         public IBuildStage withCreated(LocalDateTime created);
 
-        public IBuildStage withVideo(VideoDAO video);
+        public IBuildStage withVideo(Video video);
 
         public IBuildStage withUser(User user);
 
@@ -142,7 +142,7 @@ public class VideoRatingDAO extends PersistenceObject {
         private int rating;
         private Long id;
         private LocalDateTime created;
-        private VideoDAO video;
+        private Video video;
         private User user;
 
         private Builder() {
@@ -167,7 +167,7 @@ public class VideoRatingDAO extends PersistenceObject {
         }
 
         @Override
-        public IBuildStage withVideo(VideoDAO video) {
+        public IBuildStage withVideo(Video video) {
             this.video = video;
             return this;
         }

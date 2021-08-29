@@ -62,8 +62,8 @@ public class VideoFavorite extends Auditable {
 
     @Builder
     public VideoFavorite(Video video, User user) {
-        this.video = video;
-        this.user = user;
+        setVideo(video);
+        setUser(user);
     }
 
     public void setVideo(Video video) {

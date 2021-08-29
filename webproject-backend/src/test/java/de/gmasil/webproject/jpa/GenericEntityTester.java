@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import de.gmasil.gherkin.extension.GherkinTest;
 import de.gmasil.gherkin.extension.Reference;
 
-public abstract class GenericEntityTester<T, E> extends GherkinTest {
+public abstract class GenericEntityTester<T extends Auditable, E extends Auditable> extends GherkinTest {
 
     private String entityName;
     private String attachedEntityName;
@@ -66,7 +66,6 @@ public abstract class GenericEntityTester<T, E> extends GherkinTest {
         Reference<T> entity = new Reference<>();
         Reference<E> attachedEntity = new Reference<>();
         given("a persisted " + attachedEntityName + " exists", () -> {
-            attachedEntity.set(createAttachedEntity());
             attachedEntity.set(attachedEntityRepo.save(createAttachedEntity()));
         });
         and("a persisted " + entityName + " exists with the " + attachedEntityName + " attached", () -> {
@@ -85,6 +84,28 @@ public abstract class GenericEntityTester<T, E> extends GherkinTest {
         });
         and("the " + entityName + " was removed", () -> {
             assertThat(entityRepo.count(), is(equalTo(0L)));
+        });
+    }
+
+    public void testEntityDeletionRemovesAttachedEntities() {
+        Reference<T> entity = new Reference<>();
+        Reference<E> attachedEntity = new Reference<>();
+        given("a persisted " + attachedEntityName + " exists", () -> {
+            attachedEntity.set(createAttachedEntity());
+        });
+        and("a persisted " + entityName + " exists with the " + attachedEntityName + " attached", () -> {
+            entity.set(createEntity());
+            attachToEntity(entity.get(), attachedEntity.get());
+            entity.set(entityRepo.save(entity.get()));
+        });
+        when("the " + entityName + " is deleted", () -> {
+            entityRepo.delete(entity.get());
+        });
+        then("the " + entityName + " was removed", () -> {
+            assertThat(entityRepo.count(), is(equalTo(0L)));
+        });
+        and("the " + attachedEntityName + " was deleted as well", () -> {
+            assertThat(attachedEntityRepo.count(), is(equalTo(0L)));
         });
     }
 }

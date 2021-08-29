@@ -40,7 +40,9 @@ import lombok.Setter;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(value = { "createdAt", "updatedAt" }, allowGetters = true)
-public class Auditable implements Serializable {
+public abstract class Auditable implements Serializable {
+
+    public abstract Long getId();
 
     @CreatedDate
     @Setter(AccessLevel.NONE)

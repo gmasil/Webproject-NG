@@ -88,10 +88,10 @@ public class Video extends Auditable {
     @OneToMany(mappedBy = "video", cascade = { CascadeType.DETACH, CascadeType.PERSIST })
     private Set<Comment> comments = new HashSet<>();
 
-    @OneToMany(mappedBy = "video", cascade = { CascadeType.DETACH, CascadeType.PERSIST })
+    @OneToMany(mappedBy = "video", cascade = { CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REMOVE })
     private Set<VideoFavorite> favorites = new HashSet<>();
 
-    @OneToMany(mappedBy = "video", cascade = { CascadeType.DETACH, CascadeType.PERSIST })
+    @OneToMany(mappedBy = "video", cascade = { CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REMOVE })
     private Set<VideoRating> ratings = new HashSet<>();
 
     @Builder
@@ -146,12 +146,7 @@ public class Video extends Auditable {
         for (Comment comment : comments) {
             comment.setVideo(null);
         }
-        for (VideoFavorite favorite : favorites) {
-            favorite.setVideo(null);
-        }
-        for (VideoRating rating : ratings) {
-            rating.setVideo(null);
-        }
+        // do not detatch favorites and ratings, delete them
     }
 
     @Override

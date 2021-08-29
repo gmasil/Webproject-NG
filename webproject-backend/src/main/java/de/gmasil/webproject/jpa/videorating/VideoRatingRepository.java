@@ -23,5 +23,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface VideoRatingRepository extends JpaRepository<VideoRatingDAO, Long> {
+public interface VideoRatingRepository extends JpaRepository<VideoRating, Long> {
 }

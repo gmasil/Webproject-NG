@@ -39,7 +39,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import de.gmasil.webproject.jpa.Auditable;
 import de.gmasil.webproject.jpa.comment.Comment;
 import de.gmasil.webproject.jpa.role.Role;
-import de.gmasil.webproject.jpa.videorating.VideoRatingDAO;
+import de.gmasil.webproject.jpa.videorating.VideoRating;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -75,7 +75,7 @@ public class User extends Auditable implements UserDetails {
     private Set<Comment> comments;
 
     @OneToMany(mappedBy = "user")
-    private Set<VideoRatingDAO> ratings;
+    private Set<VideoRating> ratings;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

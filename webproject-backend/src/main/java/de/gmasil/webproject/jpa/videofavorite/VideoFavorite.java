@@ -57,7 +57,7 @@ public class VideoFavorite extends Auditable {
     private Video video;
 
     @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.PERSIST })
-    @JoinColumn(name = "USER_ID")
+    @JoinColumn(name = "USER_ID", nullable = false)
     private User user;
 
     @Builder

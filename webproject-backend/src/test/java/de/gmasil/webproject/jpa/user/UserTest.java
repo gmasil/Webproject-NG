@@ -161,9 +161,9 @@ public class UserTest {
         }
 
         @Transactional
-        @Scenario("When deleting a user it is detached from a favorite while preserving it")
-        void testUserDeletionPreservesFavorite() {
-            testEntityDeletionPreservesAttachedEntities();
+        @Scenario("When deleting a user its attachted favorites are removed as well")
+        void testUserDeletionRemovesFavorite() {
+            testEntityDeletionRemovesAttachedEntities();
         }
 
         @Override

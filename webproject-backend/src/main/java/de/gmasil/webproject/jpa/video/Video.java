@@ -146,7 +146,7 @@ public class Video extends Auditable {
         for (Comment comment : comments) {
             comment.setVideo(null);
         }
-        // do not detatch favorites and ratings, delete them
+        // do not detach favorites and ratings, delete them
     }
 
     @Override

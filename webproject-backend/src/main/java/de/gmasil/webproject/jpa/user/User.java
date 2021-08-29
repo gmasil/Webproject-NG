@@ -77,7 +77,7 @@ public class User extends Auditable implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = { CascadeType.DETACH, CascadeType.PERSIST })
     private Set<Comment> comments = new HashSet<>();
 
-    @OneToMany(mappedBy = "user", cascade = { CascadeType.DETACH, CascadeType.PERSIST })
+    @OneToMany(mappedBy = "user", cascade = { CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REMOVE })
     private Set<VideoFavorite> favorites = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = { CascadeType.DETACH, CascadeType.PERSIST })
@@ -117,9 +117,7 @@ public class User extends Auditable implements UserDetails {
         for (Comment comment : comments) {
             comment.setUser(null);
         }
-        for (VideoFavorite favorite : favorites) {
-            favorite.setUser(null);
-        }
+        // do not detach favorites, delete them
         for (VideoRating rating : ratings) {
             rating.setUser(null);
         }

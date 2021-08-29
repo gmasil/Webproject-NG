@@ -38,7 +38,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import de.gmasil.webproject.jpa.PersistenceObject;
-import de.gmasil.webproject.jpa.comment.CommentDAO;
+import de.gmasil.webproject.jpa.comment.Comment;
 import de.gmasil.webproject.jpa.role.RoleDAO;
 import de.gmasil.webproject.jpa.videorating.VideoRatingDAO;
 
@@ -57,7 +57,7 @@ public class UserDAO extends PersistenceObject implements UserDetails {
     private List<RoleDAO> roles = new LinkedList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<CommentDAO> comments = new LinkedList<>();
+    private List<Comment> comments = new LinkedList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<VideoRatingDAO> ratings = new LinkedList<>();
@@ -71,7 +71,7 @@ public class UserDAO extends PersistenceObject implements UserDetails {
         this.roles = builder.roles;
         this.comments = builder.comments;
         this.ratings = builder.ratings;
-        for (CommentDAO comment : this.comments) {
+        for (Comment comment : this.comments) {
             comment.setUser(this);
         }
         for (VideoRatingDAO rating : this.ratings) {
@@ -150,7 +150,7 @@ public class UserDAO extends PersistenceObject implements UserDetails {
 
         public IBuildStage withRoles(List<RoleDAO> roles);
 
-        public IBuildStage withComments(List<CommentDAO> comments);
+        public IBuildStage withComments(List<Comment> comments);
 
         public IBuildStage withRatings(List<VideoRatingDAO> ratings);
 
@@ -168,7 +168,7 @@ public class UserDAO extends PersistenceObject implements UserDetails {
         private Long id;
         private LocalDateTime created;
         private List<RoleDAO> roles = new LinkedList<>();
-        private List<CommentDAO> comments = new LinkedList<>();
+        private List<Comment> comments = new LinkedList<>();
         private List<VideoRatingDAO> ratings = new LinkedList<>();
 
         private Builder() {
@@ -205,7 +205,7 @@ public class UserDAO extends PersistenceObject implements UserDetails {
         }
 
         @Override
-        public IBuildStage withComments(List<CommentDAO> comments) {
+        public IBuildStage withComments(List<Comment> comments) {
             this.comments = comments;
             return this;
         }

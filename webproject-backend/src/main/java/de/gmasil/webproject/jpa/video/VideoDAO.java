@@ -37,7 +37,7 @@ import javax.persistence.Table;
 import de.gmasil.webproject.jpa.PersistenceObject;
 import de.gmasil.webproject.jpa.artist.Artist;
 import de.gmasil.webproject.jpa.category.Category;
-import de.gmasil.webproject.jpa.comment.CommentDAO;
+import de.gmasil.webproject.jpa.comment.Comment;
 import de.gmasil.webproject.jpa.videofile.VideoFileDAO;
 import de.gmasil.webproject.jpa.videorating.VideoRatingDAO;
 
@@ -68,7 +68,7 @@ public class VideoDAO extends PersistenceObject {
     private List<Category> categories = new LinkedList<>();
 
     @OneToMany(mappedBy = "video", cascade = CascadeType.ALL)
-    private List<CommentDAO> comments = new LinkedList<>();
+    private List<Comment> comments = new LinkedList<>();
 
     @OneToMany(mappedBy = "video", cascade = CascadeType.ALL)
     private List<VideoRatingDAO> ratings = new LinkedList<>();
@@ -86,7 +86,7 @@ public class VideoDAO extends PersistenceObject {
         this.categories = builder.categories;
         this.comments = builder.comments;
         this.ratings = builder.ratings;
-        for (CommentDAO comment : this.comments) {
+        for (Comment comment : this.comments) {
             comment.setVideo(this);
         }
         for (VideoRatingDAO rating : this.ratings) {
@@ -148,7 +148,7 @@ public class VideoDAO extends PersistenceObject {
         return categories;
     }
 
-    public List<CommentDAO> getComments() {
+    public List<Comment> getComments() {
         return comments;
     }
 
@@ -201,7 +201,7 @@ public class VideoDAO extends PersistenceObject {
 
         public IBuildStage withCategories(List<Category> categories);
 
-        public IBuildStage withComments(List<CommentDAO> comments);
+        public IBuildStage withComments(List<Comment> comments);
 
         public IBuildStage withRatings(List<VideoRatingDAO> ratings);
 
@@ -223,7 +223,7 @@ public class VideoDAO extends PersistenceObject {
         private List<VideoFileDAO> files = new LinkedList<>();
         private List<Artist> artists = new LinkedList<>();
         private List<Category> categories = new LinkedList<>();
-        private List<CommentDAO> comments = new LinkedList<>();
+        private List<Comment> comments = new LinkedList<>();
         private List<VideoRatingDAO> ratings = new LinkedList<>();
 
         private Builder() {
@@ -284,7 +284,7 @@ public class VideoDAO extends PersistenceObject {
         }
 
         @Override
-        public IBuildStage withComments(List<CommentDAO> comments) {
+        public IBuildStage withComments(List<Comment> comments) {
             this.comments = comments;
             return this;
         }

@@ -68,12 +68,16 @@ public class VideoFavorite extends Auditable {
 
     public void setVideo(Video video) {
         this.video = video;
-        video.getFavorites().add(this);
+        if (video != null) {
+            video.getFavorites().add(this);
+        }
     }
 
     public void setUser(User user) {
         this.user = user;
-        user.getFavorites().add(this);
+        if (user != null) {
+            user.getFavorites().add(this);
+        }
     }
 
     @PreRemove

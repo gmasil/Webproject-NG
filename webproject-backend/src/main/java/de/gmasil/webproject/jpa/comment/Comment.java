@@ -71,12 +71,16 @@ public class Comment extends Auditable {
 
     public void setVideo(Video video) {
         this.video = video;
-        video.getComments().add(this);
+        if (video != null) {
+            video.getComments().add(this);
+        }
     }
 
     public void setUser(User user) {
         this.user = user;
-        user.getComments().add(this);
+        if (user != null) {
+            user.getComments().add(this);
+        }
     }
 
     @PreRemove

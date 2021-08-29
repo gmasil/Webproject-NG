@@ -69,12 +69,16 @@ public class VideoRating extends Auditable {
 
     public void setVideo(Video video) {
         this.video = video;
-        video.getRatings().add(this);
+        if (video != null) {
+            video.getRatings().add(this);
+        }
     }
 
     public void setUser(User user) {
         this.user = user;
-        user.getRatings().add(this);
+        if (user != null) {
+            user.getRatings().add(this);
+        }
     }
 
     @PreRemove

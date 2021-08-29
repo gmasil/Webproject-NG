@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import de.gmasil.gherkin.extension.Scenario;
 import de.gmasil.gherkin.extension.Story;
 import de.gmasil.webproject.jpa.GenericEntityTester;
+import de.gmasil.webproject.jpa.user.User;
+import de.gmasil.webproject.jpa.user.UserRepository;
 import de.gmasil.webproject.jpa.video.Video;
 import de.gmasil.webproject.jpa.video.VideoRepository;
 import de.gmasil.webproject.utils.SetupTestContext;
@@ -76,6 +78,62 @@ class CommentTest {
         public void assertAttachedEntityHasNothingAttached(Video video) {
             assertThat(video.getTitle(), is(equalTo("Video 1")));
             assertThat(video.getComments(), hasSize(0));
+        }
+    }
+
+    @Nested
+    class CommentUserTest extends GenericEntityTester<Comment, User> {
+
+        @Autowired
+        public CommentUserTest(CommentRepository commentRepo, UserRepository userRepo) {
+            super("comment", "user", commentRepo, userRepo);
+        }
+
+        @Transactional
+        @Scenario("Persisting a comment will persist attached Users")
+        void testPersistCommentAndAttachedUsers() {
+            testPersistEntityAndAttachedEntities();
+        }
+
+        @Transactional
+        @Scenario("When deleting a comment it is detached from a user while preserving it")
+        void testCommentDeletionPreservesUsers() {
+            testEntityDeletionPreservesAttachedEntities();
+        }
+
+        @Override
+        public Comment createEntity() {
+            return Comment.builder().text("Comment 1").build();
+        }
+
+        @Override
+        public User createAttachedEntity() {
+            return User.builder().username("User 1").password("pass1").build();
+        }
+
+        @Override
+        public void attachToEntity(Comment comment, User user) {
+            comment.setUser(user);
+        }
+
+        @Override
+        public void assertEntityHasAttachedEntity(Comment comment) {
+            assertThat(comment.getText(), is(equalTo("Comment 1")));
+            assertThat(comment.getUser(), is(not(nullValue())));
+            assertThat(comment.getUser().getUsername(), is(equalTo("User 1")));
+        }
+
+        @Override
+        public void assertAttachedEntityHasEntityAttached(User user) {
+            assertThat(user.getUsername(), is(equalTo("User 1")));
+            assertThat(user.getComments(), hasSize(1));
+            assertThat(user.getComments().iterator().next().getText(), is(equalTo("Comment 1")));
+        }
+
+        @Override
+        public void assertAttachedEntityHasNothingAttached(User user) {
+            assertThat(user.getUsername(), is(equalTo("User 1")));
+            assertThat(user.getComments(), hasSize(0));
         }
     }
 }

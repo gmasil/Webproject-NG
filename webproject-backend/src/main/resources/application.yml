@@ -36,3 +36,6 @@ spring:
     store-type: jdbc
     jdbc:
       initialize-schema: always
+  data:
+    rest:
+      base-path: api

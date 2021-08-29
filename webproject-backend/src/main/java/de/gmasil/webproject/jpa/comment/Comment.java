@@ -29,7 +29,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import de.gmasil.webproject.jpa.Auditable;
-import de.gmasil.webproject.jpa.user.UserDAO;
+import de.gmasil.webproject.jpa.user.User;
 import de.gmasil.webproject.jpa.video.VideoDAO;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -61,7 +61,7 @@ public class Comment extends Auditable {
 
     @ManyToOne
     @JoinColumn(name = "USER_ID")
-    private UserDAO user;
+    private User user;
 
     @Override
     public int hashCode() {

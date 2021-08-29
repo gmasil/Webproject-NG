@@ -32,7 +32,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
 import de.gmasil.webproject.jpa.PersistenceObject;
-import de.gmasil.webproject.jpa.user.UserDAO;
+import de.gmasil.webproject.jpa.user.User;
 import de.gmasil.webproject.jpa.video.VideoDAO;
 
 @Entity(name = "VIDEO_RATING")
@@ -49,7 +49,7 @@ public class VideoRatingDAO extends PersistenceObject {
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "USER_ID")
-    private UserDAO user;
+    private User user;
 
     @Generated("SparkTools")
     private VideoRatingDAO(Builder builder) {
@@ -63,7 +63,7 @@ public class VideoRatingDAO extends PersistenceObject {
     public VideoRatingDAO() {
     }
 
-    public VideoRatingDAO(VideoDAO video, UserDAO user, int rating) {
+    public VideoRatingDAO(VideoDAO video, User user, int rating) {
         this.video = video;
         this.user = user;
         this.rating = rating;
@@ -77,11 +77,11 @@ public class VideoRatingDAO extends PersistenceObject {
         this.video = video;
     }
 
-    public UserDAO getUser() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser(UserDAO user) {
+    public void setUser(User user) {
         this.user = user;
     }
 
@@ -128,7 +128,7 @@ public class VideoRatingDAO extends PersistenceObject {
 
         public IBuildStage withVideo(VideoDAO video);
 
-        public IBuildStage withUser(UserDAO user);
+        public IBuildStage withUser(User user);
 
         public VideoRatingDAO build();
     }
@@ -143,7 +143,7 @@ public class VideoRatingDAO extends PersistenceObject {
         private Long id;
         private LocalDateTime created;
         private VideoDAO video;
-        private UserDAO user;
+        private User user;
 
         private Builder() {
         }
@@ -173,7 +173,7 @@ public class VideoRatingDAO extends PersistenceObject {
         }
 
         @Override
-        public IBuildStage withUser(UserDAO user) {
+        public IBuildStage withUser(User user) {
             this.user = user;
             return this;
         }

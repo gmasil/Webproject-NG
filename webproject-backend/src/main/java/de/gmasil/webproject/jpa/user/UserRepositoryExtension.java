@@ -23,5 +23,5 @@ import java.util.List;
 
 public interface UserRepositoryExtension {
 
-    public List<UserDAO> findAllWithRole(String role);
+    public List<User> findAllWithRole(String role);
 }

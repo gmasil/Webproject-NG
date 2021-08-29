@@ -40,18 +40,18 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        Optional<UserDAO> optional = userRepository.findByUsername(username);
+        Optional<User> optional = userRepository.findByUsername(username);
         if (optional.isPresent()) {
             return optional.get();
         }
         throw new UsernameNotFoundException(String.format("The username '%s' does not exist", username));
     }
 
-    public void encodePassword(UserDAO user) {
+    public void encodePassword(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
     }
 
-    public UserDAO save(UserDAO user) {
+    public User save(User user) {
         return userRepository.save(user);
     }
 
@@ -59,7 +59,7 @@ public class UserService implements UserDetailsService {
         return userRepository.count() > 0;
     }
 
-    public List<UserDAO> findAll() {
+    public List<User> findAll() {
         return userRepository.findAll();
     }
 }

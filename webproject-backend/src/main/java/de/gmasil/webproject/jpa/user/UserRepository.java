@@ -26,11 +26,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends JpaRepository<UserDAO, Long>, UserRepositoryExtension {
+public interface UserRepository extends JpaRepository<User, Long>, UserRepositoryExtension {
 
-    public Optional<UserDAO> findByUsername(String username);
+    public Optional<User> findByUsername(String username);
 
     public <T> Optional<T> findByUsername(String username, Class<T> type);
 
-    public List<UserDAO> findAllByUsernameLike(String username);
+    public List<User> findAllByUsernameLike(String username);
 }

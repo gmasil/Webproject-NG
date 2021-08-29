@@ -37,10 +37,10 @@ public class UserRepositoryExtensionImpl implements UserRepositoryExtension {
     private EntityManager entityManager;
 
     @Override
-    public List<UserDAO> findAllWithRole(String role) {
+    public List<User> findAllWithRole(String role) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<UserDAO> criteria = builder.createQuery(UserDAO.class);
-        Root<UserDAO> from = criteria.from(UserDAO.class);
+        CriteriaQuery<User> criteria = builder.createQuery(User.class);
+        Root<User> from = criteria.from(User.class);
         Join<Object, Object> roles = from.join("roles");
         criteria.where(builder.equal(roles.get("name"), role));
         return entityManager.createQuery(criteria).getResultList();

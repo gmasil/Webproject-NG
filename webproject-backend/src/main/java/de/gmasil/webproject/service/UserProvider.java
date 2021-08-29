@@ -24,12 +24,12 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import de.gmasil.webproject.jpa.user.UserDAO;
+import de.gmasil.webproject.jpa.user.User;
 
 @Service
 public class UserProvider {
 
-    public UserDAO getCurrent() {
+    public User getCurrent() {
         SecurityContext context = SecurityContextHolder.getContext();
         if (context == null) {
             return null;
@@ -39,8 +39,8 @@ public class UserProvider {
             return null;
         }
         Object principal = auth.getPrincipal();
-        if (principal instanceof UserDAO) {
-            return (UserDAO) principal;
+        if (principal instanceof User) {
+            return (User) principal;
         }
         return null;
     }

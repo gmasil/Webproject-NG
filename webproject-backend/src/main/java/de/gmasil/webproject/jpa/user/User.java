@@ -17,8 +17,9 @@
  * You should have received a copy of the GNU General Public License
  * along with Webproject NG. If not, see <https://www.gnu.org/licenses/>.
  */
-package de.gmasil.webproject.jpa.role;
+package de.gmasil.webproject.jpa.user;
 
+import java.util.Collection;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -26,14 +27,19 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.PreRemove;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import de.gmasil.webproject.jpa.Auditable;
-import de.gmasil.webproject.jpa.user.User;
+import de.gmasil.webproject.jpa.comment.Comment;
+import de.gmasil.webproject.jpa.role.Role;
+import de.gmasil.webproject.jpa.videorating.VideoRatingDAO;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -46,9 +52,9 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "ROLE")
-@Table(name = "ROLE")
-public class Role extends Auditable implements GrantedAuthority {
+@Entity(name = "USER")
+@Table(name = "USER")
+public class User extends Auditable implements UserDetails {
 
     @Id
     @Setter(AccessLevel.NONE)
@@ -56,21 +62,54 @@ public class Role extends Auditable implements GrantedAuthority {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String name;
+    private String username;
 
-    @ManyToMany(mappedBy = "roles")
-    private Set<User> users;
+    @Column(nullable = false)
+    private String password;
+
+    @ManyToMany
+    @JoinTable(name = "USER_ROLES", joinColumns = @JoinColumn(name = "USER_ID"), inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
+    private Set<Role> roles;
+
+    @OneToMany(mappedBy = "user")
+    private Set<Comment> comments;
+
+    @OneToMany(mappedBy = "user")
+    private Set<VideoRatingDAO> ratings;
 
     @Override
-    public String getAuthority() {
-        return getName();
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return getRoles();
     }
 
-    @PreRemove
-    private void preRemove() {
-        for (User user : users) {
-            user.getRoles().remove(this);
-        }
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
     @Override

@@ -19,8 +19,10 @@
  */
 package de.gmasil.webproject.jpa.category;
 
+import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -41,7 +43,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "CATEGORY")
@@ -56,8 +57,18 @@ public class Category extends Auditable {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @ManyToMany(mappedBy = "categories")
-    private Set<Video> videos;
+    @ManyToMany(mappedBy = "categories", cascade = { CascadeType.DETACH, CascadeType.PERSIST })
+    private Set<Video> videos = new HashSet<>();
+
+    @Builder
+    public Category(String name) {
+        this.name = name;
+    }
+
+    public void addVideo(Video video) {
+        videos.add(video);
+        video.getCategories().add(this);
+    }
 
     @PreRemove
     private void preRemove() {

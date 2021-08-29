@@ -19,6 +19,10 @@
  */
 package de.gmasil.webproject.jpa.videofile;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -26,11 +30,14 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import de.gmasil.webproject.jpa.Auditable;
 import de.gmasil.webproject.jpa.VideoQuality;
+import de.gmasil.webproject.jpa.video.Video;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,7 +47,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "FILE")
@@ -52,11 +58,32 @@ public class VideoFile extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
 
     @Enumerated(EnumType.STRING)
     private VideoQuality quality;
+
+    @ManyToMany(mappedBy = "files", cascade = { CascadeType.DETACH, CascadeType.PERSIST })
+    private Set<Video> videos = new HashSet<>();
+
+    @Builder
+    public VideoFile(String name, VideoQuality quality) {
+        this.name = name;
+        this.quality = quality;
+    }
+
+    public void addVideo(Video video) {
+        videos.add(video);
+        video.getFiles().add(this);
+    }
+
+    @PreRemove
+    private void preRemove() {
+        for (Video video : videos) {
+            video.getFiles().remove(this);
+        }
+    }
 
     @Override
     public int hashCode() {

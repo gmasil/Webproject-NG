@@ -19,8 +19,10 @@
  */
 package de.gmasil.webproject.jpa.video;
 
+import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -31,12 +33,14 @@ import javax.persistence.JoinTable;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 
 import de.gmasil.webproject.jpa.Auditable;
 import de.gmasil.webproject.jpa.artist.Artist;
 import de.gmasil.webproject.jpa.category.Category;
 import de.gmasil.webproject.jpa.comment.Comment;
+import de.gmasil.webproject.jpa.videofavorite.VideoFavorite;
 import de.gmasil.webproject.jpa.videofile.VideoFile;
 import de.gmasil.webproject.jpa.videorating.VideoRating;
 import lombok.AccessLevel;
@@ -48,7 +52,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "VIDEO")
@@ -70,23 +73,86 @@ public class Video extends Auditable {
 
     private String thumbnail;
 
-    @ManyToMany
+    @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.PERSIST })
     @JoinTable(name = "VIDEO_FILES", joinColumns = @JoinColumn(name = "VIDEO_ID"), inverseJoinColumns = @JoinColumn(name = "FILE_ID"))
-    private Set<VideoFile> files;
+    private Set<VideoFile> files = new HashSet<>();
 
-    @ManyToMany
+    @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.PERSIST })
     @JoinTable(name = "VIDEO_ARTISTS", joinColumns = @JoinColumn(name = "VIDEO_ID"), inverseJoinColumns = @JoinColumn(name = "ARTIST_ID"))
-    private Set<Artist> artists;
+    private Set<Artist> artists = new HashSet<>();
 
-    @ManyToMany
+    @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.PERSIST })
     @JoinTable(name = "VIDEO_CATEGORIES", joinColumns = @JoinColumn(name = "VIDEO_ID"), inverseJoinColumns = @JoinColumn(name = "CATEGORY_ID"))
-    private Set<Category> categories;
+    private Set<Category> categories = new HashSet<>();
 
-    @OneToMany(mappedBy = "video")
-    private Set<Comment> comments;
+    @OneToMany(mappedBy = "video", cascade = { CascadeType.DETACH, CascadeType.PERSIST })
+    private Set<Comment> comments = new HashSet<>();
 
-    @OneToMany(mappedBy = "video")
-    private Set<VideoRating> ratings;
+    @OneToMany(mappedBy = "video", cascade = { CascadeType.DETACH, CascadeType.PERSIST })
+    private Set<VideoFavorite> favorites = new HashSet<>();
+
+    @OneToMany(mappedBy = "video", cascade = { CascadeType.DETACH, CascadeType.PERSIST })
+    private Set<VideoRating> ratings = new HashSet<>();
+
+    @Builder
+    public Video(String title, String description, float length, String thumbnail) {
+        this.title = title;
+        this.description = description;
+        this.length = length;
+        this.thumbnail = thumbnail;
+    }
+
+    public void addFile(VideoFile file) {
+        files.add(file);
+        file.getVideos().add(this);
+    }
+
+    public void addArtist(Artist artist) {
+        artists.add(artist);
+        artist.getVideos().add(this);
+    }
+
+    public void addCategory(Category category) {
+        categories.add(category);
+        category.getVideos().add(this);
+    }
+
+    public void addComment(Comment comment) {
+        comments.add(comment);
+        comment.setVideo(this);
+    }
+
+    public void addFavorite(VideoFavorite favorite) {
+        favorites.add(favorite);
+        favorite.setVideo(this);
+    }
+
+    public void addRating(VideoRating rating) {
+        ratings.add(rating);
+        rating.setVideo(this);
+    }
+
+    @PreRemove
+    private void preRemove() {
+        for (VideoFile file : files) {
+            file.getVideos().remove(this);
+        }
+        for (Artist artist : artists) {
+            artist.getVideos().remove(this);
+        }
+        for (Category category : categories) {
+            category.getVideos().remove(this);
+        }
+        for (Comment comment : comments) {
+            comment.setVideo(null);
+        }
+        for (VideoFavorite favorite : favorites) {
+            favorite.setVideo(null);
+        }
+        for (VideoRating rating : ratings) {
+            rating.setVideo(null);
+        }
+    }
 
     @Override
     public int hashCode() {

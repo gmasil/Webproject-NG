@@ -19,12 +19,14 @@
  */
 package de.gmasil.webproject.jpa.videofavorite;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 
 import de.gmasil.webproject.jpa.Auditable;
@@ -39,7 +41,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "VIDEO_FAVORITES")
@@ -51,13 +52,39 @@ public class VideoFavorite extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "VIDEO_ID")
+    @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.PERSIST })
+    @JoinColumn(name = "VIDEO_ID", nullable = false)
     private Video video;
 
-    @ManyToOne
+    @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.PERSIST })
     @JoinColumn(name = "USER_ID")
     private User user;
+
+    @Builder
+    public VideoFavorite(Video video, User user) {
+        this.video = video;
+        this.user = user;
+    }
+
+    public void setVideo(Video video) {
+        this.video = video;
+        video.getFavorites().add(this);
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+        user.getFavorites().add(this);
+    }
+
+    @PreRemove
+    private void preRemove() {
+        if (video != null) {
+            video.getFavorites().remove(this);
+        }
+        if (user != null) {
+            user.getFavorites().remove(this);
+        }
+    }
 
     @Override
     public int hashCode() {

@@ -19,8 +19,10 @@
  */
 package de.gmasil.webproject.jpa.artist;
 
+import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -41,7 +43,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "ARTIST")
@@ -58,8 +59,19 @@ public class Artist extends Auditable {
 
     private String profilePictureFile;
 
-    @ManyToMany(mappedBy = "artists")
-    private Set<Video> videos;
+    @ManyToMany(mappedBy = "artists", cascade = { CascadeType.DETACH, CascadeType.PERSIST })
+    private Set<Video> videos = new HashSet<>();
+
+    @Builder
+    public Artist(String name, String profilePictureFile) {
+        this.name = name;
+        this.profilePictureFile = profilePictureFile;
+    }
+
+    public void addVideo(Video video) {
+        videos.add(video);
+        video.getArtists().add(this);
+    }
 
     @PreRemove
     private void preRemove() {
@@ -77,4 +89,5 @@ public class Artist extends Auditable {
     public boolean equals(Object obj) {
         return super.equals(obj);
     }
+
 }

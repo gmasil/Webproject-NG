@@ -19,8 +19,10 @@
  */
 package de.gmasil.webproject.jpa.role;
 
+import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -43,7 +45,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "ROLE")
@@ -58,12 +59,22 @@ public class Role extends Auditable implements GrantedAuthority {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @ManyToMany(mappedBy = "roles")
-    private Set<User> users;
+    @ManyToMany(mappedBy = "roles", cascade = { CascadeType.DETACH, CascadeType.PERSIST })
+    private Set<User> users = new HashSet<>();
 
     @Override
     public String getAuthority() {
         return getName();
+    }
+
+    @Builder
+    public Role(String name) {
+        this.name = name;
+    }
+
+    public void addUser(User user) {
+        users.add(user);
+        user.getRoles().add(this);
     }
 
     @PreRemove

@@ -20,8 +20,10 @@
 package de.gmasil.webproject.jpa.user;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -31,6 +33,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -39,6 +42,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import de.gmasil.webproject.jpa.Auditable;
 import de.gmasil.webproject.jpa.comment.Comment;
 import de.gmasil.webproject.jpa.role.Role;
+import de.gmasil.webproject.jpa.videofavorite.VideoFavorite;
 import de.gmasil.webproject.jpa.videorating.VideoRating;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -49,7 +53,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "USER")
@@ -67,15 +70,60 @@ public class User extends Auditable implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    @ManyToMany
+    @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.PERSIST })
     @JoinTable(name = "USER_ROLES", joinColumns = @JoinColumn(name = "USER_ID"), inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
-    private Set<Role> roles;
+    private Set<Role> roles = new HashSet<>();
 
-    @OneToMany(mappedBy = "user")
-    private Set<Comment> comments;
+    @OneToMany(mappedBy = "user", cascade = { CascadeType.DETACH, CascadeType.PERSIST })
+    private Set<Comment> comments = new HashSet<>();
 
-    @OneToMany(mappedBy = "user")
-    private Set<VideoRating> ratings;
+    @OneToMany(mappedBy = "user", cascade = { CascadeType.DETACH, CascadeType.PERSIST })
+    private Set<VideoFavorite> favorites = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", cascade = { CascadeType.DETACH, CascadeType.PERSIST })
+    private Set<VideoRating> ratings = new HashSet<>();
+
+    @Builder
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    public void addRole(Role role) {
+        roles.add(role);
+        role.addUser(this);
+    }
+
+    public void addComment(Comment comment) {
+        comments.add(comment);
+        comment.setUser(this);
+    }
+
+    public void addFavorite(VideoFavorite favorite) {
+        favorites.add(favorite);
+        favorite.setUser(this);
+    }
+
+    public void addRating(VideoRating rating) {
+        ratings.add(rating);
+        rating.setUser(this);
+    }
+
+    @PreRemove
+    private void preRemove() {
+        for (Role role : roles) {
+            role.getUsers().remove(this);
+        }
+        for (Comment comment : comments) {
+            comment.setUser(null);
+        }
+        for (VideoFavorite favorite : favorites) {
+            favorite.setUser(null);
+        }
+        for (VideoRating rating : ratings) {
+            rating.setUser(null);
+        }
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

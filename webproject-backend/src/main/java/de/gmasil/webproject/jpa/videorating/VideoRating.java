@@ -19,12 +19,14 @@
  */
 package de.gmasil.webproject.jpa.videorating;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -57,13 +59,33 @@ public class VideoRating extends Auditable {
     @Max(5)
     private int rating;
 
-    @ManyToOne
-    @JoinColumn(name = "VIDEO_ID")
+    @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.PERSIST })
+    @JoinColumn(name = "VIDEO_ID", nullable = false)
     private Video video;
 
-    @ManyToOne
+    @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.PERSIST })
     @JoinColumn(name = "USER_ID")
     private User user;
+
+    public void setVideo(Video video) {
+        this.video = video;
+        video.getRatings().add(this);
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+        user.getRatings().add(this);
+    }
+
+    @PreRemove
+    private void preRemove() {
+        if (video != null) {
+            video.getRatings().remove(this);
+        }
+        if (user != null) {
+            user.getRatings().remove(this);
+        }
+    }
 
     @Override
     public int hashCode() {

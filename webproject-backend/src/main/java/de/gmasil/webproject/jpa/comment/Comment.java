@@ -19,6 +19,7 @@
  */
 package de.gmasil.webproject.jpa.comment;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,6 +27,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 
 import de.gmasil.webproject.jpa.Auditable;
@@ -40,7 +42,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "COMMENT")
@@ -53,15 +54,40 @@ public class Comment extends Auditable {
     private Long id;
 
     @Lob
-    private String comment;
+    private String text;
 
-    @ManyToOne
+    @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.PERSIST })
     @JoinColumn(name = "VIDEO_ID")
     private Video video;
 
-    @ManyToOne
+    @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.PERSIST })
     @JoinColumn(name = "USER_ID")
     private User user;
+
+    @Builder
+    public Comment(String text) {
+        this.text = text;
+    }
+
+    public void setVideo(Video video) {
+        this.video = video;
+        video.getComments().add(this);
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+        user.getComments().add(this);
+    }
+
+    @PreRemove
+    private void preRemove() {
+        if (video != null) {
+            video.getComments().remove(this);
+        }
+        if (user != null) {
+            user.getComments().remove(this);
+        }
+    }
 
     @Override
     public int hashCode() {

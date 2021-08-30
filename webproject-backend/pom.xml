@@ -42,6 +42,7 @@
         <hamcrest-all.version>1.3</hamcrest-all.version>
         <gherkin-extension.version>1.1</gherkin-extension.version>
         <!-- plugin versions -->
+        <jacoco-plugin.version>0.8.4</jacoco-plugin.version>
         <jib-plugin.version>3.1.1</jib-plugin.version>
         <!-- image build -->
         <image.registry>registry.gmasil.de/docker</image.registry>
@@ -218,6 +219,23 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- jacoco -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>pre-unit-test</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <configuration>
+                            <destFile>${project.build.directory}/jacoco.exec</destFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- spring boot assembly -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -250,7 +268,7 @@
                     <execution>
                         <phase>deploy</phase>
                         <goals>
-                            <goal>dockerBuild</goal>
+                            <goal>build</goal>
                         </goals>
                     </execution>
                 </executions>

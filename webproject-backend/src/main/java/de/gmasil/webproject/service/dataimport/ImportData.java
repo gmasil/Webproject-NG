@@ -22,18 +22,18 @@ package de.gmasil.webproject.service.dataimport;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import de.gmasil.webproject.jpa.VideoQuality;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class ImportData {
 
     private List<ImportUser> users = new LinkedList<>();
@@ -43,7 +43,6 @@ public class ImportData {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    @ToString
     public static class ImportUser {
 
         private String username;
@@ -55,7 +54,7 @@ public class ImportData {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    @ToString
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class ImportVideo {
 
         private String title;
@@ -73,7 +72,6 @@ public class ImportData {
         @Setter
         @NoArgsConstructor
         @AllArgsConstructor
-        @ToString
         public static class ImportFile {
 
             private String name;
@@ -84,7 +82,6 @@ public class ImportData {
         @Setter
         @NoArgsConstructor
         @AllArgsConstructor
-        @ToString
         public static class ImportComment {
 
             private String username;
@@ -95,7 +92,6 @@ public class ImportData {
         @Setter
         @NoArgsConstructor
         @AllArgsConstructor
-        @ToString
         public static class ImportRating {
 
             private String username;

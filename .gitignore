@@ -15,5 +15,6 @@ node/
 node_modules/
 npm-debug.log*
 target/
+webproject-backend/webproject-data.yml
 yarn-debug.log*
 yarn-error.log*

@@ -107,6 +107,7 @@ public class DataImportService {
             if (file.exists()) {
                 LOG.info("Importing data from {}", file.getAbsolutePath());
                 importData(file);
+                LOG.info("Data import finished");
             } else {
                 LOG.warn("Cannot import data, file does not exist: {}", file.getAbsolutePath());
             }

@@ -1,0 +1,17 @@
+{"properties": [
+  {
+    "name": "dataimport.enabled",
+    "type": "java.lang.Boolean",
+    "description": "Enable creation of test data"
+  },
+  {
+    "name": "dataimport.file",
+    "type": "java.lang.String",
+    "description": "YAML file containing test data"
+  },
+  {
+    "name": "dataimport.clean",
+    "type": "java.lang.Boolean",
+    "description": "Delete existing data before import"
+  }
+]}

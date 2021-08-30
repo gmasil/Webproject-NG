@@ -1,0 +1,105 @@
+/*
+ * Webproject NG
+ * Copyright © 2021 Gmasil
+ *
+ * This file is part of Webproject NG.
+ *
+ * Webproject NG is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Webproject NG is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Webproject NG. If not, see <https://www.gnu.org/licenses/>.
+ */
+package de.gmasil.webproject.service.dataimport;
+
+import java.util.LinkedList;
+import java.util.List;
+
+import de.gmasil.webproject.jpa.VideoQuality;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+public class ImportData {
+
+    private List<ImportUser> users = new LinkedList<>();
+    private List<ImportVideo> videos = new LinkedList<>();
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @ToString
+    public static class ImportUser {
+
+        private String username;
+        private String password;
+        private List<String> roles = new LinkedList<>();
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @ToString
+    public static class ImportVideo {
+
+        private String title;
+        private String description;
+        private float length;
+        private String thumbnail;
+        private List<ImportFile> files = new LinkedList<>();
+        private List<String> artists = new LinkedList<>();
+        private List<String> categories = new LinkedList<>();
+        private List<ImportComment> comments = new LinkedList<>();
+        private List<String> favoriters = new LinkedList<>();
+        private List<ImportRating> ratings = new LinkedList<>();
+
+        @Getter
+        @Setter
+        @NoArgsConstructor
+        @AllArgsConstructor
+        @ToString
+        public static class ImportFile {
+
+            private String name;
+            private VideoQuality quality;
+        }
+
+        @Getter
+        @Setter
+        @NoArgsConstructor
+        @AllArgsConstructor
+        @ToString
+        public static class ImportComment {
+
+            private String username;
+            private String comment;
+        }
+
+        @Getter
+        @Setter
+        @NoArgsConstructor
+        @AllArgsConstructor
+        @ToString
+        public static class ImportRating {
+
+            private String username;
+            private int rating;
+        }
+    }
+}

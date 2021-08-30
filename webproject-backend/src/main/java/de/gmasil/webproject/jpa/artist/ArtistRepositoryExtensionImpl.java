@@ -34,7 +34,7 @@ public class ArtistRepositoryExtensionImpl implements ArtistRepositoryExtension 
     private EntityManager entityManager;
 
     @Override
-    public Artist findAnyByNameOrCreate(String name) {
+    public Artist findByNameOrCreate(String name) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Artist> criteria = builder.createQuery(Artist.class);
         Root<Artist> root = criteria.from(Artist.class);

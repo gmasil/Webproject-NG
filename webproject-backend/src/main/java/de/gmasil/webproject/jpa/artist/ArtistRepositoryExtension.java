@@ -21,5 +21,5 @@ package de.gmasil.webproject.jpa.artist;
 
 public interface ArtistRepositoryExtension {
 
-    public Artist findAnyByNameOrCreate(String name);
+    public Artist findByNameOrCreate(String name);
 }

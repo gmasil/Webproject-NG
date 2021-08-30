@@ -1,0 +1,76 @@
+#
+# Webproject NG
+# Copyright © 2021 Gmasil
+#
+# This file is part of Webproject NG.
+#
+# Webproject NG is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Webproject NG is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Webproject NG. If not, see <https://www.gnu.org/licenses/>.
+#
+
+users:
+- username: Simon
+  password: pass1
+  roles:
+  - ADMIN
+  - DEV
+- username: James
+  password: pass2
+  roles:
+  - DEV
+  - USER
+videos:
+- title: The adventure in the middle of an adventure
+  description: |
+    This video shows something...
+    Btw this is another line!
+  length: 13.5
+  thumbnail: /files/something.png
+  files:
+  - name: /files/media/something.mp4
+    quality: HD
+  - name: /files/media/something-low.mp4
+    quality: SD
+  artists:
+  - Peter Panda
+  - John Doe
+  categories:
+  - Action
+  - Adventure
+  comments:
+  - username: Simon
+    comment: I liked this
+  - username: James
+    comment: Could be better...
+  favoriters:
+  - Simon
+  ratings:
+  - username: Simon
+    rating: 4
+  - username: James
+    rating: 2
+- title: Movie Part 2
+  description: Just another movie...
+  length: 8.3
+  thumbnail: /files/something.png
+  files:
+  - name: /files/media/something-else-low.mp4
+    quality: SD
+  artists:
+  - Peter Panda
+  - Samantha Hasnolastname
+  categories:
+  - Action
+  - Comedy
+  favoriters:
+  - James

@@ -39,3 +39,8 @@ spring:
   data:
     rest:
       base-path: api
+
+dataimport:
+  enabled: false
+  file: data.yml
+  clean: true

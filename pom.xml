@@ -77,6 +77,7 @@
                                 <header>${project.basedir}/license/header/gnu_gpl_v3.txt</header>
                                 <includes>
                                     <include>**/pom.xml</include>
+                                    <include>dev/**</include>
                                     <include>webproject-backend/src/**</include>
                                     <include>webproject-frontend/**</include>
                                 </includes>

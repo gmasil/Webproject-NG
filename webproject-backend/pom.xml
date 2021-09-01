@@ -48,6 +48,7 @@
         <image.registry>registry.gmasil.de/docker</image.registry>
         <image.name>${project.parent.artifactId}</image.name>
         <target.image>${image.registry}/${image.name}</target.image>
+        <target.tag>${project.version}</target.tag>
     </properties>
 
     <dependencies>
@@ -253,7 +254,7 @@
                     <to>
                         <image>${target.image}</image>
                         <tags>
-                            <tag>${project.version}</tag>
+                            <tag>${target.tag}</tag>
                         </tags>
                     </to>
                     <container>

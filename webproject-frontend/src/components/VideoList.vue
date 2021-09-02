@@ -20,21 +20,36 @@
 
 -->
 <template>
-  <div id="app">
-    <ul>
-      <li><router-link to="/">Home</router-link></li>
-      <li><router-link to="/videos">Videos</router-link></li>
-    </ul>
-    <router-view />
+  <div class="video-list">
+    <div class="video-item" v-for="video in videos" :key="video.id">
+      <p>{{ video.title }}</p>
+      <img width="240px" :src="video.thumbnail" />
+    </div>
   </div>
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
-  name: "App"
+  name: "VideoList",
+  data() {
+    return {
+      videos: []
+    };
+  },
+  created() {
+    axios
+      .get("/api/videos?size=10")
+      .then(response => (this.videos = response.data._embedded.videos));
+  }
 };
 </script>
 
-<style lang="scss">
-@import "@/assets/styles/main.scss";
+<style lang="scss" scoped>
+.video-list {
+  .video-item {
+    background-color: white;
+  }
+}
 </style>

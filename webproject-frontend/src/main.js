@@ -24,6 +24,8 @@ import App from "./App";
 import router from "./router";
 import store from "./vuex";
 
+import "tailwindcss/tailwind.css";
+
 Vue.config.productionTip = false;
 
 new Vue({

@@ -17,14 +17,14 @@
  * You should have received a copy of the GNU General Public License
  * along with Webproject NG. If not, see <https://www.gnu.org/licenses/>.
  */
-// https://github.com/michael-ciniawsky/postcss-load-config
-
 module.exports = {
-  plugins: {
-    "postcss-import": {},
-    "postcss-url": {},
-    // to edit target browsers: use "browserslist" field in package.json
-    tailwindcss: {},
-    autoprefixer: {}
-  }
+  purge: ["./src/**/*.html", "./src/**/*.vue", "./src/**/*.jsx"],
+  darkMode: false, // or 'media' or 'class'
+  theme: {
+    extend: {}
+  },
+  variants: {
+    extend: {}
+  },
+  plugins: []
 };

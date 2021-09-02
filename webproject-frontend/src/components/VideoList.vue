@@ -21,7 +21,7 @@
 -->
 <template>
   <div class="video-list">
-    <div class="video-item" v-for="video in videos" :key="video.id">
+    <div class="video-item bg-red-300" v-for="video in videos" :key="video.id">
       <p>{{ video.title }}</p>
       <img width="240px" :src="video.thumbnail" />
     </div>
@@ -49,7 +49,6 @@ export default {
 <style lang="scss" scoped>
 .video-list {
   .video-item {
-    background-color: white;
   }
 }
 </style>

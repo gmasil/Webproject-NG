@@ -20,10 +20,19 @@
 
 -->
 <template>
-  <div class="video-list">
-    <div class="video-item bg-red-300" v-for="video in videos" :key="video.id">
-      <p>{{ video.title }}</p>
-      <img width="240px" :src="video.thumbnail" />
+  <div class="grid xl:grid-cols-5 lg:grid-cols-3 md:grid-cols-2 gap-5 p-5">
+    <div
+      class="h-16 w-full flex bg-gray-200 dark:bg-gray-800 rounded-lg"
+      v-for="video in videos"
+      :key="video.id"
+    >
+      <div
+        class="w-28 h-16 bg-cover bg-center rounded-lg flex-initial"
+        :style="'background-image: url(\'' + video.thumbnail + '\')'"
+      ></div>
+      <p class="self-center pl-4 px-0 mx-0 flex-1">
+        {{ video.title }}
+      </p>
     </div>
   </div>
 </template>
@@ -45,10 +54,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-.video-list {
-  .video-item {
-  }
-}
-</style>

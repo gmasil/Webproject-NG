@@ -49,6 +49,8 @@
         <image.name>${project.parent.artifactId}</image.name>
         <target.image>${image.registry}/${image.name}</target.image>
         <target.tag>${project.version}</target.tag>
+        <!-- config -->
+        <skipCopyFrontend>false</skipCopyFrontend>
     </properties>
 
     <dependencies>
@@ -204,7 +206,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <!-- <outputDirectory>src/main/resources/public</outputDirectory> -->
+                            <skip>${skipCopyFrontend}</skip>
                             <outputDirectory>target/classes/public</outputDirectory>
                             <overwrite>true</overwrite>
                             <resources>

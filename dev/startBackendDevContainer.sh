@@ -42,10 +42,10 @@ fi
 IMPORT_ARGS=""
 if test -f "${SOURCE_FOLDER}/${DATA_FILE}"; then
     echo "Found ${DATA_FILE}, enabling data import..."
-    IMPORT_ARGS="-v ${SOURCE_FOLDER}/${DATA_FILE}:/import.yml -e DATAIMPORT_ENABLED=true -e DATAIMPORT_FILE=/import.yml"
+    IMPORT_ARGS="-v ${SOURCE_FOLDER}/${DATA_FILE}:/import.yml:ro -e DATAIMPORT_ENABLED=true -e DATAIMPORT_FILE=/import.yml"
 fi
 
-MSYS_NO_PATHCONV=1 docker run -d --rm --name "${CONTAINER_NAME}" -p ${LOCAL_PORT}:6900 -e SPRING_PROFILES_ACTIVE=dev ${IMPORT_ARGS} ${IMAGE_NAME}:${IMAGE_TAG}
+MSYS_NO_PATHCONV=1 docker run -d --privileged --rm --name "${CONTAINER_NAME}" -p ${LOCAL_PORT}:6900 -e SPRING_PROFILES_ACTIVE=dev ${IMPORT_ARGS} ${IMAGE_NAME}:${IMAGE_TAG}
 
 if [ ${VERBOSE} == "true" ]; then
     docker logs -f "${CONTAINER_NAME}"

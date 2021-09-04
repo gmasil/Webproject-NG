@@ -30,7 +30,7 @@ SOURCE_FOLDER="$( cd "$( dirname "${BASH_SOURCE[0]}" )"/.. && pwd )"
 : "${DATA_FILE:=webproject-backend/webproject-data.yml}"
 : "${VERBOSE:=false}"
 
-mvn -f ${SOURCE_FOLDER}/webproject-backend clean package jib:dockerBuild --no-transfer-progress -DskipTests -Dtarget.image=${IMAGE_NAME} -Dtarget.tag=${IMAGE_TAG}
+mvn -f ${SOURCE_FOLDER}/webproject-backend clean package jib:dockerBuild --no-transfer-progress -DskipCopyFrontend=true -DskipTests -Dtarget.image=${IMAGE_NAME} -Dtarget.tag=${IMAGE_TAG}
 
 # check if previous container is still running
 if docker inspect --format="{{.Id}}" ${CONTAINER_NAME} > /dev/null 2>&1; then

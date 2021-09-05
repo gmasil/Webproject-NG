@@ -37,13 +37,13 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- versions -->
-        <modelmapper.version>2.4.2</modelmapper.version>
+        <modelmapper.version>2.4.4</modelmapper.version>
         <!-- test versions -->
         <hamcrest-all.version>1.3</hamcrest-all.version>
         <gherkin-extension.version>1.1</gherkin-extension.version>
         <!-- plugin versions -->
-        <jacoco-plugin.version>0.8.4</jacoco-plugin.version>
-        <jib-plugin.version>3.1.1</jib-plugin.version>
+        <jacoco-plugin.version>0.8.7</jacoco-plugin.version>
+        <jib-plugin.version>3.1.4</jib-plugin.version>
         <!-- image build -->
         <image.registry>registry.gmasil.de/docker</image.registry>
         <image.name>${project.parent.artifactId}</image.name>

@@ -1,0 +1,61 @@
+pipeline {
+    agent {
+        docker {
+            image "registry.gmasil.de/docker/maven-build-container"
+            args "-v /maven:/maven -v /root/.docker/config.json:/root/.docker/config.json -e JAVA_TOOL_OPTIONS='-Duser.home=/maven'"
+        }
+    }
+    stages {
+        stage("Check for updates") {
+            steps {
+                script {
+                    sh("mvn -B versions:display-parent-updates versions:display-property-updates --no-transfer-progress -Dmaven.version.rules=https://static.gmasil.de/maven-version-rules.xml > maven.log")
+                    def mavenLog = readFile('maven.log')
+                    sh(script: "cat maven.log", label: "Maven log")
+                    def list = parseLog(mavenLog);
+                    env.HAS_UPDATES = list.size() == 0 ? "false" : "true"
+                    def output = toString(list)
+                    writeFile(file: 'renovate.log', text: output)
+                    sh(script: "cat renovate.log", label: "Renovate result")
+                }
+            }
+        }
+        stage("Renovate") {
+            when {
+                expression {
+                    return env.HAS_UPDATES == 'true';
+                }
+            }
+            steps {
+                sh("mvn versions:update-parent versions:use-latest-versions versions:update-properties --no-transfer-progress -Dmaven.version.rules=https://static.gmasil.de/maven-version-rules.xml -DgenerateBackupPoms=false")
+                sh("mvn clean package --no-transfer-progress")
+            }
+        }
+    }
+}
+
+@NonCPS
+def parseLog(mavenLog) {
+    def matches = (mavenLog =~ /\[INFO\]   (?:\$\{)?[^ ]*?([^ :]+?)(?:\.version})? .*?([0-9]+(?:\.[0-9]+)+[a-zA-z0-9-]*) -> ([0-9]+(?:\.[0-9]+)+[a-zA-z0-9-]*)/)
+    def list = []
+    for(def i = 0; i < matches.count; i++) {
+        list[i] = [:]
+        list[i].name = matches[i][1]
+        list[i].version = matches[i][2]
+        list[i].latest = matches[i][3]
+    }
+    return list
+}
+
+def toString(list) {
+    String output = ""
+    if(list.size() > 0) {
+        output += "The following upgrades are available:\n"
+        for(def item : list) {
+            output += "    ${item.name.padRight(40)}   ${item.version.padLeft(8)}  ->  ${item.latest}\n"
+        }
+    } else {
+        output += "Everything is up to date"
+    }
+    return output
+}

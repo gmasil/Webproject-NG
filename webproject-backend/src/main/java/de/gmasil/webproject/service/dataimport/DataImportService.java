@@ -136,7 +136,7 @@ public class DataImportService {
         }
     }
 
-    private void importVideos(ImportData data) throws IOException {
+    private void importVideos(ImportData data) {
         for (ImportVideo v : data.getVideos()) {
             Video video = Video.builder() //
                     .title(v.getTitle()) //

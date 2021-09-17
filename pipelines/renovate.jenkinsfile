@@ -8,7 +8,6 @@ pipeline {
     stages {
         stage("Preparation") {
             steps {
-                sh("git remote -v")
                 sh("git config user.name \"gmasil\"")
                 sh("git config user.email \"54176035+gmasil@users.noreply.github.com\"")
                 sh("git config commit.gpgsign true")

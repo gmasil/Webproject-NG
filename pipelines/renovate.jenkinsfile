@@ -2,33 +2,58 @@ pipeline {
     agent {
         docker {
             image "registry.gmasil.de/docker/maven-build-container"
-            args "-v /maven:/maven -v /root/.docker/config.json:/root/.docker/config.json -e JAVA_TOOL_OPTIONS='-Duser.home=/maven'"
+            args "-v /maven:/maven -v /root/.gnupg:/root/.gnupg -v /root/.ssh:/root/.ssh -v /root/.docker/config.json:/root/.docker/config.json -e JAVA_TOOL_OPTIONS='-Duser.home=/maven'"
         }
     }
     stages {
+        stage("Preparation") {
+            steps {
+                sh("git remote -v")
+                sh("git config user.name \"gmasil\"")
+                sh("git config user.email \"54176035+gmasil@users.noreply.github.com\"")
+                sh("git config commit.gpgsign true")
+                sh("git config user.signingkey 135FC0B941F3ECC7")
+                sh("git branch -D renovate > /dev/null 2>&1 || true")
+                sh("git push origin --delete renovate > /dev/null 2>&1 || true")
+            }
+        }
         stage("Check for updates") {
             steps {
                 script {
-                    sh("mvn -B versions:display-parent-updates versions:display-property-updates --no-transfer-progress -Dmaven.version.rules=https://static.gmasil.de/maven-version-rules.xml > maven.log")
-                    def mavenLog = readFile('maven.log')
-                    sh(script: "cat maven.log", label: "Maven log")
-                    def list = parseLog(mavenLog);
+                    sh("mvn -B versions:display-parent-updates versions:display-property-updates --no-transfer-progress -Dmaven.version.rules=https://static.gmasil.de/maven-version-rules.xml | tee maven.log")
+                    def list = parseLog(readFile('maven.log'))
                     env.HAS_UPDATES = list.size() == 0 ? "false" : "true"
-                    def output = toString(list)
-                    writeFile(file: 'renovate.log', text: output)
-                    sh(script: "cat renovate.log", label: "Renovate result")
+                    printList(list)
                 }
             }
         }
-        stage("Renovate") {
+        stage("Verify updates") {
             when {
                 expression {
                     return env.HAS_UPDATES == 'true';
                 }
             }
             steps {
-                sh("mvn versions:update-parent versions:use-latest-versions versions:update-properties --no-transfer-progress -Dmaven.version.rules=https://static.gmasil.de/maven-version-rules.xml -DgenerateBackupPoms=false")
-                sh("mvn clean package --no-transfer-progress")
+                script {
+                    sh("mvn versions:update-parent versions:use-latest-versions versions:update-properties --no-transfer-progress -Dmaven.version.rules=https://static.gmasil.de/maven-version-rules.xml -DgenerateBackupPoms=false")
+                    sh("mvn clean package --no-transfer-progress")
+                    env.UPDATES_VERIFIED = "true"
+                }
+            }
+        }
+        stage("Renovate") {
+            when {
+                expression {
+                    return env.UPDATES_VERIFIED == 'true';
+                }
+            }
+            steps {
+                sh("git restore webproject-frontend/")
+                sh("git diff")
+                sh("git checkout -b renovate")
+                sh("git add -u")
+                sh("git commit -m \"update dependencies\"")
+                sh("git push --set-upstream origin renovate")
             }
         }
     }
@@ -47,7 +72,7 @@ def parseLog(mavenLog) {
     return list
 }
 
-def toString(list) {
+def printList(list) {
     String output = ""
     if(list.size() > 0) {
         output += "The following upgrades are available:\n"
@@ -57,5 +82,5 @@ def toString(list) {
     } else {
         output += "Everything is up to date"
     }
-    return output
+    echo output
 }

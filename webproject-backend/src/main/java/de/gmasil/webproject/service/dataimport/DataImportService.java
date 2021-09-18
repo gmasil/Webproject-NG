@@ -200,6 +200,6 @@ public class DataImportService {
     }
 
     private void deleteAllData() {
-        repositories.forEach(JpaRepository::deleteAllInBatch);
+        repositories.forEach(JpaRepository::deleteAll);
     }
 }

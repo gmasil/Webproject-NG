@@ -43,7 +43,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "VIDEO_RATING")
@@ -66,6 +65,13 @@ public class VideoRating extends Auditable {
     @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.PERSIST })
     @JoinColumn(name = "USER_ID")
     private User user;
+
+    @Builder
+    public VideoRating(int rating, Video video, User user) {
+        setRating(rating);
+        setVideo(video);
+        setUser(user);
+    }
 
     public void setVideo(Video video) {
         this.video = video;

@@ -42,8 +42,6 @@ import lombok.Setter;
 @JsonIgnoreProperties(value = { "createdAt", "updatedAt" }, allowGetters = true)
 public abstract class Auditable implements Serializable {
 
-    public abstract Long getId();
-
     @CreatedDate
     @Setter(AccessLevel.NONE)
     @Temporal(TemporalType.TIMESTAMP)
@@ -55,6 +53,8 @@ public abstract class Auditable implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false, updatable = true)
     private Date updatedAt;
+
+    public abstract Long getId();
 
     @Override
     public int hashCode() {

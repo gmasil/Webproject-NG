@@ -61,6 +61,7 @@ public class VideoFile extends Auditable {
     @Column(nullable = false, unique = true)
     private String name;
 
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private VideoQuality quality;
 

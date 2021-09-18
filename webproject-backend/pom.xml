@@ -51,6 +51,8 @@
         <target.tag>${project.version}</target.tag>
         <!-- config -->
         <skipCopyFrontend>false</skipCopyFrontend>
+        <!-- sonarqube -->
+        <sonar.coverage.exclusions>**/Application.java</sonar.coverage.exclusions>
     </properties>
 
     <dependencies>

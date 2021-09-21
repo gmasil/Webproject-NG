@@ -21,7 +21,32 @@ module.exports = {
   purge: ["./src/**/*.html", "./src/**/*.vue", "./src/**/*.jsx"],
   darkMode: "media", // or 'media' or 'class'
   theme: {
-    extend: {}
+    extend: {
+      colors: {
+        "theme-background": {
+          light: "var(--theme-background-light)",
+          DEFAULT: "var(--theme-background)",
+          dark: "var(--theme-background-dark)"
+        },
+        "theme-primary": {
+          DEFAULT: "var(--theme-primary)"
+        },
+        "theme-secondary": {
+          DEFAULT: "var(--theme-secondary)"
+        },
+        "theme-text": {
+          light: "var(--theme-text-light)",
+          DEFAULT: "var(--theme-text)",
+          dark: "var(--theme-text-dark)"
+        },
+        "theme-text-highlight": {
+          DEFAULT: "var(--theme-text-highlight)"
+        }
+      },
+      gridTemplateColumns: {
+        fit: "fit-content(100%) fit-content(100%)"
+      }
+    }
   },
   variants: {
     extend: {}

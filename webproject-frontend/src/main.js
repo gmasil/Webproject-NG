@@ -26,6 +26,10 @@ import store from "./vuex";
 
 import "tailwindcss/tailwind.css";
 
+import { ColorPicker, ColorPanel } from "one-colorpicker";
+Vue.use(ColorPanel);
+Vue.use(ColorPicker);
+
 Vue.config.productionTip = false;
 
 new Vue({

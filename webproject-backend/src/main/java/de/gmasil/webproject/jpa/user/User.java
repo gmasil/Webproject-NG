@@ -32,6 +32,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PreRemove;
 import javax.persistence.Table;
@@ -42,6 +43,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import de.gmasil.webproject.jpa.Auditable;
 import de.gmasil.webproject.jpa.comment.Comment;
 import de.gmasil.webproject.jpa.role.Role;
+import de.gmasil.webproject.jpa.theme.Theme;
 import de.gmasil.webproject.jpa.videofavorite.VideoFavorite;
 import de.gmasil.webproject.jpa.videorating.VideoRating;
 import lombok.AccessLevel;
@@ -82,6 +84,17 @@ public class User extends Auditable implements UserDetails {
 
     @OneToMany(mappedBy = "user", cascade = { CascadeType.DETACH, CascadeType.PERSIST })
     private Set<VideoRating> ratings = new HashSet<>();
+
+    @OneToMany(mappedBy = "creator", cascade = { CascadeType.DETACH, CascadeType.PERSIST })
+    private Set<Theme> createdThemes = new HashSet<>();
+
+    @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.PERSIST })
+    @JoinColumn(name = "THEME_ID", nullable = true)
+    private Theme activeTheme = null;
+
+    @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.PERSIST })
+    @JoinTable(name = "USER_THEMES", joinColumns = @JoinColumn(name = "USER_ID"), inverseJoinColumns = @JoinColumn(name = "THEME_ID"))
+    private Set<Theme> themes = new HashSet<>();
 
     @Builder
     public User(String username, String password) {

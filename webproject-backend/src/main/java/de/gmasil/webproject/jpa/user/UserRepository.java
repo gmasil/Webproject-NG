@@ -30,7 +30,5 @@ public interface UserRepository extends JpaRepository<User, Long>, UserRepositor
 
     public Optional<User> findByUsername(String username);
 
-    public <T> Optional<T> findByUsername(String username, Class<T> type);
-
     public List<User> findAllByUsernameLike(String username);
 }

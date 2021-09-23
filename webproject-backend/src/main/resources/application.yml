@@ -43,4 +43,17 @@ spring:
 dataimport:
   enabled: false
   file: data.yml
-  clean: true
+  clean: false
+
+init:
+  skip: false
+  admin:
+    name: "admin"
+    password: "admin"
+  theme:
+    name: "Default"
+    background-color: "#ffffff"
+    background-highlight-color: "#f2f2f2"
+    primary-color: "#ad0707"
+    secondary-color: "#5e0000"
+    text-color: "#171717"

@@ -1,17 +1,98 @@
-{"properties": [
+{"groups": [
+  {
+    "name": "dataimport",
+    "type": "de.gmasil.webproject.service.dataimport.DataImportProperties",
+    "sourceType": "de.gmasil.webproject.service.dataimport.DataImportProperties"
+  },
+  {
+    "name": "init",
+    "type": "de.gmasil.webproject.service.initialize.InitializeProperties",
+    "sourceType": "de.gmasil.webproject.service.initialize.InitializeProperties"
+  },
+  {
+    "name": "init.admin",
+    "type": "de.gmasil.webproject.service.initialize.InitializeProperties$AdminProperties",
+    "sourceType": "de.gmasil.webproject.service.initialize.InitializeProperties$AdminProperties"
+  },
+  {
+    "name": "init.theme",
+    "type": "de.gmasil.webproject.service.initialize.InitializeProperties$ThemeProperties",
+    "sourceType": "de.gmasil.webproject.service.initialize.InitializeProperties$ThemeProperties"
+  }
+],
+"properties": [
   {
     "name": "dataimport.enabled",
     "type": "java.lang.Boolean",
-    "description": "Enable creation of test data"
+    "description": "Enable data import",
+    "sourceType": "com.baeldung.autoconfiguration.annotationprocessor.DatabaseProperties"
   },
   {
     "name": "dataimport.file",
     "type": "java.lang.String",
-    "description": "YAML file containing test data"
+    "description": "YAML file containing data",
+    "sourceType": "com.baeldung.autoconfiguration.annotationprocessor.DatabaseProperties"
   },
   {
     "name": "dataimport.clean",
     "type": "java.lang.Boolean",
-    "description": "Delete existing data before import"
+    "description": "Delete existing data before import",
+    "sourceType": "com.baeldung.autoconfiguration.annotationprocessor.DatabaseProperties"
+  },
+  {
+    "name": "init.skip",
+    "type": "java.lang.Boolean",
+    "description": "Skip initialization",
+    "sourceType": "de.gmasil.webproject.service.initialize.InitializeProperties"
+  },
+  {
+    "name": "init.admin.name",
+    "type": "java.lang.String",
+    "description": "Initial admin user name",
+    "sourceType": "de.gmasil.webproject.service.initialize.InitializeProperties$AdminProperties"
+  },
+  {
+    "name": "init.admin.password",
+    "type": "java.lang.String",
+    "description": "Initial admin user password",
+    "sourceType": "de.gmasil.webproject.service.initialize.InitializeProperties$AdminProperties"
+  },
+  {
+    "name": "init.theme.name",
+    "type": "java.lang.String",
+    "description": "Name for the initial theme",
+    "sourceType": "de.gmasil.webproject.service.initialize.InitializeProperties$ThemeProperties"
+  },
+  {
+    "name": "init.theme.background-color",
+    "type": "java.lang.String",
+    "description": "Background color in hex for the initial theme",
+    "sourceType": "de.gmasil.webproject.service.initialize.InitializeProperties$ThemeProperties"
+  },
+  {
+    "name": "init.theme.background-highlight-color",
+    "type": "java.lang.String",
+    "description": "Background highlight color in hex for the initial theme",
+    "sourceType": "de.gmasil.webproject.service.initialize.InitializeProperties$ThemeProperties"
+  },
+  {
+    "name": "init.theme.primary-color",
+    "type": "java.lang.String",
+    "description": "Primary color in hex for the initial theme",
+    "sourceType": "de.gmasil.webproject.service.initialize.InitializeProperties$ThemeProperties"
+  },
+  {
+    "name": "init.theme.secondary-color",
+    "type": "java.lang.String",
+    "description": "Secondary color in hex for the initial theme",
+    "sourceType": "de.gmasil.webproject.service.initialize.InitializeProperties$ThemeProperties"
+  },
+  {
+    "name": "init.theme.text-color",
+    "type": "java.lang.String",
+    "description": "Text color in hex for the initial theme",
+    "sourceType": "de.gmasil.webproject.service.initialize.InitializeProperties$ThemeProperties"
   }
+],
+"hints": [
 ]}

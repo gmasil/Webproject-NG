@@ -23,25 +23,11 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        "theme-background": {
-          light: "var(--theme-background-light)",
-          DEFAULT: "var(--theme-background)",
-          dark: "var(--theme-background-dark)"
-        },
-        "theme-primary": {
-          DEFAULT: "var(--theme-primary)"
-        },
-        "theme-secondary": {
-          DEFAULT: "var(--theme-secondary)"
-        },
-        "theme-text": {
-          light: "var(--theme-text-light)",
-          DEFAULT: "var(--theme-text)",
-          dark: "var(--theme-text-dark)"
-        },
-        "theme-text-highlight": {
-          DEFAULT: "var(--theme-text-highlight)"
-        }
+        "theme-background": "var(--theme-background)",
+        "theme-background-highlight": "var(--theme-background-highlight)",
+        "theme-primary": "var(--theme-primary)",
+        "theme-secondary": "var(--theme-secondary)",
+        "theme-text": "var(--theme-text)"
       },
       gridTemplateColumns: {
         fit: "fit-content(100%) fit-content(100%)"

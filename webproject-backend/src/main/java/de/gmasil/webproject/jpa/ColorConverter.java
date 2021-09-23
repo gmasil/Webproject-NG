@@ -17,24 +17,32 @@
  * You should have received a copy of the GNU General Public License
  * along with Webproject NG. If not, see <https://www.gnu.org/licenses/>.
  */
-package de.gmasil.webproject.utils;
+package de.gmasil.webproject.jpa;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.awt.Color;
 
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.test.context.TestPropertySource;
+import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
 
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-@Inherited
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@TestPropertySource(properties = { "init.skip=true" })
-public @interface SetupTestContext {
+import org.springframework.stereotype.Service;
+
+@Converter
+@Service
+public class ColorConverter implements AttributeConverter<Color, String> {
+
+    @Override
+    public String convertToDatabaseColumn(Color color) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(Integer.toHexString(0xFFFFFF & color.getRGB()));
+        while (sb.length() < 6) {
+            sb.insert(0, "0");
+        }
+        sb.insert(0, "#");
+        return sb.toString();
+    }
+
+    @Override
+    public Color convertToEntityAttribute(String string) {
+        return Color.decode(string);
+    }
 }

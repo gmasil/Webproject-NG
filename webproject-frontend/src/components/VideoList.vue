@@ -22,7 +22,7 @@
 <template>
   <div class="grid xl:grid-cols-5 lg:grid-cols-3 md:grid-cols-2 gap-5 p-5">
     <div
-      class="h-16 w-full flex bg-theme-background-light rounded-lg"
+      class="h-16 w-full flex bg-theme-background-highlight rounded-lg"
       v-for="video in videos"
       :key="video.id"
     >

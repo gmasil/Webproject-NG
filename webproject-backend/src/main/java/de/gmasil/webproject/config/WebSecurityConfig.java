@@ -22,20 +22,24 @@ package de.gmasil.webproject.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import de.gmasil.webproject.jpa.user.UserService;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -47,14 +51,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors();
         http.headers().frameOptions().sameOrigin();
         http.authorizeRequests() //
-                .antMatchers("/admin", "/admin/**").hasAuthority("ADMIN") //
                 .antMatchers("/h2-console", "/h2-console/**").permitAll() //
-                .antMatchers("/setup").permitAll() //
                 .antMatchers("/login", "/logout").permitAll() //
                 .antMatchers("/error").permitAll() //
-                .antMatchers("/public/**").permitAll() //
-                .antMatchers("/webjars/**").permitAll() //
-                .antMatchers("/api/**").permitAll() //
+                .antMatchers("/api/users").hasAuthority("ADMIN") //
+                .antMatchers("/api/users/{id}/**").access("" //
+                        + "hasAuthority('ADMIN') or " //
+                        + "@userService.checkAccess(authentication, #id)") //
+                .antMatchers(HttpMethod.GET, "/api/**").permitAll() //
+                .antMatchers("/api/**").hasAuthority("ADMIN") //
                 .anyRequest().permitAll();
         http.formLogin().loginPage("/#/login").failureUrl("/#/login?error") //
                 .loginProcessingUrl("/login") //
@@ -68,6 +73,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .key("uniqueAndSecret") //
                 .userDetailsService(userService) //
                 .rememberMeParameter("rememberme");
+    }
+
+    @Bean
+    public SecurityEvaluationContextExtension securityEvaluationContextExtension() {
+        return new SecurityEvaluationContextExtension();
     }
 
     @Bean

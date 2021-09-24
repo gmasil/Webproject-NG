@@ -22,7 +22,11 @@ package de.gmasil.webproject.jpa.user;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -39,12 +43,28 @@ public class UserService implements UserDetailsService {
     private PasswordEncoder passwordEncoder;
 
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String username) {
         Optional<User> optional = userRepository.findByUsername(username);
         if (optional.isPresent()) {
-            return optional.get();
+            User user = optional.get();
+            Hibernate.initialize(user.getAuthorities());
+            return user;
         }
         throw new UsernameNotFoundException(String.format("The username '%s' does not exist", username));
+    }
+
+    public boolean checkAccess(Authentication auth, String idParam) {
+        if (auth != null && auth.getPrincipal() != null && auth.getPrincipal() instanceof User) {
+            User user = ((User) auth.getPrincipal());
+            try {
+                int id = Integer.parseInt(idParam);
+                return id == user.getId();
+            } catch (NumberFormatException e) {
+                // Ignore bad user input
+            }
+        }
+        return false;
     }
 
     public void encodePassword(User user) {

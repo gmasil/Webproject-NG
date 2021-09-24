@@ -22,6 +22,7 @@ import Router from "vue-router";
 import HelloWorld from "@/components/HelloWorld";
 import VideoList from "@/components/VideoList";
 import Themes from "@/components/Themes";
+import Login from "@/components/Login";
 
 Vue.use(Router);
 
@@ -41,6 +42,11 @@ export default new Router({
       path: "/themes",
       name: "Themes",
       component: Themes
+    },
+    {
+      path: "/login",
+      name: "Login",
+      component: Login
     }
   ]
 });

@@ -23,6 +23,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.rest.core.annotation.RestResource;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -31,4 +34,9 @@ public interface UserRepository extends JpaRepository<User, Long>, UserRepositor
     public Optional<User> findByUsername(String username);
 
     public List<User> findAllByUsernameLike(String username);
+
+    @PreAuthorize("isAuthenticated()")
+    @RestResource(path = "/current")
+    @Query("SELECT u FROM USER u WHERE u = ?#{principal}")
+    public Optional<User> findCurrentUser();
 }

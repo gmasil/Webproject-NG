@@ -21,11 +21,15 @@ package de.gmasil.webproject.service.initialize;
 
 import java.lang.invoke.MethodHandles;
 
+import javax.transaction.Transactional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import de.gmasil.webproject.jpa.role.Role;
+import de.gmasil.webproject.jpa.role.RoleRepository;
 import de.gmasil.webproject.jpa.user.User;
 import de.gmasil.webproject.jpa.user.UserService;
 import de.gmasil.webproject.service.initialize.InitializeProperties.AdminProperties;
@@ -46,10 +50,16 @@ public class InitializeAdminService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private RoleRepository roleRepo;
+
+    @Transactional
     public void initAdminUser() {
         if (!userService.hasUsers()) {
             AdminProperties admin = properties.getAdmin();
             User user = User.builder().username(admin.getName()).password(admin.getPassword()).build();
+            Role role = roleRepo.findByNameOrCreate("ADMIN");
+            user.addRole(role);
             userService.encodePassword(user);
             userService.save(user);
             LOG.info("Initialized admin user" + INITIAL_ADMIN_USER_MSG, admin.getName(), admin.getPassword());

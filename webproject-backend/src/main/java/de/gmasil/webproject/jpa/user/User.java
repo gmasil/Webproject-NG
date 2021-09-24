@@ -40,6 +40,8 @@ import javax.persistence.Table;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import de.gmasil.webproject.jpa.Auditable;
 import de.gmasil.webproject.jpa.comment.Comment;
 import de.gmasil.webproject.jpa.role.Role;
@@ -69,6 +71,7 @@ public class User extends Auditable implements UserDetails {
     @Column(nullable = false, unique = true)
     private String username;
 
+    @JsonIgnore
     @Column(nullable = false)
     private String password;
 
@@ -120,6 +123,11 @@ public class User extends Auditable implements UserDetails {
     public void addRating(VideoRating rating) {
         ratings.add(rating);
         rating.setUser(this);
+    }
+
+    public boolean hasRole(String role) {
+        return getAuthorities().stream().map(GrantedAuthority::getAuthority).filter(name -> name.equals(role))
+                .count() > 0;
     }
 
     @PreRemove

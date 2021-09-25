@@ -122,8 +122,10 @@ public class User extends Auditable implements UserDetails {
     }
 
     public void setActiveTheme(Theme theme) {
-        this.activeTheme.getActiveBy().remove(this);
-        this.activeTheme = theme;
+        if (activeTheme != null) {
+            activeTheme.getActiveBy().remove(this);
+        }
+        activeTheme = theme;
         if (theme != null) {
             theme.getActiveBy().add(this);
         }

@@ -20,7 +20,7 @@
 
 -->
 <template>
-  <div id="app">
+  <div id="app" class="bg-theme-background min-h-screen text-theme-text">
     <ul>
       <li><router-link to="/">Home</router-link></li>
       <li><router-link to="/videos">Videos</router-link></li>

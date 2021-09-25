@@ -70,9 +70,8 @@ public class InitializeThemeService {
     public void initDefaultTheme() {
         Theme theme = themeRepo.findDefault();
         if (theme != null) {
-            userService.findAll().stream().filter(user -> user.getActiveTheme() == null).forEach(user -> {
-                user.setActiveTheme(theme);
-            });
+            userService.findAll().stream().filter(user -> user.getActiveTheme() == null)
+                    .forEach(user -> user.setActiveTheme(theme));
             themeRepo.save(theme);
         }
     }

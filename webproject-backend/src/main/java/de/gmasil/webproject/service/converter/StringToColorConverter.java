@@ -28,7 +28,6 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 
@@ -47,7 +46,7 @@ public class StringToColorConverter extends JsonDeserializer<Color> implements C
     }
 
     @Override
-    public Color deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+    public Color deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
         return converter.convertToEntityAttribute(p.getText());
     }
 }

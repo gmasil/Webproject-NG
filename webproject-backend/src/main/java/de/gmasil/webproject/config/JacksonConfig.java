@@ -21,7 +21,6 @@ package de.gmasil.webproject.config;
 
 import java.awt.Color;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -34,14 +33,8 @@ import de.gmasil.webproject.service.converter.StringToColorConverter;
 @Configuration
 public class JacksonConfig {
 
-    @Autowired
-    private ColorToStringConverter colorToStringConverter;
-
-    @Autowired
-    private StringToColorConverter stringToColorConverter;
-
     @Bean
-    public Module module() {
+    public Module module(ColorToStringConverter colorToStringConverter, StringToColorConverter stringToColorConverter) {
         SimpleModule module = new SimpleModule();
         module.addSerializer(colorToStringConverter);
         module.addDeserializer(Color.class, stringToColorConverter);

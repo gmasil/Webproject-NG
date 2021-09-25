@@ -17,19 +17,9 @@
  * You should have received a copy of the GNU General Public License
  * along with Webproject NG. If not, see <https://www.gnu.org/licenses/>.
  */
-package de.gmasil.webproject.jpa.theme;
+package de.gmasil.webproject.jpa.globalproperty;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.rest.core.annotation.RestResource;
-import org.springframework.stereotype.Repository;
+public interface PropertyRepositoryExtension {
 
-import de.gmasil.webproject.jpa.globalproperty.Property;
-
-@Repository
-public interface ThemeRepository extends JpaRepository<Theme, Long> {
-
-    @RestResource(path = "/default")
-    @Query("SELECT t FROM THEME t, PROPERTY p WHERE p.key = '" + Property.DEFAULT_THEME + "' AND t.id = p.value")
-    public Theme findDefault();
+    public void setProperty(String key, String value);
 }

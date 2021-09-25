@@ -31,9 +31,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -92,9 +92,6 @@ public class Theme extends Auditable {
     @OneToMany(mappedBy = "activeTheme", cascade = { CascadeType.DETACH, CascadeType.PERSIST })
     private Set<User> activeBy = new HashSet<>();
 
-    @ManyToMany(mappedBy = "themes", cascade = { CascadeType.DETACH, CascadeType.PERSIST })
-    private Set<User> users = new HashSet<>();
-
     @Builder
     public Theme(String name, User creator, Color backgroundColor, Color backgroundHighlightColor, Color primaryColor,
             Color secondaryColor, Color textColor, boolean preset) {
@@ -110,7 +107,14 @@ public class Theme extends Auditable {
 
     public void setCreator(User creator) {
         this.creator = creator;
-        this.creator.getCreatedThemes().add(this);
+        creator.getCreatedThemes().add(this);
+    }
+
+    @PreRemove
+    private void preRemove() {
+        for (User user : activeBy) {
+            user.setActiveTheme(null);
+        }
     }
 
     @Override

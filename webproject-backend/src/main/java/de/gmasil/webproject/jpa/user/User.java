@@ -88,16 +88,12 @@ public class User extends Auditable implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = { CascadeType.DETACH, CascadeType.PERSIST })
     private Set<VideoRating> ratings = new HashSet<>();
 
-    @OneToMany(mappedBy = "creator", cascade = { CascadeType.DETACH, CascadeType.PERSIST })
-    private Set<Theme> createdThemes = new HashSet<>();
-
     @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.PERSIST })
     @JoinColumn(name = "THEME_ID", nullable = true)
     private Theme activeTheme = null;
 
-    @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.PERSIST })
-    @JoinTable(name = "USER_THEMES", joinColumns = @JoinColumn(name = "USER_ID"), inverseJoinColumns = @JoinColumn(name = "THEME_ID"))
-    private Set<Theme> themes = new HashSet<>();
+    @OneToMany(mappedBy = "creator", cascade = { CascadeType.DETACH, CascadeType.PERSIST })
+    private Set<Theme> createdThemes = new HashSet<>();
 
     @Builder
     public User(String username, String password) {
@@ -123,6 +119,19 @@ public class User extends Auditable implements UserDetails {
     public void addRating(VideoRating rating) {
         ratings.add(rating);
         rating.setUser(this);
+    }
+
+    public void setActiveTheme(Theme theme) {
+        this.activeTheme.getActiveBy().remove(this);
+        this.activeTheme = theme;
+        if (theme != null) {
+            theme.getActiveBy().add(this);
+        }
+    }
+
+    public void addCreatedTheme(Theme theme) {
+        createdThemes.add(theme);
+        theme.setCreator(this);
     }
 
     public boolean hasRole(String role) {

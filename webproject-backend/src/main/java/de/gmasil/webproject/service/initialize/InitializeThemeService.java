@@ -21,14 +21,19 @@ package de.gmasil.webproject.service.initialize;
 
 import java.lang.invoke.MethodHandles;
 
+import javax.transaction.Transactional;
+
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import de.gmasil.webproject.jpa.globalproperty.Property;
+import de.gmasil.webproject.jpa.globalproperty.PropertyRepository;
 import de.gmasil.webproject.jpa.theme.Theme;
 import de.gmasil.webproject.jpa.theme.ThemeRepository;
+import de.gmasil.webproject.jpa.user.UserService;
 
 @Service
 public class InitializeThemeService {
@@ -43,13 +48,32 @@ public class InitializeThemeService {
     @Autowired
     private ThemeRepository themeRepo;
 
+    @Autowired
+    private PropertyRepository propertyRepo;
+
+    @Autowired
+    private UserService userService;
+
+    @Transactional
     public void initTheme() {
         if (themeRepo.count() == 0) {
             Theme theme = new Theme();
             mapper.map(properties.getTheme(), theme);
             theme.setPreset(true);
-            themeRepo.save(theme);
+            theme = themeRepo.save(theme);
+            propertyRepo.setProperty(Property.DEFAULT_THEME, "" + theme.getId());
             LOG.info("Initialized theme");
+        }
+    }
+
+    @Transactional
+    public void initDefaultTheme() {
+        Theme theme = themeRepo.findDefault();
+        if (theme != null) {
+            userService.findAll().stream().filter(user -> user.getActiveTheme() == null).forEach(user -> {
+                user.setActiveTheme(theme);
+            });
+            themeRepo.save(theme);
         }
     }
 }

@@ -38,12 +38,13 @@ import de.gmasil.webproject.service.initialize.InitializeProperties.AdminPropert
 public class InitializeAdminService {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    private static final String INITIAL_ADMIN_USER_MSG = "\n\n" //
+    private static final String INITIAL_ADMIN_USER_MSG = "Initialized admin user\n\n" //
             + "#####################################\n" //
             + "Initial admin user\n" //
             + "Username: {}\n" //
             + "Password: {}\n" //
             + "#####################################\n";
+
     @Autowired
     private InitializeProperties properties;
 
@@ -62,7 +63,7 @@ public class InitializeAdminService {
             user.addRole(role);
             userService.encodePassword(user);
             userService.save(user);
-            LOG.info("Initialized admin user" + INITIAL_ADMIN_USER_MSG, admin.getName(), admin.getPassword());
+            LOG.info(INITIAL_ADMIN_USER_MSG, admin.getName(), admin.getPassword());
         }
     }
 }

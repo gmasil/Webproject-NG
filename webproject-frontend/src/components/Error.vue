@@ -21,13 +21,6 @@
 -->
 <template>
   <div>
-    <h1>Login</h1>
-    <form method="post" action="/performlogin">
-      <input type="text" name="username" />
-      <input type="password" name="password" />
-      <input type="checkbox" id="login-remember" name="rememberme" />
-      <label for="login-remember">Stay logged in</label>
-      <input type="submit" value="Login" />
-    </form>
+    <h1>Error</h1>
   </div>
 </template>

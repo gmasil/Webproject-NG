@@ -61,13 +61,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/api/**").permitAll() //
                 .antMatchers("/api/**").hasAuthority("ADMIN") //
                 .anyRequest().permitAll();
-        http.formLogin().loginPage("/#/login").failureUrl("/#/login?error") //
-                .loginProcessingUrl("/login") //
+        http.formLogin().loginPage("/login").failureUrl("/login?error") //
+                .loginProcessingUrl("/performlogin") //
                 .usernameParameter("username") //
                 .passwordParameter("password");
         http.logout() //
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout")) //
-                .logoutSuccessUrl("/#/login?logout") //
+                .logoutSuccessUrl("/login?logout") //
                 .deleteCookies("JSESSIONID", "rememberme");
         http.rememberMe() //
                 .key("uniqueAndSecret") //

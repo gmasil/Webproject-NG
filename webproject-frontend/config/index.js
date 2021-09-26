@@ -31,9 +31,12 @@ module.exports = {
     proxyTable: {
       "/api": {
         target: "http://localhost:6900",
-        changeOrigin: false
+        changeOrigin: false,
+        headers: {
+          Connection: "keep-alive"
+        }
       },
-      "/login": {
+      "/performlogin": {
         target: "http://localhost:6900",
         changeOrigin: false
       },

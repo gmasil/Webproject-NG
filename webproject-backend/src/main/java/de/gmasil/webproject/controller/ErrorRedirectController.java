@@ -17,42 +17,17 @@
  * You should have received a copy of the GNU General Public License
  * along with Webproject NG. If not, see <https://www.gnu.org/licenses/>.
  */
-import Vue from "vue";
-import Router from "vue-router";
-import HelloWorld from "@/components/HelloWorld";
-import VideoList from "@/components/VideoList";
-import Themes from "@/components/Themes";
-import Login from "@/components/Login";
-import Error from "@/components/Error";
+package de.gmasil.webproject.controller;
 
-Vue.use(Router);
+import org.springframework.boot.web.servlet.error.ErrorController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-export default new Router({
-  mode: "history",
-  routes: [
-    {
-      path: "/",
-      name: "HelloWorld",
-      component: HelloWorld
-    },
-    {
-      path: "/videos",
-      name: "VideoList",
-      component: VideoList
-    },
-    {
-      path: "/themes",
-      name: "Themes",
-      component: Themes
-    },
-    {
-      path: "/login",
-      name: "Login",
-      component: Login
-    },
-    {
-      path: "*",
-      component: Error
+@Controller
+public class ErrorRedirectController implements ErrorController {
+
+    @RequestMapping("/error")
+    public String handleError() {
+        return "index.html";
     }
-  ]
-});
+}

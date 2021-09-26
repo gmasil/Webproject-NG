@@ -23,6 +23,8 @@ server:
   tomcat:
     remoteip:
       protocol-header: X-Forwarded-Proto
+  error:
+    path: /error
 
 spring:
   jpa:

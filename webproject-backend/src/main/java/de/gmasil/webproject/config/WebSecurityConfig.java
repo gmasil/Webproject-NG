@@ -54,6 +54,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/h2-console", "/h2-console/**").permitAll() //
                 .antMatchers("/login", "/logout").permitAll() //
                 .antMatchers("/error").permitAll() //
+                .antMatchers("/static/**").permitAll() //
+                .antMatchers("/api/themes/active").permitAll() //
                 .antMatchers("/api/users").hasAuthority("ADMIN") //
                 .antMatchers("/api/users/{id}/**").access("" //
                         + "hasAuthority('ADMIN') or " //

@@ -19,16 +19,70 @@
  */
 import Vue from "vue";
 import Vuex from "vuex";
+import axios from "axios";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    count: 0
+    initialized: false,
+    currentUser: null,
+    authenticated: false,
+    theme: null
+  },
+  actions: {
+    loadCurrentUser({ commit }) {
+      axios
+        .get("/api/users/current")
+        .then(response => {
+          commit("setCurrentUser", response.data);
+        })
+        .catch(error => {
+          commit("initialized");
+        });
+    },
+    loadTheme({ commit }) {
+      axios
+        .get("/api/themes/active")
+        .then(response => {
+          commit("setTheme", response.data);
+        })
+        .catch(error => {
+          console.log("Error while loading theme: " + error);
+        });
+    }
   },
   mutations: {
-    increment(state) {
-      state.count++;
+    setCurrentUser(state, data) {
+      Vue.set(state, "currentUser", data);
+      Vue.set(state, "authenticated", true);
+      Vue.set(state, "initialized", true);
+    },
+    initialized(state) {
+      Vue.set(state, "initialized", true);
+    },
+    setTheme(state, data) {
+      Vue.set(state, "theme", data);
+      document.documentElement.style.setProperty(
+        "--theme-background",
+        state.theme.backgroundColor
+      );
+      document.documentElement.style.setProperty(
+        "--theme-background-highlight",
+        state.theme.backgroundHighlightColor
+      );
+      document.documentElement.style.setProperty(
+        "--theme-primary",
+        state.theme.primaryColor
+      );
+      document.documentElement.style.setProperty(
+        "--theme-secondary",
+        state.theme.secondaryColor
+      );
+      document.documentElement.style.setProperty(
+        "--theme-text",
+        state.theme.textColor
+      );
     }
   }
 });

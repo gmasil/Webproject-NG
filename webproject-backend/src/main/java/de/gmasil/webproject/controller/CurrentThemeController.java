@@ -37,8 +37,8 @@ import de.gmasil.webproject.jpa.user.User;
 import de.gmasil.webproject.service.UserProvider;
 
 @RestController
-@RequestMapping("/api/users")
-public class CurrentUserProxyController {
+@RequestMapping("/api/themes")
+public class CurrentThemeController {
 
     @Autowired
     private LocalProxy proxy;
@@ -46,29 +46,16 @@ public class CurrentUserProxyController {
     @Autowired
     private UserProvider userProvider;
 
-    @GetMapping({ "/current", "/current/{param}" })
+    @GetMapping("/active")
     public ResponseEntity<String> currentUser(@PathVariable(required = false) Optional<String> param,
             @RequestBody(required = false) String body, HttpMethod method, HttpServletRequest request)
             throws URISyntaxException {
 
         User user = userProvider.getCurrent();
-        if (user == null) {
-            throw new IllegalStateException("User api call without authorized user");
+        String path = "/api/themes/search/default";
+        if (user != null) {
+            path = "/api/users/" + user.getId() + "/activeTheme";
         }
-        String path = "/api/users/" + user.getId();
-        if (param.isPresent()) {
-            path += "/" + param.get();
-        }
-
-        return updateLinks(proxy.proxy(path, body, method, request), user.getId());
-    }
-
-    private ResponseEntity<String> updateLinks(ResponseEntity<String> responseEntity, long id) {
-        String body = responseEntity.getBody();
-        if (body == null) {
-            return responseEntity;
-        }
-        body = body.replace("/api/users/" + id, "/api/users/current");
-        return ResponseEntity.status(responseEntity.getStatusCode()).headers(responseEntity.getHeaders()).body(body);
+        return proxy.proxy(path, body, method, request);
     }
 }

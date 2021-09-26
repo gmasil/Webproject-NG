@@ -25,15 +25,30 @@
       <li><router-link to="/">Home</router-link></li>
       <li><router-link to="/videos">Videos</router-link></li>
       <li><router-link to="/themes">Themes</router-link></li>
-      <li><router-link to="/login">Login</router-link></li>
+      <li v-if="!this.$store.state.authenticated">
+        <router-link to="/login">Login</router-link>
+      </li>
+      <li v-if="this.$store.state.authenticated">
+        <a href="/logout">Logout</a>
+      </li>
     </ul>
-    <router-view />
+    <p v-if="this.$store.state.currentUser">
+      Logged in as
+      {{ this.$store.state.currentUser.username }}
+    </p>
+    <router-view v-if="this.$store.state.initialized" />
   </div>
 </template>
 
 <script>
+import store from "./vuex";
+
 export default {
-  name: "App"
+  name: "App",
+  created() {
+    this.$store.dispatch("loadTheme");
+    this.$store.dispatch("loadCurrentUser");
+  }
 };
 </script>
 

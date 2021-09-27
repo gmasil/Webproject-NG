@@ -27,7 +27,9 @@ import Error from "@/components/Error";
 
 Vue.use(Router);
 
-export default new Router({
+import store from "@/vuex";
+
+export const router = new Router({
   mode: "history",
   routes: [
     {
@@ -43,7 +45,8 @@ export default new Router({
     {
       path: "/themes",
       name: "Themes",
-      component: Themes
+      component: Themes,
+      meta: { authorize: [] }
     },
     {
       path: "/login",
@@ -55,4 +58,18 @@ export default new Router({
       component: Error
     }
   ]
+});
+
+router.beforeEach((to, from, next) => {
+  // redirect to login page if not logged in and trying to access a restricted page
+  const { authorize } = to.meta;
+  const currentUser = store.state.currentUser;
+
+  if (authorize) {
+    if (!currentUser) {
+      return next({ path: "/error" });
+    }
+  }
+
+  next();
 });

@@ -20,36 +20,39 @@
 
 -->
 <template>
-  <div
-    id="app"
-    v-if="initialized"
-    class="bg-theme-background min-h-screen text-theme-text"
-  >
-    <navbar />
-    <router-view />
+  <div>
+    <ul>
+      <li><router-link to="/">Home</router-link></li>
+      <li><router-link to="/videos">Videos</router-link></li>
+      <li v-if="authenticated">
+        <router-link to="/themes">Themes</router-link>
+      </li>
+      <li v-if="!authenticated">
+        <router-link to="/login">Login</router-link>
+      </li>
+      <li v-if="authenticated">
+        <a href="/logout">Logout</a>
+      </li>
+    </ul>
+    <hr class="border-theme-text my-1" />
+    <p v-if="authenticated">
+      Logged in as
+      {{ currentUser.username }}
+    </p>
+    <hr v-if="authenticated" class="border-theme-text my-2" />
   </div>
 </template>
 
 <script>
-import Navbar from "@/components/Navbar";
-
 export default {
-  name: "App",
-  components: {
-    Navbar
-  },
-  created() {
-    this.$store.dispatch("loadCurrentUser");
-    this.$store.dispatch("loadTheme");
-  },
+  name: "Navbar",
   computed: {
-    initialized() {
-      return this.$store.state.initialized;
+    authenticated() {
+      return this.$store.state.currentUser != null;
+    },
+    currentUser() {
+      return this.$store.state.currentUser;
     }
   }
 };
 </script>
-
-<style lang="scss">
-// @import "@/assets/styles/main.scss";
-</style>

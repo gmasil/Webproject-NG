@@ -33,7 +33,6 @@
       v-model="textColor"
       @change="changeTextColor"
     ></color-picker>
-    <i></i>
   </div>
 </template>
 
@@ -42,6 +41,11 @@ import axios from "axios";
 
 export default {
   name: "Themes",
+  computed: {
+    currentUser() {
+      return this.$store.state.currentUser;
+    }
+  },
   data() {
     return {
       backgroundColor: getComputedStyle(

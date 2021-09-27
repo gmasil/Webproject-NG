@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import de.gmasil.webproject.jpa.ColorConverter;
 import de.gmasil.webproject.jpa.theme.Theme;
 import de.gmasil.webproject.jpa.theme.ThemeRepository;
 import de.gmasil.webproject.jpa.user.User;
@@ -50,6 +51,9 @@ public class ThemeController {
 
     @Autowired
     private ThemeRepository themeRepo;
+
+    @Autowired
+    private ColorConverter colorConverter;
 
     @GetMapping("/active")
     public ResponseEntity<String> activeTheme(@PathVariable(required = false) Optional<String> param,
@@ -73,6 +77,6 @@ public class ThemeController {
         } else {
             theme = user.getActiveTheme();
         }
-        return theme.toCss();
+        return theme.toCss(colorConverter);
     }
 }

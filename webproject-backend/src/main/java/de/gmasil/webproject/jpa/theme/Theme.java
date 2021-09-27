@@ -117,7 +117,7 @@ public class Theme extends Auditable {
         }
     }
 
-    public String toCss() {
+    public String toCss(ColorConverter colorConverter) {
         String template = ":root{" //
                 + "--theme-background:%s;" //
                 + "--theme-background-highlight:%s;" //
@@ -126,11 +126,11 @@ public class Theme extends Auditable {
                 + "--theme-text:%s" //
                 + "}";
         return String.format(template, //
-                backgroundColor, //
-                backgroundHighlightColor, //
-                primaryColor, //
-                secondaryColor, //
-                textColor);
+                colorConverter.convertToDatabaseColumn(backgroundColor), //
+                colorConverter.convertToDatabaseColumn(backgroundHighlightColor), //
+                colorConverter.convertToDatabaseColumn(primaryColor), //
+                colorConverter.convertToDatabaseColumn(secondaryColor), //
+                colorConverter.convertToDatabaseColumn(textColor));
     }
 
     @Override

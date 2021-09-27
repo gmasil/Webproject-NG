@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -33,6 +34,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import de.gmasil.webproject.jpa.user.UserService;
@@ -50,6 +52,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http.cors();
         http.headers().frameOptions().sameOrigin();
+
+        http.exceptionHandling().defaultAuthenticationEntryPointFor(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED),
+                new AntPathRequestMatcher("/api/**"));
+
         http.authorizeRequests() //
                 .antMatchers("/h2-console", "/h2-console/**").permitAll() //
                 .antMatchers("/login", "/logout").permitAll() //
@@ -57,6 +63,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/static/**").permitAll() //
                 .antMatchers("/api/themes/active").permitAll() //
                 .antMatchers("/api/users").hasAuthority("ADMIN") //
+                .antMatchers("/api/users/current/**").permitAll() //
                 .antMatchers("/api/users/{id}/**").access("" //
                         + "hasAuthority('ADMIN') or " //
                         + "@userService.checkAccess(authentication, #id)") //

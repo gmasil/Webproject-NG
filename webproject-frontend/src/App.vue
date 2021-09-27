@@ -20,34 +20,49 @@
 
 -->
 <template>
-  <div id="app" class="bg-theme-background min-h-screen text-theme-text">
+  <div
+    id="app"
+    v-if="initialized"
+    class="bg-theme-background min-h-screen text-theme-text"
+  >
     <ul>
       <li><router-link to="/">Home</router-link></li>
       <li><router-link to="/videos">Videos</router-link></li>
       <li><router-link to="/themes">Themes</router-link></li>
-      <li v-if="!this.$store.state.authenticated">
+      <li v-if="!authenticated">
         <router-link to="/login">Login</router-link>
       </li>
-      <li v-if="this.$store.state.authenticated">
+      <li v-if="authenticated">
         <a href="/logout">Logout</a>
       </li>
     </ul>
-    <p v-if="this.$store.state.currentUser">
+    <hr class="border-theme-text my-1" />
+    <p v-if="authenticated">
       Logged in as
-      {{ this.$store.state.currentUser.username }}
+      {{ currentUser.username }}
     </p>
-    <router-view v-if="this.$store.state.initialized" />
+    <hr v-if="authenticated" class="border-theme-text my-2" />
+    <router-view />
   </div>
 </template>
 
 <script>
-import store from "./vuex";
-
 export default {
   name: "App",
   created() {
-    this.$store.dispatch("loadTheme");
     this.$store.dispatch("loadCurrentUser");
+    this.$store.dispatch("loadTheme");
+  },
+  computed: {
+    initialized() {
+      return this.$store.state.initialized;
+    },
+    authenticated() {
+      return this.$store.state.currentUser != null;
+    },
+    currentUser() {
+      return this.$store.state.currentUser;
+    }
   }
 };
 </script>

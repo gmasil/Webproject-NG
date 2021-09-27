@@ -27,7 +27,6 @@ export default new Vuex.Store({
   state: {
     initialized: false,
     currentUser: null,
-    authenticated: false,
     theme: null
   },
   actions: {
@@ -36,6 +35,7 @@ export default new Vuex.Store({
         .get("/api/users/current")
         .then(response => {
           commit("setCurrentUser", response.data);
+          commit("initialized");
         })
         .catch(error => {
           commit("initialized");
@@ -55,8 +55,6 @@ export default new Vuex.Store({
   mutations: {
     setCurrentUser(state, data) {
       Vue.set(state, "currentUser", data);
-      Vue.set(state, "authenticated", true);
-      Vue.set(state, "initialized", true);
     },
     initialized(state) {
       Vue.set(state, "initialized", true);

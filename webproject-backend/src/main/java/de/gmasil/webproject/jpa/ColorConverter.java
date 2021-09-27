@@ -26,8 +26,8 @@ import javax.persistence.Converter;
 
 import org.springframework.stereotype.Service;
 
-@Converter
 @Service
+@Converter
 public class ColorConverter implements AttributeConverter<Color, String> {
 
     @Override

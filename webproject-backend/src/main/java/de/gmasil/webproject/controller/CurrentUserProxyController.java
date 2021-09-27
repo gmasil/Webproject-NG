@@ -53,7 +53,7 @@ public class CurrentUserProxyController {
 
         User user = userProvider.getCurrent();
         if (user == null) {
-            throw new IllegalStateException("User api call without authorized user");
+            return ResponseEntity.ok("null");
         }
         String path = "/api/users/" + user.getId();
         if (param.isPresent()) {

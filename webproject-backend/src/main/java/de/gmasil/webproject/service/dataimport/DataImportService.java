@@ -46,6 +46,8 @@ import de.gmasil.webproject.jpa.category.CategoryRepository;
 import de.gmasil.webproject.jpa.comment.Comment;
 import de.gmasil.webproject.jpa.comment.CommentRepository;
 import de.gmasil.webproject.jpa.role.RoleRepository;
+import de.gmasil.webproject.jpa.theme.Theme;
+import de.gmasil.webproject.jpa.theme.ThemeRepository;
 import de.gmasil.webproject.jpa.user.User;
 import de.gmasil.webproject.jpa.user.UserService;
 import de.gmasil.webproject.jpa.video.Video;
@@ -99,6 +101,9 @@ public class DataImportService {
     private VideoRatingRepository ratingRepo;
 
     @Autowired
+    private ThemeRepository themeRepo;
+
+    @Autowired
     private ApplicationEventPublisher eventPublisher;
 
     @EventListener(ApplicationReadyEvent.class)
@@ -138,11 +143,13 @@ public class DataImportService {
     }
 
     private void importUsers(ImportData data) {
+        Theme theme = themeRepo.findDefault();
         for (ImportUser u : data.getUsers()) {
             User user = User.builder() //
                     .username(u.getUsername()) //
                     .password(u.getPassword()) //
                     .build();
+            user.setActiveTheme(theme);
             for (String r : u.getRoles()) {
                 user.addRole(roleRepo.findByNameOrCreate(r));
             }

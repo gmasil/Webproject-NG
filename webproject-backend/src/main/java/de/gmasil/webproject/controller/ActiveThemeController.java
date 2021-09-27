@@ -41,7 +41,7 @@ import de.gmasil.webproject.service.UserProvider;
 
 @RestController
 @RequestMapping("/api/themes")
-public class ThemeController {
+public class ActiveThemeController {
 
     @Autowired
     private LocalProxy proxy;

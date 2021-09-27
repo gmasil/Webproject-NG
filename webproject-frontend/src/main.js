@@ -23,12 +23,13 @@ import Vue from "vue";
 import App from "@/App";
 import { router } from "@/router";
 import store from "@/vuex";
-
+import vSelect from "vue-select";
+import { ColorPicker, ColorPanel } from "one-colorpicker";
 import "tailwindcss/tailwind.css";
 
-import { ColorPicker, ColorPanel } from "one-colorpicker";
 Vue.use(ColorPanel);
 Vue.use(ColorPicker);
+Vue.component("v-select", vSelect);
 
 Vue.config.productionTip = false;
 

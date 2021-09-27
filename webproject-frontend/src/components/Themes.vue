@@ -20,19 +20,44 @@
 
 -->
 <template>
-  <div class="grid grid-cols-fit gap-x-4 gap-y-1 justify-items-start">
-    <span class="inline-block">Background color</span>
-    <color-picker
-      class="border border-theme-text"
-      v-model="backgroundColor"
-      @change="changeBackgroundColor"
-    ></color-picker>
-    <span>Text color</span>
-    <color-picker
-      class="border border-theme-text"
-      v-model="textColor"
-      @change="changeTextColor"
-    ></color-picker>
+  <div>
+    <v-select
+      class="bg-theme-background-highlight text-theme-text"
+      v-model="selectedTheme"
+      :options="themes"
+      label="name"
+      @input="onThemeSelectionChange"
+    ></v-select>
+    <!--
+    <select v-model="selectedTheme" @change="onThemeSelectionChange">
+      <option v-for="theme in themes" v-bind:value="theme" :key="theme.id">
+        {{ theme.name }}
+      </option>
+    </select>
+    -->
+
+    <button @click="onActivateClick">Activate</button>
+
+    <div v-if="selectedTheme && !selectedTheme.preset">
+      <div class="grid grid-cols-fit gap-x-4 gap-y-1 justify-items-start">
+        <span class="inline-block">Background color</span>
+        <color-picker
+          class="border border-theme-text"
+          v-model="selectedThemeCopy.backgroundColor"
+          @change="onBackgroundColorChange"
+          disabled="true"
+        ></color-picker>
+        <span>Text color</span>
+        <color-picker
+          class="border border-theme-text"
+          v-model="selectedThemeCopy.textColor"
+        ></color-picker>
+      </div>
+
+      <button @click="onSaveActivateClick">Save and Activate</button>
+      <button @click="onSaveClick">Save</button>
+      <button @click="onResetClick">Reset</button>
+    </div>
   </div>
 </template>
 
@@ -48,6 +73,9 @@ export default {
   },
   data() {
     return {
+      themes: [],
+      selectedTheme: null,
+      selectedThemeCopy: null,
       backgroundColor: getComputedStyle(
         document.documentElement
       ).getPropertyValue("--theme-background"),
@@ -56,25 +84,77 @@ export default {
       )
     };
   },
-  created() {},
+  created() {
+    axios
+      .get("/api/themes/search/available")
+      .then(response => {
+        this.themes = response.data._embedded.themes;
+        if (this.themes.length > 0) {
+          this.themes.forEach(theme => {
+            if (theme.id == this.globalTheme.id) {
+              this.selectedTheme = theme;
+              this.selectedThemeCopy = JSON.parse(
+                JSON.stringify(this.selectedTheme)
+              );
+              return;
+            }
+          });
+        }
+      })
+      .catch(error => {});
+  },
   methods: {
-    changeBackgroundColor() {
-      document.documentElement.style.setProperty(
-        "--theme-background",
-        this.$data.backgroundColor
-      );
-      document.documentElement.style.setProperty(
-        "--theme-background-highlight",
-        this.shadeColor(
-          this.$data.backgroundColor,
-          this.isLightColor(this.$data.backgroundColor) ? -20 : 20
-        )
-      );
+    onThemeSelectionChange() {
+      this.selectedThemeCopy = JSON.parse(JSON.stringify(this.selectedTheme));
     },
-    changeTextColor() {
-      document.documentElement.style.setProperty(
-        "--theme-text",
-        this.$data.textColor
+    onSaveClick() {
+      this.patchTheme(this.selectedThemeCopy, this.selectedTheme);
+      this.persistSelectedTheme(false);
+    },
+    onSaveActivateClick() {
+      this.patchTheme(this.selectedThemeCopy, this.selectedTheme);
+      this.persistSelectedTheme(true);
+    },
+    onResetClick() {
+      this.selectedThemeCopy = JSON.parse(JSON.stringify(this.selectedTheme));
+    },
+    patchTheme(source, target) {
+      target.backgroundColor = source.backgroundColor;
+      target.backgroundHighlightColor = source.backgroundHighlightColor;
+      target.primaryColor = source.primaryColor;
+      target.secondaryColor = source.secondaryColor;
+      target.textColor = source.textColor;
+    },
+    persistSelectedTheme(activate) {
+      const config = { headers: { "Content-Type": "application/json" } };
+      axios
+        .put(
+          "/api/themes/update/" + this.selectedTheme.id,
+          this.selectedTheme,
+          config
+        )
+        .then(response => {
+          console.log("Theme saved successfully");
+          if (activate) {
+            this.onActivateClick();
+          }
+        })
+        .catch(error => {
+          console.log("Error saving theme: " + error);
+        });
+    },
+    onActivateClick() {
+      axios
+        .put("/api/themes/activate/" + this.selectedTheme.id)
+        .then(response => {
+          this.$store.dispatch("loadTheme");
+        })
+        .catch(error => {});
+    },
+    onBackgroundColorChange() {
+      this.selectedThemeCopy.backgroundHighlightColor = this.shadeColor(
+        this.selectedThemeCopy.backgroundColor,
+        this.isLightColor(this.selectedThemeCopy.backgroundColor) ? -20 : 20
       );
     },
     shadeColor(color, amount) {
@@ -101,6 +181,11 @@ export default {
       var b = parseInt(color.substring(5, 7), 16);
       var x = (r + g + b) / 3;
       return x > 128;
+    }
+  },
+  computed: {
+    globalTheme() {
+      return this.$store.state.theme;
     }
   }
 };

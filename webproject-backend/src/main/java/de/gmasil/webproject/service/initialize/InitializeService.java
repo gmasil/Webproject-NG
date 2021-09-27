@@ -30,7 +30,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 
 import de.gmasil.webproject.service.dataimport.CleanFinishedEvent;
-import de.gmasil.webproject.service.dataimport.DataImportFinishedEvent;
 
 @Service
 public class InitializeService {
@@ -60,10 +59,5 @@ public class InitializeService {
             LOG.info("Initialized application in {}s", watch.getTotalTimeSeconds());
         }
         eventPublisher.publishEvent(new InitializeFinishedEvent(this));
-    }
-
-    @EventListener(DataImportFinishedEvent.class)
-    public void postDataImport() {
-        themeService.initDefaultTheme();
     }
 }

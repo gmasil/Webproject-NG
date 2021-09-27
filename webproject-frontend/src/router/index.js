@@ -60,16 +60,27 @@ export const router = new Router({
   ]
 });
 
-router.beforeEach((to, from, next) => {
-  // redirect to login page if not logged in and trying to access a restricted page
-  const { authorize } = to.meta;
-  const currentUser = store.state.currentUser;
-
-  if (authorize) {
-    if (!currentUser) {
-      return next({ path: "/error" });
-    }
+function waitForInit(callback) {
+  if (!store.state.initialized) {
+    setTimeout(function() {
+      waitForInit(callback);
+    }, 50);
+  } else {
+    callback();
   }
+}
 
-  next();
+router.beforeEach((to, from, next) => {
+  const { authorize } = to.meta;
+  if (authorize) {
+    waitForInit(() => {
+      if (!store.state.currentUser) {
+        return next({ path: "/error" });
+      } else {
+        next();
+      }
+    });
+  } else {
+    next();
+  }
 });

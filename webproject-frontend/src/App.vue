@@ -51,5 +51,6 @@ export default {
 </script>
 
 <style lang="scss">
-// @import "@/assets/styles/main.scss";
+@import "vue-select/src/scss/vue-select.scss";
+@import "@/assets/styles/main.scss";
 </style>

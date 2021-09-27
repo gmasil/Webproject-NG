@@ -33,12 +33,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import de.gmasil.webproject.jpa.theme.Theme;
+import de.gmasil.webproject.jpa.theme.ThemeRepository;
 import de.gmasil.webproject.jpa.user.User;
 import de.gmasil.webproject.service.UserProvider;
 
 @RestController
 @RequestMapping("/api/themes")
-public class CurrentThemeController {
+public class ThemeController {
 
     @Autowired
     private LocalProxy proxy;
@@ -46,8 +48,11 @@ public class CurrentThemeController {
     @Autowired
     private UserProvider userProvider;
 
+    @Autowired
+    private ThemeRepository themeRepo;
+
     @GetMapping("/active")
-    public ResponseEntity<String> currentUser(@PathVariable(required = false) Optional<String> param,
+    public ResponseEntity<String> activeTheme(@PathVariable(required = false) Optional<String> param,
             @RequestBody(required = false) String body, HttpMethod method, HttpServletRequest request)
             throws URISyntaxException {
 
@@ -57,5 +62,17 @@ public class CurrentThemeController {
             path = "/api/users/" + user.getId() + "/activeTheme";
         }
         return proxy.proxy(path, body, method, request);
+    }
+
+    @GetMapping(value = "/active.css", produces = "text/css")
+    public String activeThemeCss() {
+        Theme theme;
+        User user = userProvider.getCurrent();
+        if (user == null) {
+            theme = themeRepo.findDefault();
+        } else {
+            theme = user.getActiveTheme();
+        }
+        return theme.toCss();
     }
 }

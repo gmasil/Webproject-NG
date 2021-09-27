@@ -117,6 +117,22 @@ public class Theme extends Auditable {
         }
     }
 
+    public String toCss() {
+        String template = ":root{" //
+                + "--theme-background:%s;" //
+                + "--theme-background-highlight:%s;" //
+                + "--theme-primary:%s;" //
+                + "--theme-secondary:%s;" //
+                + "--theme-text:%s" //
+                + "}";
+        return String.format(template, //
+                backgroundColor, //
+                backgroundHighlightColor, //
+                primaryColor, //
+                secondaryColor, //
+                textColor);
+    }
+
     @Override
     public int hashCode() {
         return super.hashCode();

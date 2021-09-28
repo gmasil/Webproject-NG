@@ -117,16 +117,6 @@ public class Theme extends Auditable {
         }
     }
 
-    public void map(Theme source) {
-        this.name = source.name;
-        this.backgroundColor = source.backgroundColor;
-        this.backgroundHighlightColor = source.backgroundHighlightColor;
-        this.primaryColor = source.primaryColor;
-        this.secondaryColor = source.secondaryColor;
-        this.textColor = source.textColor;
-        this.preset = source.preset;
-    }
-
     public String toCss(ColorConverter colorConverter) {
         String template = ":root{" //
                 + "--theme-background:%s;" //

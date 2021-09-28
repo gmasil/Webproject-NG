@@ -31,6 +31,9 @@
         <router-link to="/login">Login</router-link>
       </li>
       <li v-if="authenticated">
+        <router-link to="/changepassword">Change Password</router-link>
+      </li>
+      <li v-if="authenticated">
         <a href="/logout">Logout</a>
       </li>
     </ul>

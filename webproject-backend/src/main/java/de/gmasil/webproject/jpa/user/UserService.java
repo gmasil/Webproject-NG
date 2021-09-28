@@ -71,6 +71,10 @@ public class UserService implements UserDetailsService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
     }
 
+    public boolean verifyPassword(String rawPassword, User user) {
+        return passwordEncoder.matches(rawPassword, user.getPassword());
+    }
+
     public User save(User user) {
         return userRepository.save(user);
     }

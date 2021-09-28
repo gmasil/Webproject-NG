@@ -19,10 +19,12 @@
  */
 package de.gmasil.webproject.service.dataimport;
 
+import java.awt.Color;
 import java.util.LinkedList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import de.gmasil.webproject.jpa.VideoQuality;
 import lombok.AllArgsConstructor;
@@ -37,6 +39,7 @@ import lombok.Setter;
 public class ImportData {
 
     private List<ImportUser> users = new LinkedList<>();
+    private List<ImportTheme> themes = new LinkedList<>();
     private List<ImportVideo> videos = new LinkedList<>();
 
     @Getter
@@ -48,6 +51,31 @@ public class ImportData {
         private String username;
         private String password;
         private List<String> roles = new LinkedList<>();
+        @JsonProperty("active-theme")
+        private String activeTheme;
+        private List<ImportTheme> themes = new LinkedList<>();
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ImportTheme {
+
+        private String name;
+        @JsonProperty("background-color")
+        private Color backgroundColor;
+        @JsonProperty("background-highlight-color")
+        private Color backgroundHighlightColor;
+        @JsonProperty("primary-color")
+        private Color primaryColor;
+        @JsonProperty("secondary-color")
+        private Color secondaryColor;
+        @JsonProperty("text-color")
+        private Color textColor;
+        private boolean preset = false;
+        @JsonProperty("default")
+        private boolean isDefault = false;
     }
 
     @Getter

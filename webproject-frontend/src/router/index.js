@@ -23,6 +23,7 @@ import HelloWorld from "@/components/HelloWorld";
 import VideoList from "@/components/VideoList";
 import Themes from "@/components/Themes";
 import Login from "@/components/Login";
+import ChangePassword from "@/components/account/ChangePassword";
 import Error from "@/components/Error";
 
 Vue.use(Router);
@@ -46,6 +47,12 @@ export const router = new Router({
       path: "/themes",
       name: "Themes",
       component: Themes,
+      meta: { authorize: [] }
+    },
+    {
+      path: "/changepassword",
+      name: "ChangePassword",
+      component: ChangePassword,
       meta: { authorize: [] }
     },
     {

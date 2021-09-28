@@ -75,13 +75,7 @@ export default {
     return {
       themes: [],
       selectedTheme: null,
-      selectedThemeCopy: null,
-      backgroundColor: getComputedStyle(
-        document.documentElement
-      ).getPropertyValue("--theme-background"),
-      textColor: getComputedStyle(document.documentElement).getPropertyValue(
-        "--theme-text"
-      )
+      selectedThemeCopy: null
     };
   },
   created() {

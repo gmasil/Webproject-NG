@@ -21,21 +21,23 @@ package de.gmasil.webproject.dto;
 
 import java.awt.Color;
 
-public interface ThemeDto {
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-    public Long getId();
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class ThemeDto {
 
-    public String getName();
-
-    public Color getBackgroundColor();
-
-    public Color getBackgroundHighlightColor();
-
-    public Color getPrimaryColor();
-
-    public Color getSecondaryColor();
-
-    public Color getTextColor();
-
-    public boolean isPreset();
+    private Long id;
+    private String name;
+    private Color backgroundColor;
+    private Color backgroundHighlightColor;
+    private Color primaryColor;
+    private Color secondaryColor;
+    private Color textColor;
+    private boolean preset;
 }

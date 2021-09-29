@@ -39,6 +39,6 @@ public class VideoRestController {
     @PermitAll
     @GetMapping("")
     public ResponseEntity<Object> get(Pageable pageable) {
-        return ResponseEntity.ok(videoRepo.findAllDtoBy(pageable));
+        return ResponseEntity.ok(videoRepo.findAllProjectionBy(pageable));
     }
 }

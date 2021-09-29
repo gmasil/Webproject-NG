@@ -37,9 +37,12 @@
     -->
 
     <button @click="onActivateClick">Activate</button>
+    <button @click="onDuplicateClick">Duplicate</button>
 
     <div v-if="selectedTheme && !selectedTheme.preset">
       <div class="grid grid-cols-fit gap-x-4 gap-y-1 justify-items-start">
+        <span class="inline-block">Name</span>
+        <input type="text" v-model="selectedThemeCopy.name" />
         <span class="inline-block">Background color</span>
         <color-picker
           class="border border-theme-text"
@@ -112,7 +115,17 @@ export default {
     onResetClick() {
       this.selectedThemeCopy = JSON.parse(JSON.stringify(this.selectedTheme));
     },
+    onDuplicateClick() {
+      let newTheme = JSON.parse(JSON.stringify(this.selectedTheme));
+      newTheme.id = null;
+      newTheme.name += " Copy";
+      newTheme.preset = false;
+      this.themes.push(newTheme);
+      this.selectedTheme = newTheme;
+      this.selectedThemeCopy = JSON.parse(JSON.stringify(this.selectedTheme));
+    },
     patchTheme(source, target) {
+      target.name = source.name;
       target.backgroundColor = source.backgroundColor;
       target.backgroundHighlightColor = source.backgroundHighlightColor;
       target.primaryColor = source.primaryColor;
@@ -121,21 +134,55 @@ export default {
     },
     persistSelectedTheme(activate) {
       const config = { headers: { "Content-Type": "application/json" } };
-      axios
-        .put(
-          "/api/themes/update/" + this.selectedTheme.id,
-          this.selectedTheme,
-          config
-        )
-        .then(response => {
-          console.log("Theme saved successfully");
-          if (activate) {
-            this.onActivateClick();
-          }
-        })
-        .catch(error => {
-          console.log("Error saving theme: " + error);
-        });
+      if (this.selectedThemeCopy.id != null) {
+        // update theme
+        axios
+          .put(
+            "/api/themes/" + this.selectedTheme.id,
+            this.selectedTheme,
+            config
+          )
+          .then(response => {
+            console.log("Theme saved successfully");
+            if (activate) {
+              this.onActivateClick();
+            }
+          })
+          .catch(error => {
+            console.log("Error saving theme: " + error);
+          });
+      } else {
+        // create new theme
+        axios
+          .post("/api/themes", this.selectedTheme, config)
+          .then(response => {
+            let index = this.findIndexOfSelectedTheme();
+            if (index == null) {
+              alert("find a better solution!");
+              return;
+            }
+            this.themes[index] = response.data;
+            this.selectedTheme = response.data;
+            this.selectedThemeCopy = JSON.parse(
+              JSON.stringify(this.selectedTheme)
+            );
+            console.log("Theme saved successfully");
+            if (activate) {
+              this.onActivateClick();
+            }
+          })
+          .catch(error => {
+            console.log("Error saving theme: " + error);
+          });
+      }
+    },
+    findIndexOfSelectedTheme() {
+      for (let index = 0; index < this.themes.length; ++index) {
+        if (this.themes[index] == this.selectedTheme) {
+          return index;
+        }
+      }
+      return null;
     },
     onActivateClick() {
       axios

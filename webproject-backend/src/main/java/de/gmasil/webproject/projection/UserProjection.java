@@ -17,22 +17,17 @@
  * You should have received a copy of the GNU General Public License
  * along with Webproject NG. If not, see <https://www.gnu.org/licenses/>.
  */
-package de.gmasil.webproject.dto;
+package de.gmasil.webproject.projection;
 
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-public interface UserDto {
+public interface UserProjection {
 
     public Long getId();
 
     public String getUsername();
 
-    @JsonIgnore
-    public String getPassword();
+    public Set<RoleProjection> getRoles();
 
-    public Set<RoleDto> getRoles();
-
-    public ThemeDto getActiveTheme();
+    public ThemeProjection getActiveTheme();
 }

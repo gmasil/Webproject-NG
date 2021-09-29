@@ -17,11 +17,25 @@
  * You should have received a copy of the GNU General Public License
  * along with Webproject NG. If not, see <https://www.gnu.org/licenses/>.
  */
-package de.gmasil.webproject.dto;
+package de.gmasil.webproject.projection;
 
-public interface RoleDto {
+import java.awt.Color;
+
+public interface ThemeProjection {
 
     public Long getId();
 
     public String getName();
+
+    public Color getBackgroundColor();
+
+    public Color getBackgroundHighlightColor();
+
+    public Color getPrimaryColor();
+
+    public Color getSecondaryColor();
+
+    public Color getTextColor();
+
+    public boolean isPreset();
 }

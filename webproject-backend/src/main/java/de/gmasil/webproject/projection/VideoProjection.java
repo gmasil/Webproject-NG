@@ -17,24 +17,17 @@
  * You should have received a copy of the GNU General Public License
  * along with Webproject NG. If not, see <https://www.gnu.org/licenses/>.
  */
-package de.gmasil.webproject.jpa.user;
+package de.gmasil.webproject.projection;
 
-import java.util.Optional;
+public interface VideoProjection {
 
-import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
+    public Long getId();
 
-import de.gmasil.webproject.projection.UserProjection;
+    public String getTitle();
 
-@Repository
-public interface UserRepository extends JpaRepository<User, Long>, UserRepositoryExtension {
+    public String getDescription();
 
-    public <T> Optional<T> findProjectionById(Long id, Class<T> type);
+    public float getLength();
 
-    @EntityGraph("UserDto")
-    public Optional<UserProjection> findProjectionById(@Param("id") Long id);
-
-    public Optional<User> findByUsername(String username);
+    public String getThumbnail();
 }

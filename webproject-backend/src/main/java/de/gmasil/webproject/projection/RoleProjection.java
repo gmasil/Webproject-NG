@@ -17,17 +17,11 @@
  * You should have received a copy of the GNU General Public License
  * along with Webproject NG. If not, see <https://www.gnu.org/licenses/>.
  */
-package de.gmasil.webproject.dto;
+package de.gmasil.webproject.projection;
 
-public interface VideoDto {
+public interface RoleProjection {
 
     public Long getId();
 
-    public String getTitle();
-
-    public String getDescription();
-
-    public float getLength();
-
-    public String getThumbnail();
+    public String getName();
 }

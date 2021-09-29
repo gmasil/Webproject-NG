@@ -17,24 +17,17 @@
  * You should have received a copy of the GNU General Public License
  * along with Webproject NG. If not, see <https://www.gnu.org/licenses/>.
  */
-package de.gmasil.webproject.jpa.user;
+package de.gmasil.webproject.dto;
 
-import java.util.Optional;
+public interface VideoDto {
 
-import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
+    public Long getId();
 
-import de.gmasil.webproject.dto.UserDto;
+    public String getTitle();
 
-@Repository
-public interface UserRepository extends JpaRepository<User, Long>, UserRepositoryExtension {
+    public String getDescription();
 
-    public <T> Optional<T> findById(Long id, Class<T> type);
+    public float getLength();
 
-    @EntityGraph("UserDto")
-    public Optional<UserDto> findDtoById(@Param("id") Long id);
-
-    public Optional<User> findByUsername(String username);
+    public String getThumbnail();
 }

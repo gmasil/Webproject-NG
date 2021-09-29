@@ -19,16 +19,9 @@
  */
 package de.gmasil.webproject.jpa.role;
 
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Long>, RoleRepositoryExtension {
-
-    public Optional<Role> findByName(String name);
-
-    public List<Role> findAllByNameLike(String name);
 }

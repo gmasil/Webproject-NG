@@ -21,35 +21,21 @@ package de.gmasil.webproject.dto;
 
 import java.awt.Color;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+public interface ThemeDto {
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Builder.Default;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+    public Long getId();
 
-@Getter
-@Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class ThemeDto {
+    public String getName();
 
-    @NotEmpty
-    private String name;
-    @NotNull
-    private Color backgroundColor;
-    @NotNull
-    private Color backgroundHighlightColor;
-    @NotNull
-    private Color primaryColor;
-    @NotNull
-    private Color secondaryColor;
-    @NotNull
-    private Color textColor;
-    @Default
-    private boolean preset = false;
+    public Color getBackgroundColor();
+
+    public Color getBackgroundHighlightColor();
+
+    public Color getPrimaryColor();
+
+    public Color getSecondaryColor();
+
+    public Color getTextColor();
+
+    public boolean isPreset();
 }

@@ -17,17 +17,28 @@
  * You should have received a copy of the GNU General Public License
  * along with Webproject NG. If not, see <https://www.gnu.org/licenses/>.
  */
-package de.gmasil.webproject.jpa.video;
+package de.gmasil.webproject.controller.rest;
 
-import org.springframework.data.domain.Page;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import de.gmasil.webproject.dto.VideoDto;
+import de.gmasil.webproject.controller.PermitAll;
+import de.gmasil.webproject.jpa.video.VideoRepository;
 
-@Repository
-public interface VideoRepository extends JpaRepository<Video, Long> {
+@RestController
+@RequestMapping("/api/videos")
+public class VideoRestController {
 
-    Page<VideoDto> findAllDtoBy(Pageable pageable);
+    @Autowired
+    private VideoRepository videoRepo;
+
+    @PermitAll
+    @GetMapping("")
+    public ResponseEntity<Object> get(Pageable pageable) {
+        return ResponseEntity.ok(videoRepo.findAllDtoBy(pageable));
+    }
 }

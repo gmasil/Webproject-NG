@@ -149,10 +149,10 @@ public class DataImportService {
     }
 
     private void importData(File file) throws IOException {
-        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-        mapper.findAndRegisterModules();
-        mapper.registerModule(module);
-        ImportData data = mapper.readValue(file, ImportData.class);
+        ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
+        objectMapper.findAndRegisterModules();
+        objectMapper.registerModule(module);
+        ImportData data = objectMapper.readValue(file, ImportData.class);
         importThemes(data);
         importUsers(data);
         importVideos(data);
@@ -171,7 +171,8 @@ public class DataImportService {
     }
 
     private void importUsers(ImportData data) {
-        Theme defaultTheme = themeRepo.findDefault();
+        Theme defaultTheme = themeRepo.findDefault()
+                .orElseThrow(() -> new IllegalStateException("No default theme found"));
         for (ImportUser u : data.getUsers()) {
             User user = User.builder() //
                     .username(u.getUsername()) //

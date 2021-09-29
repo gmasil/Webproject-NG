@@ -19,6 +19,8 @@
  */
 package de.gmasil.webproject.controller.rest;
 
+import java.util.Optional;
+
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -26,13 +28,18 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import de.gmasil.webproject.controller.PermitAll;
+import de.gmasil.webproject.dto.UserDto;
 import de.gmasil.webproject.dto.UserPasswordDto;
 import de.gmasil.webproject.jpa.user.User;
+import de.gmasil.webproject.jpa.user.UserRepository;
 import de.gmasil.webproject.jpa.user.UserService;
 import de.gmasil.webproject.service.UserProvider;
 
@@ -41,17 +48,34 @@ import de.gmasil.webproject.service.UserProvider;
 public class UserRestController {
 
     @Autowired
-    private UserService userService;
+    private UserProvider userProvider;
 
     @Autowired
-    private UserProvider userProvider;
+    private UserRepository userRepo;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private EntityManager entityManager;
 
+    @PermitAll
+    @GetMapping("/current")
+    public ResponseEntity<Object> currentUser() {
+        User user = userProvider.getCurrent();
+        if (user != null) {
+            Optional<UserDto> eagerUser = userRepo.findDtoById(user.getId());
+            if (eagerUser.isPresent()) {
+                return ResponseEntity.ok(eagerUser.get());
+            }
+        }
+        return ResponseEntity.ok("null");
+    }
+
     @Transactional
+    @PreAuthorize("isAuthenticated()")
     @PutMapping("/updatepassword")
-    public ResponseEntity<String> setActiveTheme(@RequestBody @Valid UserPasswordDto userPassword) {
+    public ResponseEntity<String> updatePassword(@RequestBody @Valid UserPasswordDto userPassword) {
         User user = userProvider.getCurrent();
         if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");

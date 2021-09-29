@@ -22,7 +22,6 @@ package de.gmasil.webproject.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -53,23 +52,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors();
         http.headers().frameOptions().sameOrigin();
 
+        // do not redirect unauthorized /api/** requests to /login
         http.exceptionHandling().defaultAuthenticationEntryPointFor(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED),
                 new AntPathRequestMatcher("/api/**"));
 
-        http.authorizeRequests() //
-                .antMatchers("/h2-console", "/h2-console/**").permitAll() //
-                .antMatchers("/login", "/logout").permitAll() //
-                .antMatchers("/error").permitAll() //
-                .antMatchers("/static/**").permitAll() //
-                .antMatchers("/api/themes/active").permitAll() //
-                .antMatchers("/api/users").hasAuthority("ADMIN") //
-                .antMatchers("/api/users/current/**").permitAll() //
-                .antMatchers("/api/users/{id}/**").access("" //
-                        + "hasAuthority('ADMIN') or " //
-                        + "@userService.checkAccess(authentication, #id)") //
-                .antMatchers(HttpMethod.GET, "/api/**").permitAll() //
-                .antMatchers("/api/**").hasAuthority("ADMIN") //
-                .anyRequest().permitAll();
+        http.authorizeRequests().anyRequest().permitAll();
+
         http.formLogin().loginPage("/login").failureUrl("/login?error") //
                 .loginProcessingUrl("/performlogin") //
                 .usernameParameter("username") //

@@ -17,24 +17,22 @@
  * You should have received a copy of the GNU General Public License
  * along with Webproject NG. If not, see <https://www.gnu.org/licenses/>.
  */
-package de.gmasil.webproject.jpa.user;
+package de.gmasil.webproject.dto;
 
-import java.util.Optional;
+import java.util.Set;
 
-import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import de.gmasil.webproject.dto.UserDto;
+public interface UserDto {
 
-@Repository
-public interface UserRepository extends JpaRepository<User, Long>, UserRepositoryExtension {
+    public Long getId();
 
-    public <T> Optional<T> findById(Long id, Class<T> type);
+    public String getUsername();
 
-    @EntityGraph("UserDto")
-    public Optional<UserDto> findDtoById(@Param("id") Long id);
+    @JsonIgnore
+    public String getPassword();
 
-    public Optional<User> findByUsername(String username);
+    public Set<RoleDto> getRoles();
+
+    public ThemeDto getActiveTheme();
 }

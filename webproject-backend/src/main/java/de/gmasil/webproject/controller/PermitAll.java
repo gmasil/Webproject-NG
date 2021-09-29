@@ -17,24 +17,18 @@
  * You should have received a copy of the GNU General Public License
  * along with Webproject NG. If not, see <https://www.gnu.org/licenses/>.
  */
-package de.gmasil.webproject.jpa.user;
+package de.gmasil.webproject.controller;
 
-import java.util.Optional;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
-
-import de.gmasil.webproject.dto.UserDto;
-
-@Repository
-public interface UserRepository extends JpaRepository<User, Long>, UserRepositoryExtension {
-
-    public <T> Optional<T> findById(Long id, Class<T> type);
-
-    @EntityGraph("UserDto")
-    public Optional<UserDto> findDtoById(@Param("id") Long id);
-
-    public Optional<User> findByUsername(String username);
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+@Documented
+public @interface PermitAll {
 }

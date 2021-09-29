@@ -36,6 +36,31 @@ module.exports = {
           Connection: "keep-alive"
         }
       },
+      "/swagger-ui": {
+        target: "http://localhost:6900",
+        changeOrigin: true,
+        headers: {
+          Connection: "keep-alive"
+        }
+      },
+      "/v3/api-docs": {
+        target: "http://localhost:6900",
+        changeOrigin: true,
+        headers: {
+          Connection: "keep-alive"
+        }
+      },
+      "/swagger-resources": {
+        target: "http://localhost:6900",
+        changeOrigin: true,
+        headers: {
+          Connection: "keep-alive"
+        }
+      },
+      "/actuator": {
+        target: "http://localhost:6900",
+        changeOrigin: false
+      },
       "/performlogin": {
         target: "http://localhost:6900",
         changeOrigin: false

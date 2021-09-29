@@ -25,40 +25,37 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.data.rest.core.annotation.RestResource;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Repository;
 
+import de.gmasil.webproject.dto.ThemeDto;
 import de.gmasil.webproject.jpa.globalproperty.Property;
 import de.gmasil.webproject.jpa.user.User;
 
 @Repository
 public interface ThemeRepository extends JpaRepository<Theme, Long> {
 
-    @RestResource(path = "/default")
     @Query("SELECT t FROM THEME t, PROPERTY p WHERE p.key = '" + Property.DEFAULT_THEME + "' AND t.id = p.value")
-    public Theme findDefault();
+    public Optional<Theme> findDefault();
 
-    @RestResource(path = "/preset")
-    public List<Theme> findByPresetTrue();
+    @Query("SELECT t FROM THEME t, PROPERTY p WHERE p.key = '" + Property.DEFAULT_THEME + "' AND t.id = p.value")
+    public Optional<ThemeDto> findDefaultDto();
 
-    @PreAuthorize("isAuthenticated()")
-    @Query("SELECT t FROM THEME t, USER u WHERE t.creator = u AND u = ?#{principal}")
-    public List<Theme> findAllByCreator();
+    @Query("SELECT t FROM THEME t, USER u WHERE t = u.activeTheme AND u.id = :userId")
+    public Optional<ThemeDto> findDtoActiveByUser(@Param("userId") Long userId);
 
-    @RestResource(path = "/available")
-    @Query("SELECT DISTINCT(t) FROM THEME t, USER u WHERE t.preset = true OR (t.creator = u AND u.id = ?#{principal instanceOf T(de.gmasil.webproject.jpa.user.User) ? principal.getId() : -1L})")
-    public List<Theme> findAllByPresetTrueOrCreatorCurrentUser();
+    @Query("SELECT u.activeTheme FROM USER u WHERE u.id = :userId")
+    public Optional<Theme> findActiveByUser(@Param("userId") Long userId);
 
-    @RestResource(exported = false)
-    @Query("SELECT t FROM THEME t WHERE t.preset = true OR t.creator = :user")
-    public List<Theme> findAllAvailable(@Param("user") User user);
+    @Query("SELECT t FROM THEME t WHERE t.id = :id AND t.creator = :user")
+    public Optional<Theme> findByIdAndCreator(@Param("id") Long id, @Param("user") User user);
 
-    @RestResource(exported = false)
     @Query("SELECT t FROM THEME t WHERE t.id = :id AND (t.preset = true OR t.creator = :user)")
     public Optional<Theme> findAvailableById(@Param("id") Long id, @Param("user") User user);
 
-    @RestResource(exported = false)
-    @Query("SELECT t FROM THEME t WHERE t.id = :id AND t.creator = :user")
-    public Optional<Theme> findByIdAndCreator(@Param("id") Long id, @Param("user") User user);
+    @Query("SELECT t FROM THEME t WHERE t.preset = true OR t.creator = :user")
+    public List<Theme> findAllAvailable(@Param("user") User user);
+
+    public List<ThemeDto> findAllDtoByPresetTrue();
+
+    public List<ThemeDto> findAllDtoByPresetTrueOrCreator(User creator);
 }

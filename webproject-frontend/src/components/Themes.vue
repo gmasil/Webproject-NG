@@ -80,9 +80,9 @@ export default {
   },
   created() {
     axios
-      .get("/api/themes/search/available")
+      .get("/api/themes/available")
       .then(response => {
-        this.themes = response.data._embedded.themes;
+        this.themes = response.data;
         if (this.themes.length > 0) {
           this.themes.forEach(theme => {
             if (theme.id == this.globalTheme.id) {

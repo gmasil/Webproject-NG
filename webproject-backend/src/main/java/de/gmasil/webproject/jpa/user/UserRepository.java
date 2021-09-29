@@ -19,18 +19,22 @@
  */
 package de.gmasil.webproject.jpa.user;
 
-import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import de.gmasil.webproject.projection.UserProjection;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long>, UserRepositoryExtension {
 
+    public <T> Optional<T> findProjectionById(Long id, Class<T> type);
+
+    @EntityGraph("UserDto")
+    public Optional<UserProjection> findProjectionById(@Param("id") Long id);
+
     public Optional<User> findByUsername(String username);
-
-    public <T> Optional<T> findByUsername(String username, Class<T> type);
-
-    public List<User> findAllByUsernameLike(String username);
 }

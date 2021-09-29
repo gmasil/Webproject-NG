@@ -22,6 +22,9 @@ package de.gmasil.webproject.jpa.user;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -39,16 +42,23 @@ public class UserService implements UserDetailsService {
     private PasswordEncoder passwordEncoder;
 
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String username) {
         Optional<User> optional = userRepository.findByUsername(username);
         if (optional.isPresent()) {
-            return optional.get();
+            User user = optional.get();
+            Hibernate.initialize(user.getAuthorities());
+            return user;
         }
         throw new UsernameNotFoundException(String.format("The username '%s' does not exist", username));
     }
 
     public void encodePassword(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+    }
+
+    public boolean verifyPassword(String rawPassword, User user) {
+        return passwordEncoder.matches(rawPassword, user.getPassword());
     }
 
     public User save(User user) {

@@ -18,4 +18,31 @@
 // along with Webproject NG. If not, see <https://www.gnu.org/licenses/>.
 //
 
-//
+input {
+  background-color: var(--theme-background-highlight);
+}
+
+.vs--single {
+  .vs__selected {
+    color: var(--theme-text);
+  }
+  &.vs--open .vs__selected {
+    opacity: 0.7;
+  }
+  .vs__dropdown-toggle,
+  .vs__dropdown-menu,
+  .vs__dropdown-option {
+    background-color: var(--theme-background-highlight);
+    color: var(--theme-text);
+  }
+  .vs__dropdown-option--highlight {
+    background-color: var(--theme-background);
+  }
+  .vs__open-indicator,
+  .vs__clear {
+    fill: var(--theme-text);
+  }
+  .vs__clear {
+    display: none;
+  }
+}

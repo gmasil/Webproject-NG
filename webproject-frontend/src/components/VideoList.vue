@@ -22,7 +22,7 @@
 <template>
   <div class="grid xl:grid-cols-5 lg:grid-cols-3 md:grid-cols-2 gap-5 p-5">
     <div
-      class="h-16 w-full flex bg-gray-200 dark:bg-gray-800 rounded-lg"
+      class="h-16 w-full flex bg-theme-background-highlight rounded-lg"
       v-for="video in videos"
       :key="video.id"
     >
@@ -30,7 +30,7 @@
         class="w-28 h-16 bg-cover bg-center rounded-lg flex-initial"
         :style="'background-image: url(\'' + video.thumbnail + '\')'"
       ></div>
-      <p class="self-center pl-4 px-0 mx-0 flex-1">
+      <p class="self-center text-theme-text pl-4 px-0 mx-0 flex-1 test">
         {{ video.title }}
       </p>
     </div>
@@ -49,8 +49,8 @@ export default {
   },
   created() {
     axios
-      .get("/api/videos?size=10")
-      .then(response => (this.videos = response.data._embedded.videos));
+      .get("/api/videos?size=12")
+      .then(response => (this.videos = response.data.content));
   }
 };
 </script>

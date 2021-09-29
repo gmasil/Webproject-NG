@@ -33,6 +33,7 @@ import de.gmasil.webproject.jpa.artist.ArtistRepository;
 import de.gmasil.webproject.jpa.category.CategoryRepository;
 import de.gmasil.webproject.jpa.comment.CommentRepository;
 import de.gmasil.webproject.jpa.role.RoleRepository;
+import de.gmasil.webproject.jpa.theme.ThemeRepository;
 import de.gmasil.webproject.jpa.user.UserRepository;
 import de.gmasil.webproject.jpa.video.VideoRepository;
 import de.gmasil.webproject.jpa.videofavorite.VideoFavoriteRepository;
@@ -74,6 +75,9 @@ class DataImportServiceTest {
     @Autowired
     private VideoRatingRepository ratingRepo;
 
+    @Autowired
+    private ThemeRepository themeRepo;
+
     @Test
     void testForExistingData() throws IOException {
         assertThat(userRepo.count(), is(equalTo(2L)));
@@ -85,5 +89,6 @@ class DataImportServiceTest {
         assertThat(commentRepo.count(), is(equalTo(2L)));
         assertThat(favoriteRepo.count(), is(equalTo(2L)));
         assertThat(ratingRepo.count(), is(equalTo(2L)));
+        assertThat(themeRepo.count(), is(equalTo(3L)));
     }
 }

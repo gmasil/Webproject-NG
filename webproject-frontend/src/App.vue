@@ -20,21 +20,37 @@
 
 -->
 <template>
-  <div id="app">
-    <ul>
-      <li><router-link to="/">Home</router-link></li>
-      <li><router-link to="/videos">Videos</router-link></li>
-    </ul>
+  <div
+    id="app"
+    v-if="initialized"
+    class="bg-theme-background min-h-screen text-theme-text"
+  >
+    <navbar />
     <router-view />
   </div>
 </template>
 
 <script>
+import Navbar from "@/components/Navbar";
+
 export default {
-  name: "App"
+  name: "App",
+  components: {
+    Navbar
+  },
+  created() {
+    this.$store.dispatch("loadCurrentUser");
+    this.$store.dispatch("loadTheme");
+  },
+  computed: {
+    initialized() {
+      return this.$store.state.initialized;
+    }
+  }
 };
 </script>
 
 <style lang="scss">
+@import "vue-select/src/scss/vue-select.scss";
 @import "@/assets/styles/main.scss";
 </style>

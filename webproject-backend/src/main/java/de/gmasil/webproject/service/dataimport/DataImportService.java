@@ -27,14 +27,18 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StopWatch;
 
+import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
@@ -43,7 +47,11 @@ import de.gmasil.webproject.jpa.artist.ArtistRepository;
 import de.gmasil.webproject.jpa.category.CategoryRepository;
 import de.gmasil.webproject.jpa.comment.Comment;
 import de.gmasil.webproject.jpa.comment.CommentRepository;
+import de.gmasil.webproject.jpa.globalproperty.Property;
+import de.gmasil.webproject.jpa.globalproperty.PropertyRepository;
 import de.gmasil.webproject.jpa.role.RoleRepository;
+import de.gmasil.webproject.jpa.theme.Theme;
+import de.gmasil.webproject.jpa.theme.ThemeRepository;
 import de.gmasil.webproject.jpa.user.User;
 import de.gmasil.webproject.jpa.user.UserService;
 import de.gmasil.webproject.jpa.video.Video;
@@ -53,13 +61,15 @@ import de.gmasil.webproject.jpa.videofavorite.VideoFavoriteRepository;
 import de.gmasil.webproject.jpa.videofile.VideoFile;
 import de.gmasil.webproject.jpa.videorating.VideoRating;
 import de.gmasil.webproject.jpa.videorating.VideoRatingRepository;
+import de.gmasil.webproject.service.dataimport.ImportData.ImportTheme;
 import de.gmasil.webproject.service.dataimport.ImportData.ImportUser;
 import de.gmasil.webproject.service.dataimport.ImportData.ImportVideo;
 import de.gmasil.webproject.service.dataimport.ImportData.ImportVideo.ImportComment;
 import de.gmasil.webproject.service.dataimport.ImportData.ImportVideo.ImportFile;
 import de.gmasil.webproject.service.dataimport.ImportData.ImportVideo.ImportRating;
+import de.gmasil.webproject.service.initialize.InitializeFinishedEvent;
 
-@Component
+@Service
 public class DataImportService {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -67,6 +77,9 @@ public class DataImportService {
 
     @Autowired
     private DataImportProperties properties;
+
+    @Autowired
+    private Module module;
 
     @Autowired
     private List<JpaRepository<? extends Auditable, Long>> repositories;
@@ -95,43 +108,98 @@ public class DataImportService {
     @Autowired
     private VideoRatingRepository ratingRepo;
 
-    @Transactional
+    @Autowired
+    private ThemeRepository themeRepo;
+
+    @Autowired
+    private PropertyRepository propertyRepo;
+
+    @Autowired
+    private ModelMapper mapper;
+
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
+
     @EventListener(ApplicationReadyEvent.class)
-    public void createTestData() throws IOException {
+    public void clean() {
+        if (properties.isEnabled() && properties.isClean()) {
+            LOG.info("Cleaning existing data");
+            deleteAllData();
+        }
+        eventPublisher.publishEvent(new CleanFinishedEvent(this));
+    }
+
+    @Transactional
+    @EventListener(InitializeFinishedEvent.class)
+    public void importData() throws IOException {
         if (properties.isEnabled()) {
-            if (properties.isClean()) {
-                LOG.info("Cleaning existing data before import");
-                deleteAllData();
-            }
             File file = new File(properties.getFile());
             if (file.exists()) {
+                StopWatch watch = new StopWatch();
+                watch.start();
                 LOG.info("Importing data from {}", file.getAbsolutePath());
                 importData(file);
-                LOG.info("Data import finished");
+                watch.stop();
+                LOG.info("Data import finished in {}s", watch.getTotalTimeSeconds());
             } else {
                 LOG.warn("Cannot import data, file does not exist: {}", file.getAbsolutePath());
             }
         }
+        eventPublisher.publishEvent(new DataImportFinishedEvent(this));
     }
 
     private void importData(File file) throws IOException {
-        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-        mapper.findAndRegisterModules();
-        ImportData data = mapper.readValue(file, ImportData.class);
+        ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
+        objectMapper.findAndRegisterModules();
+        objectMapper.registerModule(module);
+        ImportData data = objectMapper.readValue(file, ImportData.class);
+        importThemes(data);
         importUsers(data);
         importVideos(data);
     }
 
+    private void importThemes(ImportData data) {
+        for (ImportTheme t : data.getThemes()) {
+            Theme theme = new Theme();
+            mapper.map(t, theme);
+            theme.setPreset(true);
+            theme = themeRepo.save(theme);
+            if (t.isDefault()) {
+                propertyRepo.setProperty(Property.DEFAULT_THEME, "" + theme.getId());
+            }
+        }
+    }
+
     private void importUsers(ImportData data) {
+        Theme defaultTheme = themeRepo.findDefault()
+                .orElseThrow(() -> new IllegalStateException("No default theme found"));
         for (ImportUser u : data.getUsers()) {
             User user = User.builder() //
                     .username(u.getUsername()) //
                     .password(u.getPassword()) //
                     .build();
+            for (ImportTheme t : u.getThemes()) {
+                Theme theme = new Theme();
+                mapper.map(t, theme);
+                theme.setPreset(false);
+                theme.setCreator(user);
+            }
             for (String r : u.getRoles()) {
                 user.addRole(roleRepo.findByNameOrCreate(r));
             }
             userService.encodePassword(user);
+            user = userService.save(user);
+            if (u.getActiveTheme() == null) {
+                user.setActiveTheme(defaultTheme);
+            } else {
+                Optional<Theme> optionalTheme = themeRepo.findAllAvailable(user).stream()
+                        .filter(t -> t.getName().equals(u.getActiveTheme())).findFirst();
+                if (optionalTheme.isPresent()) {
+                    user.setActiveTheme(optionalTheme.get());
+                } else {
+                    user.setActiveTheme(defaultTheme);
+                }
+            }
             userService.save(user);
         }
     }

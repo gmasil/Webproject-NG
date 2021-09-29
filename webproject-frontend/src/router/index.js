@@ -21,10 +21,17 @@ import Vue from "vue";
 import Router from "vue-router";
 import HelloWorld from "@/components/HelloWorld";
 import VideoList from "@/components/VideoList";
+import Themes from "@/components/Themes";
+import Login from "@/components/Login";
+import ChangePassword from "@/components/account/ChangePassword";
+import Error from "@/components/Error";
 
 Vue.use(Router);
 
-export default new Router({
+import store from "@/vuex";
+
+export const router = new Router({
+  mode: "history",
   routes: [
     {
       path: "/",
@@ -35,6 +42,52 @@ export default new Router({
       path: "/videos",
       name: "VideoList",
       component: VideoList
+    },
+    {
+      path: "/themes",
+      name: "Themes",
+      component: Themes,
+      meta: { authorize: [] }
+    },
+    {
+      path: "/changepassword",
+      name: "ChangePassword",
+      component: ChangePassword,
+      meta: { authorize: [] }
+    },
+    {
+      path: "/login",
+      name: "Login",
+      component: Login
+    },
+    {
+      path: "*",
+      component: Error
     }
   ]
+});
+
+function waitForInit(callback) {
+  if (!store.state.initialized) {
+    setTimeout(function() {
+      waitForInit(callback);
+    }, 50);
+  } else {
+    callback();
+  }
+}
+
+router.beforeEach((to, from, next) => {
+  const { authorize } = to.meta;
+  if (authorize) {
+    waitForInit(() => {
+      if (!store.state.currentUser) {
+        return next({ path: "/error" });
+      } else {
+        next();
+      }
+    });
+  } else {
+    next();
+  }
 });

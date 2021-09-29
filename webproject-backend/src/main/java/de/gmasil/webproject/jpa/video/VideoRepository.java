@@ -19,9 +19,15 @@
  */
 package de.gmasil.webproject.jpa.video;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import de.gmasil.webproject.projection.VideoProjection;
+
 @Repository
 public interface VideoRepository extends JpaRepository<Video, Long> {
+
+    Page<VideoProjection> findAllProjectionBy(Pageable pageable);
 }

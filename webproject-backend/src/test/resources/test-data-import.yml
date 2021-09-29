@@ -24,11 +24,35 @@ users:
   roles:
   - ADMIN
   - DEV
+  active-theme: "Original"
+  themes:
+  - name: "Original"
+    background-color: "#5c0606"
+    background-highlight-color: "#870e0e"
+    primary-color: "#d10d0d"
+    secondary-color: "#a82d18"
+    text-color: "#ffffff"
 - username: James
   password: pass2
   roles:
   - DEV
   - USER
+
+themes:
+- name: "Webproject Purple"
+  background-color: "#5f0066"
+  background-highlight-color: "#300033"
+  primary-color: "#f221ff"
+  secondary-color: "#b253b8"
+  text-color: "#f2f2f2"
+  default: true
+- name: "Webproject Dark"
+  background-color: "#2f3136"
+  background-highlight-color: "#404759"
+  primary-color: "#3862c9"
+  secondary-color: "#4a339c"
+  text-color: "#fcfcfc"
+
 videos:
 - title: The adventure in the middle of an adventure
   description: |

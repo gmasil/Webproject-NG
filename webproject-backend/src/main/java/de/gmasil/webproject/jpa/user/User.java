@@ -32,6 +32,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
 import javax.persistence.OneToMany;
 import javax.persistence.PreRemove;
 import javax.persistence.Table;
@@ -39,9 +42,12 @@ import javax.persistence.Table;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import de.gmasil.webproject.jpa.Auditable;
 import de.gmasil.webproject.jpa.comment.Comment;
 import de.gmasil.webproject.jpa.role.Role;
+import de.gmasil.webproject.jpa.theme.Theme;
 import de.gmasil.webproject.jpa.videofavorite.VideoFavorite;
 import de.gmasil.webproject.jpa.videorating.VideoRating;
 import lombok.AccessLevel;
@@ -57,6 +63,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity(name = "USER")
 @Table(name = "USER")
+@NamedEntityGraph(name = "UserDto", attributeNodes = { @NamedAttributeNode("roles"),
+        @NamedAttributeNode("activeTheme") })
 public class User extends Auditable implements UserDetails {
 
     @Id
@@ -67,6 +75,7 @@ public class User extends Auditable implements UserDetails {
     @Column(nullable = false, unique = true)
     private String username;
 
+    @JsonIgnore
     @Column(nullable = false)
     private String password;
 
@@ -82,6 +91,13 @@ public class User extends Auditable implements UserDetails {
 
     @OneToMany(mappedBy = "user", cascade = { CascadeType.DETACH, CascadeType.PERSIST })
     private Set<VideoRating> ratings = new HashSet<>();
+
+    @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.PERSIST })
+    @JoinColumn(name = "THEME_ID", nullable = true)
+    private Theme activeTheme = null;
+
+    @OneToMany(mappedBy = "creator", cascade = { CascadeType.DETACH, CascadeType.PERSIST })
+    private Set<Theme> createdThemes = new HashSet<>();
 
     @Builder
     public User(String username, String password) {
@@ -107,6 +123,26 @@ public class User extends Auditable implements UserDetails {
     public void addRating(VideoRating rating) {
         ratings.add(rating);
         rating.setUser(this);
+    }
+
+    public void setActiveTheme(Theme theme) {
+        if (activeTheme != null) {
+            activeTheme.getActiveBy().remove(this);
+        }
+        activeTheme = theme;
+        if (theme != null) {
+            theme.getActiveBy().add(this);
+        }
+    }
+
+    public void addCreatedTheme(Theme theme) {
+        createdThemes.add(theme);
+        theme.setCreator(this);
+    }
+
+    public boolean hasRole(String role) {
+        return getAuthorities().stream().map(GrantedAuthority::getAuthority).filter(name -> name.equals(role))
+                .count() > 0;
     }
 
     @PreRemove

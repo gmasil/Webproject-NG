@@ -26,7 +26,6 @@ import javax.transaction.Transactional;
 
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -52,19 +51,6 @@ public class UserService implements UserDetailsService {
             return user;
         }
         throw new UsernameNotFoundException(String.format("The username '%s' does not exist", username));
-    }
-
-    public boolean checkAccess(Authentication auth, String idParam) {
-        if (auth != null && auth.getPrincipal() != null && auth.getPrincipal() instanceof User) {
-            User user = ((User) auth.getPrincipal());
-            try {
-                int id = Integer.parseInt(idParam);
-                return id == user.getId();
-            } catch (NumberFormatException e) {
-                // Ignore bad user input
-            }
-        }
-        return false;
     }
 
     public void encodePassword(User user) {

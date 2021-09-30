@@ -158,10 +158,11 @@ public class ThemeRestController {
     @GetMapping(value = "/active.css", produces = "text/css")
     public String activeThemeCss() {
         User user = userProvider.getCurrent();
-        Theme theme;
+        Theme theme = null;
         if (user != null) {
-            theme = user.getActiveTheme();
-        } else {
+            theme = themeRepo.findActiveByUser(user.getId()).orElseGet(() -> null);
+        }
+        if (theme == null) {
             theme = themeRepo.findDefault().orElseThrow(() -> new IllegalStateException("No default theme found"));
         }
         return theme.toCss(colorConverter);

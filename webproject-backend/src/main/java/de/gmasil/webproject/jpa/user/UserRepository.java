@@ -37,4 +37,7 @@ public interface UserRepository extends JpaRepository<User, Long>, UserRepositor
     public Optional<UserProjection> findProjectionById(@Param("id") Long id);
 
     public Optional<User> findByUsername(String username);
+
+    @EntityGraph(attributePaths = "roles")
+    public Optional<User> findWithRolesByUsername(String username);
 }

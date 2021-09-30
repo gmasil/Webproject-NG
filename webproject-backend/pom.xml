@@ -52,7 +52,7 @@
         <!-- config -->
         <skipCopyFrontend>false</skipCopyFrontend>
         <!-- sonarqube -->
-        <sonar.coverage.exclusions>**/Application.java</sonar.coverage.exclusions>
+        <sonar.coverage.exclusions>**/Application.java,**/DevConfig.java,**/*Dto.java</sonar.coverage.exclusions>
     </properties>
 
     <dependencies>

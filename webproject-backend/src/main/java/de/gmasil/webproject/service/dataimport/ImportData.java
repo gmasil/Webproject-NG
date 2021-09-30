@@ -27,7 +27,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import de.gmasil.webproject.jpa.VideoQuality;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -35,7 +34,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class ImportData {
 
     private List<ImportUser> users = new LinkedList<>();
@@ -45,7 +43,6 @@ public class ImportData {
     @Getter
     @Setter
     @NoArgsConstructor
-    @AllArgsConstructor
     public static class ImportUser {
 
         private String username;
@@ -59,7 +56,6 @@ public class ImportData {
     @Getter
     @Setter
     @NoArgsConstructor
-    @AllArgsConstructor
     public static class ImportTheme {
 
         private String name;
@@ -81,7 +77,6 @@ public class ImportData {
     @Getter
     @Setter
     @NoArgsConstructor
-    @AllArgsConstructor
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class ImportVideo {
 
@@ -99,7 +94,6 @@ public class ImportData {
         @Getter
         @Setter
         @NoArgsConstructor
-        @AllArgsConstructor
         public static class ImportFile {
 
             private String name;
@@ -109,7 +103,6 @@ public class ImportData {
         @Getter
         @Setter
         @NoArgsConstructor
-        @AllArgsConstructor
         public static class ImportComment {
 
             private String username;
@@ -119,7 +112,6 @@ public class ImportData {
         @Getter
         @Setter
         @NoArgsConstructor
-        @AllArgsConstructor
         public static class ImportRating {
 
             private String username;

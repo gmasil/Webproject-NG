@@ -72,33 +72,33 @@ export default {
   computed: {
     currentUser() {
       return this.$store.state.currentUser;
-    }
+    },
+    globalTheme() {
+      return this.$store.state.theme;
+    },
   },
   data() {
     return {
       themes: [],
       selectedTheme: null,
-      selectedThemeCopy: null
+      selectedThemeCopy: null,
     };
   },
   created() {
-    axios
-      .get("/api/themes/available")
-      .then(response => {
-        this.themes = response.data;
-        if (this.themes.length > 0) {
-          this.themes.forEach(theme => {
-            if (theme.id == this.globalTheme.id) {
-              this.selectedTheme = theme;
-              this.selectedThemeCopy = JSON.parse(
-                JSON.stringify(this.selectedTheme)
-              );
-              return;
-            }
-          });
-        }
-      })
-      .catch(error => {});
+    axios.get("/api/themes/available").then((response) => {
+      this.themes = response.data;
+      if (this.themes.length > 0) {
+        this.themes.forEach((theme) => {
+          if (theme.id == this.globalTheme.id) {
+            this.selectedTheme = theme;
+            this.selectedThemeCopy = JSON.parse(
+              JSON.stringify(this.selectedTheme)
+            );
+            return;
+          }
+        });
+      }
+    });
   },
   methods: {
     onThemeSelectionChange() {
@@ -142,20 +142,20 @@ export default {
             this.selectedTheme,
             config
           )
-          .then(response => {
+          .then((response) => {
             console.log("Theme saved successfully");
             if (activate) {
               this.onActivateClick();
             }
           })
-          .catch(error => {
+          .catch((error) => {
             console.log("Error saving theme: " + error);
           });
       } else {
         // create new theme
         axios
           .post("/api/themes", this.selectedTheme, config)
-          .then(response => {
+          .then((response) => {
             let index = this.findIndexOfSelectedTheme();
             if (index == null) {
               alert("find a better solution!");
@@ -171,7 +171,7 @@ export default {
               this.onActivateClick();
             }
           })
-          .catch(error => {
+          .catch((error) => {
             console.log("Error saving theme: " + error);
           });
       }
@@ -187,10 +187,9 @@ export default {
     onActivateClick() {
       axios
         .put("/api/themes/activate/" + this.selectedTheme.id)
-        .then(response => {
+        .then((response) => {
           this.$store.dispatch("loadTheme");
-        })
-        .catch(error => {});
+        });
     },
     onBackgroundColorChange() {
       this.selectedThemeCopy.backgroundHighlightColor = this.shadeColor(
@@ -222,12 +221,7 @@ export default {
       var b = parseInt(color.substring(5, 7), 16);
       var x = (r + g + b) / 3;
       return x > 128;
-    }
+    },
   },
-  computed: {
-    globalTheme() {
-      return this.$store.state.theme;
-    }
-  }
 };
 </script>

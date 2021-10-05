@@ -17,10 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with Webproject NG. If not, see <https://www.gnu.org/licenses/>.
  */
-'use strict'
-const merge = require('webpack-merge')
-const prodEnv = require('./prod.env')
-
-module.exports = merge(prodEnv, {
-  NODE_ENV: '"development"'
-})
+module.exports = {
+  presets: ["@vue/cli-plugin-babel/preset"],
+};

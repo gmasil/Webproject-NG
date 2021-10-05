@@ -36,7 +36,7 @@ import Navbar from "@/components/Navbar";
 export default {
   name: "App",
   components: {
-    Navbar
+    Navbar,
   },
   created() {
     this.$store.dispatch("loadCurrentUser");
@@ -45,8 +45,8 @@ export default {
   computed: {
     initialized() {
       return this.$store.state.initialized;
-    }
-  }
+    },
+  },
 };
 </script>
 

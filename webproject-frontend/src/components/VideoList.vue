@@ -44,13 +44,13 @@ export default {
   name: "VideoList",
   data() {
     return {
-      videos: []
+      videos: [],
     };
   },
   created() {
     axios
       .get("/api/videos?size=12")
-      .then(response => (this.videos = response.data.content));
-  }
+      .then((response) => (this.videos = response.data.content));
+  },
 };
 </script>

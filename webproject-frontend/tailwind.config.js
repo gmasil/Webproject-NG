@@ -27,15 +27,15 @@ module.exports = {
         "theme-background-highlight": "var(--theme-background-highlight)",
         "theme-primary": "var(--theme-primary)",
         "theme-secondary": "var(--theme-secondary)",
-        "theme-text": "var(--theme-text)"
+        "theme-text": "var(--theme-text)",
       },
       gridTemplateColumns: {
-        fit: "fit-content(100%) fit-content(100%)"
-      }
-    }
+        fit: "fit-content(100%) fit-content(100%)",
+      },
+    },
   },
   variants: {
-    extend: {}
+    extend: {},
   },
-  plugins: []
+  plugins: [],
 };

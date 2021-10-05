@@ -86,6 +86,7 @@
                                     <exclude>**/target/**</exclude>
                                     <exclude>**/dist/**</exclude>
                                     <exclude>**/.babelrc</exclude>
+                                    <exclude>**/.browserslistrc</exclude>
                                 </excludes>
                                 <properties>
                                     <owner>Gmasil</owner>

@@ -60,7 +60,7 @@ export default {
     return {
       currentPassword: "",
       newPassword: "",
-      repeatPassword: ""
+      repeatPassword: "",
     };
   },
   methods: {
@@ -82,17 +82,17 @@ export default {
           "/api/users/updatepassword",
           {
             currentPassword: this.currentPassword,
-            newPassword: this.newPassword
+            newPassword: this.newPassword,
           },
           config
         )
-        .then(response => {
+        .then((response) => {
           console.log("Password changed");
         })
-        .catch(error => {
+        .catch((error) => {
           console.log("Error changing password: " + error);
         });
-    }
-  }
+    },
+  },
 };
 </script>

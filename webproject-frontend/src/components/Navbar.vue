@@ -55,7 +55,7 @@ export default {
     },
     currentUser() {
       return this.$store.state.currentUser;
-    }
-  }
+    },
+  },
 };
 </script>

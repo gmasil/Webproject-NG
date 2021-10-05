@@ -17,25 +17,9 @@
  * You should have received a copy of the GNU General Public License
  * along with Webproject NG. If not, see <https://www.gnu.org/licenses/>.
  */
-'use strict'
-const utils = require('./utils')
-const config = require('../config')
-const isProduction = process.env.NODE_ENV === 'production'
-const sourceMapEnabled = isProduction
-  ? config.build.productionSourceMap
-  : config.dev.cssSourceMap
-
 module.exports = {
-  loaders: utils.cssLoaders({
-    sourceMap: sourceMapEnabled,
-    extract: isProduction
-  }),
-  cssSourceMap: sourceMapEnabled,
-  cacheBusting: config.dev.cacheBusting,
-  transformToRequire: {
-    video: ['src', 'poster'],
-    source: 'src',
-    img: 'src',
-    image: 'xlink:href'
-  }
-}
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+};

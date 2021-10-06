@@ -11,6 +11,7 @@
 .settings/
 .vscode
 dist/
+eslint-report.json
 node/
 node_modules/
 npm-debug.log*

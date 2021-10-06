@@ -85,6 +85,8 @@
                                     <exclude>**/LICENSE.txt</exclude>
                                     <exclude>**/target/**</exclude>
                                     <exclude>**/dist/**</exclude>
+                                    <exclude>**/node/**</exclude>
+                                    <exclude>**/node_modules/**</exclude>
                                     <exclude>**/.babelrc</exclude>
                                     <exclude>**/.browserslistrc</exclude>
                                 </excludes>

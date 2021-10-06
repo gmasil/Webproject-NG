@@ -5,7 +5,8 @@
   "scripts": {
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "dev": "vue-cli-service serve"
+    "dev": "vue-cli-service serve",
+    "sonar": "eslint -o eslint-report.json -f json --ext .ts,.js,.jsx,.vue src/"
   },
   "dependencies": {
     "@tailwindcss/postcss7-compat": "^2.0.2",

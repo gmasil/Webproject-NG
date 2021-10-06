@@ -26,6 +26,7 @@ import Themes from "@/components/Themes.vue";
 import Login from "@/components/Login.vue";
 import ChangePassword from "@/components/account/ChangePassword.vue";
 import Error from "@/components/Error.vue";
+import { CallbackFunction } from "@/types";
 
 Vue.use(Router);
 
@@ -67,8 +68,6 @@ const router = new Router({
     },
   ],
 });
-
-type CallbackFunction = () => void;
 
 function waitForInit(callback: CallbackFunction) {
   if (!store.state.initialized) {

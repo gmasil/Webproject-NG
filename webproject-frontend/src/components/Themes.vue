@@ -64,10 +64,18 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from "vue";
+import { Theme } from "@/types";
 import axios from "axios";
 
-export default {
+declare interface BaseComponentData {
+  themes: Theme[];
+  selectedTheme: Theme | null;
+  selectedThemeCopy: Theme | null;
+}
+
+const Themes = Vue.extend({
   name: "Themes",
   computed: {
     currentUser() {
@@ -77,7 +85,7 @@ export default {
       return this.$store.state.theme;
     },
   },
-  data() {
+  data(): BaseComponentData {
     return {
       themes: [],
       selectedTheme: null,
@@ -88,7 +96,7 @@ export default {
     axios.get("/api/themes/available").then((response) => {
       this.themes = response.data;
       if (this.themes.length > 0) {
-        this.themes.forEach((theme) => {
+        this.themes.forEach((theme: Theme) => {
           if (theme.id == this.globalTheme.id) {
             this.selectedTheme = theme;
             this.selectedThemeCopy = JSON.parse(
@@ -105,12 +113,16 @@ export default {
       this.selectedThemeCopy = JSON.parse(JSON.stringify(this.selectedTheme));
     },
     onSaveClick() {
-      this.patchTheme(this.selectedThemeCopy, this.selectedTheme);
-      this.persistSelectedTheme(false);
+      if (this.selectedThemeCopy != null && this.selectedTheme != null) {
+        this.patchTheme(this.selectedThemeCopy, this.selectedTheme);
+        this.persistSelectedTheme(false);
+      }
     },
     onSaveActivateClick() {
-      this.patchTheme(this.selectedThemeCopy, this.selectedTheme);
-      this.persistSelectedTheme(true);
+      if (this.selectedThemeCopy != null && this.selectedTheme != null) {
+        this.patchTheme(this.selectedThemeCopy, this.selectedTheme);
+        this.persistSelectedTheme(true);
+      }
     },
     onResetClick() {
       this.selectedThemeCopy = JSON.parse(JSON.stringify(this.selectedTheme));
@@ -124,7 +136,7 @@ export default {
       this.selectedTheme = newTheme;
       this.selectedThemeCopy = JSON.parse(JSON.stringify(this.selectedTheme));
     },
-    patchTheme(source, target) {
+    patchTheme(source: Theme, target: Theme) {
       target.name = source.name;
       target.backgroundColor = source.backgroundColor;
       target.backgroundHighlightColor = source.backgroundHighlightColor;
@@ -132,9 +144,9 @@ export default {
       target.secondaryColor = source.secondaryColor;
       target.textColor = source.textColor;
     },
-    persistSelectedTheme(activate) {
+    persistSelectedTheme(activate: boolean) {
       const config = { headers: { "Content-Type": "application/json" } };
-      if (this.selectedThemeCopy.id != null) {
+      if (this.selectedTheme?.id != null) {
         // update theme
         axios
           .put(
@@ -142,7 +154,7 @@ export default {
             this.selectedTheme,
             config
           )
-          .then((response) => {
+          .then(() => {
             console.log("Theme saved successfully");
             if (activate) {
               this.onActivateClick();
@@ -161,8 +173,8 @@ export default {
               alert("find a better solution!");
               return;
             }
-            this.themes[index] = response.data;
-            this.selectedTheme = response.data;
+            this.themes[index] = response.data as Theme;
+            this.selectedTheme = this.themes[index];
             this.selectedThemeCopy = JSON.parse(
               JSON.stringify(this.selectedTheme)
             );
@@ -185,25 +197,30 @@ export default {
       return null;
     },
     onActivateClick() {
-      axios
-        .put("/api/themes/activate/" + this.selectedTheme.id)
-        .then((response) => {
+      if (this.selectedTheme != null) {
+        axios.put("/api/themes/activate/" + this.selectedTheme.id).then(() => {
           this.$store.dispatch("loadTheme");
         });
+      }
     },
     onBackgroundColorChange() {
-      this.selectedThemeCopy.backgroundHighlightColor = this.shadeColor(
-        this.selectedThemeCopy.backgroundColor,
-        this.isLightColor(this.selectedThemeCopy.backgroundColor) ? -20 : 20
-      );
+      if (
+        this.selectedThemeCopy != null &&
+        this.selectedThemeCopy.backgroundColor != null
+      ) {
+        this.selectedThemeCopy.backgroundHighlightColor = this.shadeColor(
+          this.selectedThemeCopy.backgroundColor,
+          this.isLightColor(this.selectedThemeCopy.backgroundColor) ? -20 : 20
+        );
+      }
     },
-    shadeColor(color, amount) {
-      var r = parseInt(color.substring(1, 3), 16);
-      var g = parseInt(color.substring(3, 5), 16);
-      var b = parseInt(color.substring(5, 7), 16);
-      r = parseInt(r + amount);
-      g = parseInt(g + amount);
-      b = parseInt(b + amount);
+    shadeColor(color: string, amount: number) {
+      let r: number = parseInt(color.substring(1, 3), 16);
+      let g: number = parseInt(color.substring(3, 5), 16);
+      let b: number = parseInt(color.substring(5, 7), 16);
+      r += amount;
+      g += amount;
+      b += amount;
       r = r < 255 ? r : 255;
       g = g < 255 ? g : 255;
       b = b < 255 ? b : 255;
@@ -215,7 +232,7 @@ export default {
         b.toString(16).length == 1 ? "0" + b.toString(16) : b.toString(16);
       return "#" + rr + gg + bb;
     },
-    isLightColor(color) {
+    isLightColor(color: string) {
       var r = parseInt(color.substring(1, 3), 16);
       var g = parseInt(color.substring(3, 5), 16);
       var b = parseInt(color.substring(5, 7), 16);
@@ -223,5 +240,7 @@ export default {
       return x > 128;
     },
   },
-};
+});
+
+export default Themes;
 </script>

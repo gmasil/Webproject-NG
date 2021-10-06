@@ -24,38 +24,43 @@
     <ul>
       <li><router-link to="/">Home</router-link></li>
       <li><router-link to="/videos">Videos</router-link></li>
-      <li v-if="authenticated">
+      <li v-if="this.isAuthenticated()">
         <router-link to="/themes">Themes</router-link>
       </li>
-      <li v-if="!authenticated">
+      <li v-if="!this.isAuthenticated()">
         <router-link to="/login">Login</router-link>
       </li>
-      <li v-if="authenticated">
+      <li v-if="this.isAuthenticated()">
         <router-link to="/changepassword">Change Password</router-link>
       </li>
-      <li v-if="authenticated">
+      <li v-if="this.isAuthenticated()">
         <a href="/logout">Logout</a>
       </li>
     </ul>
     <hr class="border-theme-text my-1" />
-    <p v-if="authenticated">
+    <p v-if="this.isAuthenticated()">
       Logged in as
-      {{ currentUser.username }}
+      {{ this.getUsername }}
     </p>
-    <hr v-if="authenticated" class="border-theme-text my-2" />
+    <hr v-if="this.isAuthenticated()" class="border-theme-text my-2" />
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from "vue";
+import { mapGetters } from "vuex";
+
+const Navbar = Vue.extend({
   name: "Navbar",
+  methods: {
+    ...mapGetters(["isAuthenticated", "getCurrentUser"]),
+  },
   computed: {
-    authenticated() {
-      return this.$store.state.currentUser != null;
-    },
-    currentUser() {
-      return this.$store.state.currentUser;
+    getUsername: function (): string {
+      return this.getCurrentUser().username;
     },
   },
-};
+});
+
+export default Navbar;
 </script>

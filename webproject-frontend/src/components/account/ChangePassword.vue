@@ -51,10 +51,11 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from "vue";
 import axios from "axios";
 
-export default {
+const ChangePassword = Vue.extend({
   name: "ChangePassword",
   data() {
     return {
@@ -86,7 +87,7 @@ export default {
           },
           config
         )
-        .then((response) => {
+        .then(() => {
           console.log("Password changed");
         })
         .catch((error) => {
@@ -94,5 +95,7 @@ export default {
         });
     },
   },
-};
+});
+
+export default ChangePassword;
 </script>

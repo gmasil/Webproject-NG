@@ -21,82 +21,83 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import axios from "axios";
+import { Page, Theme, User, Video } from "@/types";
 
-Vue.use(Vuex);
-
-class User {}
-
-class Theme {
-  backgroundColor: string;
-  backgroundHighlightColor: string;
-  primaryColor: string;
-  secondaryColor: string;
-  textColor: string;
-
-  constructor(
-    backgroundColor: string,
-    backgroundHighlightColor: string,
-    primaryColor: string,
-    secondaryColor: string,
-    textColor: string
-  ) {
-    this.backgroundColor = backgroundColor;
-    this.backgroundHighlightColor = backgroundHighlightColor;
-    this.primaryColor = primaryColor;
-    this.secondaryColor = secondaryColor;
-    this.textColor = textColor;
-  }
-
-  applyTheme() {
-    document.documentElement.style.setProperty(
-      "--theme-background",
-      this.backgroundColor
-    );
-    document.documentElement.style.setProperty(
-      "--theme-background-highlight",
-      this.backgroundHighlightColor
-    );
-    document.documentElement.style.setProperty(
-      "--theme-primary",
-      this.primaryColor
-    );
-    document.documentElement.style.setProperty(
-      "--theme-secondary",
-      this.secondaryColor
-    );
-    document.documentElement.style.setProperty("--theme-text", this.textColor);
-  }
-}
-
-class State {
+export class State {
   initialized = false;
   currentUser: User | null = null;
   theme: Theme | null = null;
 }
 
+Vue.use(Vuex);
+
 export default new Vuex.Store({
   state: new State(),
-  actions: {
-    loadCurrentUser({ commit }) {
-      axios
-        .get("/api/users/current")
-        .then((response) => {
-          commit("setCurrentUser", response.data);
-          commit("initialized");
-        })
-        .catch(() => {
-          commit("initialized");
-        });
+  getters: {
+    isInitialized: (state) => {
+      return state.initialized;
     },
-    loadTheme({ commit }) {
-      axios
-        .get("/api/themes/active")
-        .then((response) => {
-          commit("setTheme", response.data);
-        })
-        .catch((error) => {
-          console.log("Error while loading theme: " + error);
-        });
+    getCurrentUser: (state) => {
+      return state.currentUser;
+    },
+    getTheme: (state) => {
+      return state.theme;
+    },
+    isAuthenticated: (state) => {
+      return state.currentUser != null;
+    },
+  },
+  actions: {
+    loadCurrentUser({ commit }): Promise<User> {
+      return new Promise<User>((resolve, reject) => {
+        axios
+          .get("/api/users/current")
+          .then((response) => {
+            const user: User = response.data;
+            commit("setCurrentUser", user);
+            commit("initialized");
+            resolve(user);
+          })
+          .catch((error) => {
+            commit("initialized");
+            reject(error);
+          });
+      });
+    },
+    loadTheme({ commit }): Promise<Theme> {
+      return new Promise<Theme>((resolve, reject) => {
+        axios
+          .get("/api/themes/active")
+          .then((response) => {
+            const theme: Theme = Object.assign(new Theme(), response.data);
+            commit("setTheme", theme);
+            resolve(theme);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    },
+    loadVideos({ commit }, page: Page): Promise<Video[]> {
+      return new Promise<Video[]>((resolve, reject) => {
+        axios
+          .get(
+            "/api/videos?size=" +
+              page.size +
+              "&page=" +
+              page.page +
+              "&sort=" +
+              page.sort
+          )
+          .then((response) => {
+            const videos: Video[] = response.data["content"] as Video[];
+            resolve(videos);
+          })
+          .catch((error) => {
+            commit("dummy");
+            reject(error);
+          });
+      });
     },
   },
   mutations: {
@@ -106,10 +107,16 @@ export default new Vuex.Store({
     initialized(state) {
       Vue.set(state, "initialized", true);
     },
-    setTheme(state, data) {
+    setTheme(state, data: Theme) {
       Vue.set(state, "theme", data);
-      if (state.theme) {
+      if (state.theme != null) {
         state.theme.applyTheme();
+      }
+    },
+    dummy(state) {
+      if (state != null) {
+        // workaround for: 'commit' is defined but never used
+        // if commit is not defined the function is not assignable to type 'Action<State, State>'.
       }
     },
   },

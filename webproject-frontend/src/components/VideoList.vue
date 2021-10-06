@@ -37,20 +37,34 @@
   </div>
 </template>
 
-<script>
-import axios from "axios";
+<script lang="ts">
+import Vue from "vue";
+import { mapActions } from "vuex";
+import { Video, Page } from "@/types";
 
-export default {
+declare interface BaseComponentData {
+  videos: Video[];
+}
+
+const VideoList = Vue.extend({
   name: "VideoList",
-  data() {
+  data(): BaseComponentData {
     return {
       videos: [],
     };
   },
-  created() {
-    axios
-      .get("/api/videos?size=12")
-      .then((response) => (this.videos = response.data.content));
+  created(): void {
+    this.loadVideos({ size: 10, page: 0, sort: "id" } as Page).then(
+      (videos) => {
+        console.log("writing videos: " + videos.length);
+        this.videos = videos;
+      }
+    );
   },
-};
+  methods: {
+    ...mapActions(["loadVideos"]),
+  },
+});
+
+export default VideoList;
 </script>

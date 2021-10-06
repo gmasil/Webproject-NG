@@ -21,8 +21,7 @@
 -->
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
-    <a href="javascript:void(0)" @click="myclick()">TEST</a>
+    <h1>Webproject NG</h1>
     <h2>Essential Links</h2>
     <ul>
       <li>
@@ -63,23 +62,6 @@
     </ul>
   </div>
 </template>
-
-<script>
-export default {
-  name: "HelloWorld",
-  data() {
-    return {
-      msg: "Welcome to Your Vue.js App",
-    };
-  },
-  methods: {
-    myclick() {
-      this.$store.commit("increment");
-      console.log(this.$store.state.count);
-    },
-  },
-};
-</script>
 
 <style scoped>
 h1,

@@ -22,7 +22,7 @@
 <template>
   <div
     id="app"
-    v-if="initialized"
+    v-if="this.isInitialized()"
     class="bg-theme-background min-h-screen text-theme-text"
   >
     <navbar />
@@ -30,24 +30,27 @@
   </div>
 </template>
 
-<script>
-import Navbar from "@/components/Navbar";
+<script lang="ts">
+import Vue from "vue";
+import { mapActions, mapGetters } from "vuex";
+import Navbar from "@/components/Navbar.vue";
 
-export default {
+const App = Vue.extend({
   name: "App",
   components: {
     Navbar,
   },
-  created() {
-    this.$store.dispatch("loadCurrentUser");
-    this.$store.dispatch("loadTheme");
+  methods: {
+    ...mapActions(["loadCurrentUser", "loadTheme"]),
+    ...mapGetters(["isInitialized"]),
   },
-  computed: {
-    initialized() {
-      return this.$store.state.initialized;
-    },
+  created(): void {
+    this.loadCurrentUser();
+    this.loadTheme();
   },
-};
+});
+
+export default App;
 </script>
 
 <style lang="scss">

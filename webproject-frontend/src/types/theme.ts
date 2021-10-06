@@ -26,23 +26,6 @@ export class Theme {
   primaryColor?: string;
   secondaryColor?: string;
   textColor?: string;
-  /*
-  constructor(
-    name: string,
-    backgroundColor: string,
-    backgroundHighlightColor: string,
-    primaryColor: string,
-    secondaryColor: string,
-    textColor: string
-  ) {
-    this.name = name;
-    this.backgroundColor = backgroundColor;
-    this.backgroundHighlightColor = backgroundHighlightColor;
-    this.primaryColor = primaryColor;
-    this.secondaryColor = secondaryColor;
-    this.textColor = textColor;
-  }
-*/
 
   applyTheme(): void {
     if (this.name == null) {

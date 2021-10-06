@@ -28,13 +28,6 @@
       label="name"
       @input="onThemeSelectionChange"
     ></v-select>
-    <!--
-    <select v-model="selectedTheme" @change="onThemeSelectionChange">
-      <option v-for="theme in themes" v-bind:value="theme" :key="theme.id">
-        {{ theme.name }}
-      </option>
-    </select>
-    -->
 
     <button @click="onActivateClick">Activate</button>
     <button @click="onDuplicateClick">Duplicate</button>

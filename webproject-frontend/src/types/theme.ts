@@ -19,13 +19,14 @@
 ///
 
 export class Theme {
-  id?: number;
+  id?: number | null;
   name?: string;
   backgroundColor?: string;
   backgroundHighlightColor?: string;
   primaryColor?: string;
   secondaryColor?: string;
   textColor?: string;
+  preset?: boolean;
 
   applyTheme(): void {
     if (this.name == null) {

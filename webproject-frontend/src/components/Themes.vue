@@ -59,6 +59,7 @@
 
 <script lang="ts">
 import Vue from "vue";
+import { mapGetters } from "vuex";
 import { Theme } from "@/types";
 import axios from "axios";
 
@@ -70,14 +71,6 @@ declare interface BaseComponentData {
 
 const Themes = Vue.extend({
   name: "Themes",
-  computed: {
-    currentUser() {
-      return this.$store.state.currentUser;
-    },
-    globalTheme() {
-      return this.$store.state.theme;
-    },
-  },
   data(): BaseComponentData {
     return {
       themes: [],
@@ -90,7 +83,7 @@ const Themes = Vue.extend({
       this.themes = response.data;
       if (this.themes.length > 0) {
         this.themes.forEach((theme: Theme) => {
-          if (theme.id == this.globalTheme.id) {
+          if (theme.id == this.getTheme().id) {
             this.selectedTheme = theme;
             this.selectedThemeCopy = JSON.parse(
               JSON.stringify(this.selectedTheme)
@@ -102,8 +95,11 @@ const Themes = Vue.extend({
     });
   },
   methods: {
+    ...mapGetters(["getCurrentUser", "getTheme"]),
     onThemeSelectionChange() {
-      this.selectedThemeCopy = JSON.parse(JSON.stringify(this.selectedTheme));
+      this.selectedThemeCopy = JSON.parse(
+        JSON.stringify(this.selectedTheme)
+      ) as Theme;
     },
     onSaveClick() {
       if (this.selectedThemeCopy != null && this.selectedTheme != null) {
@@ -121,7 +117,7 @@ const Themes = Vue.extend({
       this.selectedThemeCopy = JSON.parse(JSON.stringify(this.selectedTheme));
     },
     onDuplicateClick() {
-      let newTheme = JSON.parse(JSON.stringify(this.selectedTheme));
+      let newTheme: Theme = JSON.parse(JSON.stringify(this.selectedTheme));
       newTheme.id = null;
       newTheme.name += " Copy";
       newTheme.preset = false;

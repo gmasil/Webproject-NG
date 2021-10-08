@@ -18,22 +18,42 @@
 /// along with Webproject NG. If not, see <https://www.gnu.org/licenses/>.
 ///
 
-import Vue from "vue";
+import Vue, { VNode } from "vue";
 import App from "@/App.vue";
 import router from "@/router";
 import store from "@/store";
+import Toast from "vue-toastification";
 import vSelect from "vue-select";
 import { ColorPicker, ColorPanel } from "one-colorpicker";
 import "tailwindcss/tailwind.css";
+import "vue-toastification/dist/index.css";
 
 Vue.config.productionTip = false;
 
+Vue.use(Toast, {
+  transition: "Vue-Toastification__bounce",
+  maxToasts: 20,
+  newestOnTop: true,
+  position: "top-right",
+  timeout: 7000,
+  closeOnClick: true,
+  pauseOnFocusLoss: true,
+  pauseOnHover: false,
+  draggable: true,
+  draggablePercent: 0.6,
+  showCloseButtonOnHover: false,
+  hideProgressBar: false,
+  closeButton: "button",
+  icon: true,
+  rtl: false,
+});
+
 Vue.use(ColorPanel);
 Vue.use(ColorPicker);
-Vue.component("v-select", vSelect);
+Vue.component("VSelect", vSelect);
 
 new Vue({
   router,
   store,
-  render: (h) => h(App),
+  render: (h): VNode => h(App),
 }).$mount("#app");

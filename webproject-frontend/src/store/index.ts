@@ -34,16 +34,16 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: new State(),
   getters: {
-    isInitialized: (state) => {
+    isInitialized(state): boolean {
       return state.initialized;
     },
-    getCurrentUser: (state) => {
+    getCurrentUser(state): User | null {
       return state.currentUser;
     },
-    getTheme: (state) => {
+    getTheme(state): Theme | null {
       return state.theme;
     },
-    isAuthenticated: (state) => {
+    isAuthenticated(state): boolean {
       return state.currentUser != null;
     },
   },
@@ -82,12 +82,7 @@ export default new Vuex.Store({
       return new Promise<Video[]>((resolve, reject) => {
         axios
           .get(
-            "/api/videos?size=" +
-              page.size +
-              "&page=" +
-              page.page +
-              "&sort=" +
-              page.sort
+            `/api/videos?size=${page.size}&page=${page.page}&sort=${page.sort}`
           )
           .then((response) => {
             const videos: Video[] = response.data["content"] as Video[];
@@ -101,19 +96,19 @@ export default new Vuex.Store({
     },
   },
   mutations: {
-    setCurrentUser(state, data) {
+    setCurrentUser(state, data): void {
       Vue.set(state, "currentUser", data);
     },
-    initialized(state) {
+    initialized(state): void {
       Vue.set(state, "initialized", true);
     },
-    setTheme(state, data: Theme) {
+    setTheme(state, data: Theme): void {
       Vue.set(state, "theme", data);
       if (state.theme != null) {
         state.theme.applyTheme();
       }
     },
-    dummy(state) {
+    dummy(state): void {
       if (state != null) {
         // workaround for: 'commit' is defined but never used
         // if commit is not defined the function is not assignable to type 'Action<State, State>'.

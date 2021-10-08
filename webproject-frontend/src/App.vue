@@ -21,8 +21,8 @@
 -->
 <template>
   <div
+    v-if="isInitialized()"
     id="app"
-    v-if="this.isInitialized()"
     class="bg-theme-background min-h-screen text-theme-text"
   >
     <navbar />
@@ -40,13 +40,13 @@ const App = Vue.extend({
   components: {
     Navbar,
   },
+  created(): void {
+    void this.loadCurrentUser();
+    void this.loadTheme();
+  },
   methods: {
     ...mapActions(["loadCurrentUser", "loadTheme"]),
     ...mapGetters(["isInitialized"]),
-  },
-  created(): void {
-    this.loadCurrentUser();
-    this.loadTheme();
   },
 });
 

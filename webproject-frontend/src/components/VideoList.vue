@@ -22,9 +22,9 @@
 <template>
   <div class="grid xl:grid-cols-5 lg:grid-cols-3 md:grid-cols-2 gap-5 p-5">
     <div
-      class="h-16 w-full flex bg-theme-background-highlight rounded-lg"
       v-for="video in videos"
       :key="video.id"
+      class="h-16 w-full flex bg-theme-background-highlight rounded-lg"
     >
       <div
         class="w-28 h-16 bg-cover bg-center rounded-lg flex-initial"
@@ -54,12 +54,13 @@ const VideoList = Vue.extend({
     };
   },
   created(): void {
-    this.loadVideos({ size: 10, page: 0, sort: "id" } as Page).then(
-      (videos) => {
-        console.log("writing videos: " + videos.length);
+    this.loadVideos({ size: 10, page: 0, sort: "id" } as Page)
+      .then((videos: Video[]) => {
         this.videos = videos;
-      }
-    );
+      })
+      .catch((error: Error) => {
+        this.$toast.error("Error while loading videos: " + error.message);
+      });
   },
   methods: {
     ...mapActions(["loadVideos"]),

@@ -23,24 +23,24 @@
   <div>
     <label for="inputCurrentPassword">Current Password:</label>
     <input
+      id="inputCurrentPassword"
+      v-model="currentPassword"
       class="block"
       type="password"
-      v-model="currentPassword"
-      id="inputCurrentPassword"
     />
     <label for="inputNewPassword">Current Password:</label>
     <input
+      id="inputNewPassword"
+      v-model="newPassword"
       class="block"
       type="password"
-      v-model="newPassword"
-      id="inputNewPassword"
     />
     <label for="inputRepeatPassword">Current Password:</label>
     <input
+      id="inputRepeatPassword"
+      v-model="repeatPassword"
       class="block"
       type="password"
-      v-model="repeatPassword"
-      id="inputRepeatPassword"
     />
     <button
       class="border-2 border-theme-text bg-theme-background px-2 py-1"
@@ -88,10 +88,10 @@ const ChangePassword = Vue.extend({
           config
         )
         .then(() => {
-          console.log("Password changed");
+          this.$toast.success("Password changed successsfully");
         })
-        .catch((error) => {
-          console.log("Error changing password: " + error);
+        .catch((error: Error) => {
+          this.$toast.success("Error changing password: " + error.message);
         });
     },
   },

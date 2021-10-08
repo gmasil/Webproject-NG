@@ -69,7 +69,7 @@ const router = new Router({
   ],
 });
 
-function waitForInit(callback: CallbackFunction) {
+function waitForInit(callback: CallbackFunction): void {
   if (!store.state.initialized) {
     setTimeout(function () {
       waitForInit(callback);
@@ -80,7 +80,7 @@ function waitForInit(callback: CallbackFunction) {
 }
 
 router.beforeEach((to, from, next) => {
-  const authorize = to.meta?.authorize || false;
+  const authorize: boolean = to.meta?.authorize as boolean;
   if (authorize) {
     waitForInit(() => {
       if (!store.state.currentUser) {

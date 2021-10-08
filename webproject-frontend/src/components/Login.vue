@@ -25,7 +25,7 @@
     <form method="post" action="/performlogin">
       <input type="text" name="username" />
       <input type="password" name="password" />
-      <input type="checkbox" id="login-remember" name="rememberme" />
+      <input id="login-remember" type="checkbox" name="rememberme" />
       <label for="login-remember">Stay logged in</label>
       <input type="submit" value="Login" />
     </form>

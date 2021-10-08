@@ -21,13 +21,13 @@
 -->
 <template>
   <div>
-    <v-select
-      class="bg-theme-background-highlight text-theme-text"
+    <VSelect
       v-model="selectedTheme"
+      class="bg-theme-background-highlight text-theme-text"
       :options="themes"
       label="name"
       @input="onThemeSelectionChange"
-    ></v-select>
+    ></VSelect>
 
     <button @click="onActivateClick">Activate</button>
     <button @click="onDuplicateClick">Duplicate</button>
@@ -35,18 +35,18 @@
     <div v-if="selectedTheme && !selectedTheme.preset">
       <div class="grid grid-cols-fit gap-x-4 gap-y-1 justify-items-start">
         <span class="inline-block">Name</span>
-        <input type="text" v-model="selectedThemeCopy.name" />
+        <input v-model="selectedThemeCopy.name" type="text" />
         <span class="inline-block">Background color</span>
         <color-picker
-          class="border border-theme-text"
           v-model="selectedThemeCopy.backgroundColor"
-          @change="onBackgroundColorChange"
+          class="border border-theme-text"
           disabled="true"
+          @change="onBackgroundColorChange"
         ></color-picker>
         <span>Text color</span>
         <color-picker
-          class="border border-theme-text"
           v-model="selectedThemeCopy.textColor"
+          class="border border-theme-text"
         ></color-picker>
       </div>
 
@@ -59,7 +59,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import { Theme } from "@/types";
 import axios from "axios";
 
@@ -78,54 +78,69 @@ const Themes = Vue.extend({
       selectedThemeCopy: null,
     };
   },
-  created() {
-    axios.get("/api/themes/available").then((response) => {
-      this.themes = response.data;
-      if (this.themes.length > 0) {
-        this.themes.forEach((theme: Theme) => {
-          if (theme.id == this.getTheme().id) {
-            this.selectedTheme = theme;
-            this.selectedThemeCopy = JSON.parse(
-              JSON.stringify(this.selectedTheme)
-            );
-            return;
-          }
-        });
-      }
-    });
+  created(): void {
+    axios
+      .get("/api/themes/available")
+      .then((response) => {
+        this.themes = response.data as Theme[];
+        const activeTheme: Theme = this.getTheme() as Theme;
+        if (this.themes.length > 0) {
+          this.themes.forEach((theme: Theme) => {
+            if (theme.id == activeTheme.id) {
+              this.selectedTheme = theme;
+              this.selectedThemeCopy = JSON.parse(
+                JSON.stringify(this.selectedTheme)
+              ) as Theme;
+              return;
+            }
+          });
+        }
+      })
+      .catch((error: Error) => {
+        this.$toast.error(
+          "Error while loading available themes: " + error.message
+        );
+      });
   },
   methods: {
+    ...mapActions(["loadTheme"]),
     ...mapGetters(["getCurrentUser", "getTheme"]),
-    onThemeSelectionChange() {
+    onThemeSelectionChange(): void {
       this.selectedThemeCopy = JSON.parse(
         JSON.stringify(this.selectedTheme)
       ) as Theme;
     },
-    onSaveClick() {
+    onSaveClick(): void {
       if (this.selectedThemeCopy != null && this.selectedTheme != null) {
         this.patchTheme(this.selectedThemeCopy, this.selectedTheme);
         this.persistSelectedTheme(false);
       }
     },
-    onSaveActivateClick() {
+    onSaveActivateClick(): void {
       if (this.selectedThemeCopy != null && this.selectedTheme != null) {
         this.patchTheme(this.selectedThemeCopy, this.selectedTheme);
         this.persistSelectedTheme(true);
       }
     },
-    onResetClick() {
-      this.selectedThemeCopy = JSON.parse(JSON.stringify(this.selectedTheme));
+    onResetClick(): void {
+      this.selectedThemeCopy = JSON.parse(
+        JSON.stringify(this.selectedTheme)
+      ) as Theme;
     },
-    onDuplicateClick() {
-      let newTheme: Theme = JSON.parse(JSON.stringify(this.selectedTheme));
+    onDuplicateClick(): void {
+      let newTheme: Theme = JSON.parse(
+        JSON.stringify(this.selectedTheme)
+      ) as Theme;
       newTheme.id = null;
       newTheme.name += " Copy";
       newTheme.preset = false;
       this.themes.push(newTheme);
       this.selectedTheme = newTheme;
-      this.selectedThemeCopy = JSON.parse(JSON.stringify(this.selectedTheme));
+      this.selectedThemeCopy = JSON.parse(
+        JSON.stringify(this.selectedTheme)
+      ) as Theme;
     },
-    patchTheme(source: Theme, target: Theme) {
+    patchTheme(source: Theme, target: Theme): void {
       target.name = source.name;
       target.backgroundColor = source.backgroundColor;
       target.backgroundHighlightColor = source.backgroundHighlightColor;
@@ -133,51 +148,53 @@ const Themes = Vue.extend({
       target.secondaryColor = source.secondaryColor;
       target.textColor = source.textColor;
     },
-    persistSelectedTheme(activate: boolean) {
+    persistSelectedTheme(activate: boolean): void {
       const config = { headers: { "Content-Type": "application/json" } };
       if (this.selectedTheme?.id != null) {
         // update theme
         axios
           .put(
-            "/api/themes/" + this.selectedTheme.id,
+            "/api/themes/" + this.selectedTheme.id.toString(),
             this.selectedTheme,
             config
           )
           .then(() => {
-            console.log("Theme saved successfully");
+            this.$toast.success("Theme saved successfully");
             if (activate) {
               this.onActivateClick();
             }
           })
-          .catch((error) => {
-            console.log("Error saving theme: " + error);
+          .catch((error: Error) => {
+            this.$toast.error("Error while saving theme: " + error.message);
           });
       } else {
         // create new theme
         axios
           .post("/api/themes", this.selectedTheme, config)
           .then((response) => {
-            let index = this.findIndexOfSelectedTheme();
+            let index: number | null = this.findIndexOfSelectedTheme();
             if (index == null) {
-              alert("find a better solution!");
+              this.$toast.error(
+                "Error while saving new theme, cannot find index"
+              );
               return;
             }
             this.themes[index] = response.data as Theme;
             this.selectedTheme = this.themes[index];
             this.selectedThemeCopy = JSON.parse(
               JSON.stringify(this.selectedTheme)
-            );
-            console.log("Theme saved successfully");
+            ) as Theme;
+            this.$toast.success("Theme saved successfully");
             if (activate) {
               this.onActivateClick();
             }
           })
-          .catch((error) => {
-            console.log("Error saving theme: " + error);
+          .catch((error: Error) => {
+            this.$toast.error("Error saving theme: " + error.message);
           });
       }
     },
-    findIndexOfSelectedTheme() {
+    findIndexOfSelectedTheme(): number | null {
       for (let index = 0; index < this.themes.length; ++index) {
         if (this.themes[index] == this.selectedTheme) {
           return index;
@@ -185,14 +202,19 @@ const Themes = Vue.extend({
       }
       return null;
     },
-    onActivateClick() {
-      if (this.selectedTheme != null) {
-        axios.put("/api/themes/activate/" + this.selectedTheme.id).then(() => {
-          this.$store.dispatch("loadTheme");
-        });
+    onActivateClick(): void {
+      if (this.selectedTheme?.id != null) {
+        axios
+          .put("/api/themes/activate/" + this.selectedTheme.id.toString())
+          .then(() => {
+            void this.loadTheme();
+          })
+          .catch((error: Error) => {
+            this.$toast.error("Error while activating theme: " + error.message);
+          });
       }
     },
-    onBackgroundColorChange() {
+    onBackgroundColorChange(): void {
       if (
         this.selectedThemeCopy != null &&
         this.selectedThemeCopy.backgroundColor != null
@@ -203,7 +225,7 @@ const Themes = Vue.extend({
         );
       }
     },
-    shadeColor(color: string, amount: number) {
+    shadeColor(color: string, amount: number): string {
       let r: number = parseInt(color.substring(1, 3), 16);
       let g: number = parseInt(color.substring(3, 5), 16);
       let b: number = parseInt(color.substring(5, 7), 16);
@@ -221,7 +243,7 @@ const Themes = Vue.extend({
         b.toString(16).length == 1 ? "0" + b.toString(16) : b.toString(16);
       return "#" + rr + gg + bb;
     },
-    isLightColor(color: string) {
+    isLightColor(color: string): boolean {
       var r = parseInt(color.substring(1, 3), 16);
       var g = parseInt(color.substring(3, 5), 16);
       var b = parseInt(color.substring(5, 7), 16);

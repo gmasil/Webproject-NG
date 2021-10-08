@@ -18,9 +18,7 @@
 /// along with Webproject NG. If not, see <https://www.gnu.org/licenses/>.
 ///
 
-export * from "@/types/callbackfunction";
-export * from "@/types/changepassworddata";
-export * from "@/types/page";
-export * from "@/types/theme";
-export * from "@/types/user";
-export * from "@/types/video";
+export interface ChangePasswordData {
+  currentPassword: string;
+  newPassword: string;
+}

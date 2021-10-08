@@ -61,7 +61,6 @@
 import Vue from "vue";
 import { mapActions, mapGetters } from "vuex";
 import { Theme } from "@/types";
-import axios from "axios";
 
 declare interface BaseComponentData {
   themes: Theme[];
@@ -79,11 +78,10 @@ const Themes = Vue.extend({
     };
   },
   created(): void {
-    axios
-      .get("/api/themes/available")
-      .then((response) => {
-        this.themes = response.data as Theme[];
-        const activeTheme: Theme = this.getTheme() as Theme;
+    this.loadAvailableThemes()
+      .then((themes: Theme[]) => {
+        this.themes = themes;
+        const activeTheme: Theme = this.getActiveTheme() as Theme;
         if (this.themes.length > 0) {
           this.themes.forEach((theme: Theme) => {
             if (theme.id == activeTheme.id) {
@@ -103,8 +101,13 @@ const Themes = Vue.extend({
       });
   },
   methods: {
-    ...mapActions(["loadTheme"]),
-    ...mapGetters(["getCurrentUser", "getTheme"]),
+    ...mapActions([
+      "loadActiveTheme",
+      "loadAvailableThemes",
+      "saveTheme",
+      "activateTheme",
+    ]),
+    ...mapGetters(["getCurrentUser", "getActiveTheme"]),
     onThemeSelectionChange(): void {
       this.selectedThemeCopy = JSON.parse(
         JSON.stringify(this.selectedTheme)
@@ -149,15 +152,9 @@ const Themes = Vue.extend({
       target.textColor = source.textColor;
     },
     persistSelectedTheme(activate: boolean): void {
-      const config = { headers: { "Content-Type": "application/json" } };
       if (this.selectedTheme?.id != null) {
         // update theme
-        axios
-          .put(
-            "/api/themes/" + this.selectedTheme.id.toString(),
-            this.selectedTheme,
-            config
-          )
+        this.saveTheme(this.selectedTheme)
           .then(() => {
             this.$toast.success("Theme saved successfully");
             if (activate) {
@@ -169,9 +166,8 @@ const Themes = Vue.extend({
           });
       } else {
         // create new theme
-        axios
-          .post("/api/themes", this.selectedTheme, config)
-          .then((response) => {
+        this.saveTheme(this.selectedTheme)
+          .then((savedTheme: Theme) => {
             let index: number | null = this.findIndexOfSelectedTheme();
             if (index == null) {
               this.$toast.error(
@@ -179,7 +175,7 @@ const Themes = Vue.extend({
               );
               return;
             }
-            this.themes[index] = response.data as Theme;
+            this.themes[index] = savedTheme;
             this.selectedTheme = this.themes[index];
             this.selectedThemeCopy = JSON.parse(
               JSON.stringify(this.selectedTheme)
@@ -204,10 +200,9 @@ const Themes = Vue.extend({
     },
     onActivateClick(): void {
       if (this.selectedTheme?.id != null) {
-        axios
-          .put("/api/themes/activate/" + this.selectedTheme.id.toString())
+        this.activateTheme(this.selectedTheme.id)
           .then(() => {
-            void this.loadTheme();
+            void this.loadActiveTheme();
           })
           .catch((error: Error) => {
             this.$toast.error("Error while activating theme: " + error.message);

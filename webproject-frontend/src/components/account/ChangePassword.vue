@@ -53,7 +53,8 @@
 
 <script lang="ts">
 import Vue from "vue";
-import axios from "axios";
+import { mapActions } from "vuex";
+import { ChangePasswordData } from "@/types";
 
 const ChangePassword = Vue.extend({
   name: "ChangePassword",
@@ -65,33 +66,25 @@ const ChangePassword = Vue.extend({
     };
   },
   methods: {
+    ...mapActions(["changePassword"]),
     onChangeClick() {
       if (this.newPassword != this.repeatPassword) {
-        alert("Passwords mismatch");
+        this.$toast.error("Passwords mismatch");
         return;
       }
       if (this.newPassword.length < 8) {
-        alert("Passwords must have at least 8 characters");
+        this.$toast.error("Passwords must have at least 8 characters");
         return;
       }
-      this.updatePassword();
-    },
-    updatePassword() {
-      const config = { headers: { "Content-Type": "application/json" } };
-      axios
-        .put(
-          "/api/users/updatepassword",
-          {
-            currentPassword: this.currentPassword,
-            newPassword: this.newPassword,
-          },
-          config
-        )
+      this.changePassword({
+        currentPassword: this.currentPassword,
+        newPassword: this.newPassword,
+      } as ChangePasswordData)
         .then(() => {
           this.$toast.success("Password changed successsfully");
         })
         .catch((error: Error) => {
-          this.$toast.success("Error changing password: " + error.message);
+          this.$toast.error("Error changing password: " + error.message);
         });
     },
   },

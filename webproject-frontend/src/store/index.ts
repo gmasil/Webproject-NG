@@ -21,12 +21,12 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import axios from "axios";
-import { Page, Theme, User, Video } from "@/types";
+import { Page, Theme, User, Video, ChangePasswordData } from "@/types";
 
 export class State {
   initialized = false;
   currentUser: User | null = null;
-  theme: Theme | null = null;
+  activeTheme: Theme | null = null;
 }
 
 Vue.use(Vuex);
@@ -40,8 +40,8 @@ export default new Vuex.Store({
     getCurrentUser(state): User | null {
       return state.currentUser;
     },
-    getTheme(state): Theme | null {
-      return state.theme;
+    getActiveTheme(state): Theme | null {
+      return state.activeTheme;
     },
     isAuthenticated(state): boolean {
       return state.currentUser != null;
@@ -64,16 +64,97 @@ export default new Vuex.Store({
           });
       });
     },
-    loadTheme({ commit }): Promise<Theme> {
+    loadActiveTheme({ commit }): Promise<Theme> {
       return new Promise<Theme>((resolve, reject) => {
         axios
           .get("/api/themes/active")
           .then((response) => {
             const theme: Theme = Object.assign(new Theme(), response.data);
-            commit("setTheme", theme);
+            commit("setActiveTheme", theme);
             resolve(theme);
           })
           .catch((error) => {
+            reject(error);
+          });
+      });
+    },
+    loadAvailableThemes({ commit }): Promise<Theme[]> {
+      return new Promise<Theme[]>((resolve, reject) => {
+        axios
+          .get("/api/themes/available")
+          .then((response) => {
+            const themes: Theme[] = response.data as Theme[];
+            // repackage Theme to make all class functions available
+            for (let index = 0; index < themes.length; ++index) {
+              themes[index] = Object.assign(new Theme(), themes[index]);
+            }
+            resolve(themes);
+          })
+          .catch((error) => {
+            commit("dummy");
+            reject(error);
+          });
+      });
+    },
+    saveTheme({ commit }, theme: Theme): Promise<Theme> {
+      const config = { headers: { "Content-Type": "application/json" } };
+      return new Promise<Theme>((resolve, reject) => {
+        if (theme.id != null) {
+          // update theme
+          axios
+            .put(`/api/themes/${theme.id}`, theme, config)
+            .then((response) => {
+              const savedTheme: Theme = Object.assign(
+                new Theme(),
+                response.data
+              );
+              resolve(savedTheme);
+            })
+            .catch((error: Error) => {
+              commit("dummy");
+              reject(error);
+            });
+        } else {
+          // save new theme
+          axios
+            .post("/api/themes", theme, config)
+            .then((response) => {
+              const savedTheme: Theme = Object.assign(
+                new Theme(),
+                response.data
+              );
+              resolve(savedTheme);
+            })
+            .catch((error: Error) => {
+              commit("dummy");
+              reject(error);
+            });
+        }
+      });
+    },
+    activateTheme({ commit }, themeId: number): Promise<void> {
+      return new Promise<void>((resolve, reject) => {
+        axios
+          .put(`/api/themes/activate/${themeId}`)
+          .then(() => {
+            resolve();
+          })
+          .catch((error: Error) => {
+            commit("dummy");
+            reject(error);
+          });
+      });
+    },
+    changePassword({ commit }, data: ChangePasswordData): Promise<void> {
+      const config = { headers: { "Content-Type": "application/json" } };
+      return new Promise<void>((resolve, reject) => {
+        axios
+          .put("/api/users/updatepassword", data, config)
+          .then(() => {
+            resolve();
+          })
+          .catch((error: Error) => {
+            commit("dummy");
             reject(error);
           });
       });
@@ -102,10 +183,10 @@ export default new Vuex.Store({
     initialized(state): void {
       Vue.set(state, "initialized", true);
     },
-    setTheme(state, data: Theme): void {
-      Vue.set(state, "theme", data);
-      if (state.theme != null) {
-        state.theme.applyTheme();
+    setActiveTheme(state, data: Theme): void {
+      Vue.set(state, "activeTheme", data);
+      if (state.activeTheme != null) {
+        state.activeTheme.applyTheme();
       }
     },
     dummy(state): void {

@@ -42,10 +42,10 @@ const App = Vue.extend({
   },
   created(): void {
     void this.loadCurrentUser();
-    void this.loadTheme();
+    void this.loadActiveTheme();
   },
   methods: {
-    ...mapActions(["loadCurrentUser", "loadTheme"]),
+    ...mapActions(["loadCurrentUser", "loadActiveTheme"]),
     ...mapGetters(["isInitialized"]),
   },
 });

@@ -225,10 +225,6 @@
                             <resources>
                                 <resource>
                                     <directory>${project.parent.basedir}/webproject-frontend/dist</directory>
-                                    <includes>
-                                        <include>static/</include>
-                                        <include>index.html</include>
-                                    </includes>
                                 </resource>
                             </resources>
                         </configuration>

@@ -25,7 +25,7 @@
     id="app"
     class="bg-theme-background min-h-screen text-theme-text"
   >
-    <navbar />
+    <navbar v-if="!isAccessRestricted()" />
     <router-view />
   </div>
 </template>
@@ -41,12 +41,13 @@ const App = Vue.extend({
     Navbar,
   },
   created(): void {
+    void this.loadAppProperties();
     void this.loadCurrentUser();
     void this.loadActiveTheme();
   },
   methods: {
-    ...mapActions(["loadCurrentUser", "loadActiveTheme"]),
-    ...mapGetters(["isInitialized"]),
+    ...mapActions(["loadAppProperties", "loadCurrentUser", "loadActiveTheme"]),
+    ...mapGetters(["isInitialized", "isAccessRestricted"]),
   },
 });
 

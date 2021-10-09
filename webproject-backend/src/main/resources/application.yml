@@ -42,6 +42,10 @@ spring:
     rest:
       base-path: api
 
+app:
+  access:
+    public: true
+
 dataimport:
   enabled: false
   file: data.yml

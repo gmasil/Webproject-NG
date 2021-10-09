@@ -1,5 +1,15 @@
 {"groups": [
   {
+    "name": "app",
+    "type": "de.gmasil.webproject.config.AppProperties",
+    "sourceType": "de.gmasil.webproject.config.AppProperties"
+  },
+  {
+    "name": "app.access",
+    "type": "de.gmasil.webproject.config.AppProperties",
+    "sourceType": "de.gmasil.webproject.config.AppProperties"
+  },
+  {
     "name": "dataimport",
     "type": "de.gmasil.webproject.service.dataimport.DataImportProperties",
     "sourceType": "de.gmasil.webproject.service.dataimport.DataImportProperties"
@@ -22,22 +32,28 @@
 ],
 "properties": [
   {
+    "name": "app.access.public",
+    "type": "java.lang.Boolean",
+    "description": "Enable public access without login",
+    "sourceType": "de.gmasil.webproject.config.AppProperties"
+  },
+  {
     "name": "dataimport.enabled",
     "type": "java.lang.Boolean",
     "description": "Enable data import",
-    "sourceType": "com.baeldung.autoconfiguration.annotationprocessor.DatabaseProperties"
+    "sourceType": "de.gmasil.webproject.service.dataimport.DataImportProperties"
   },
   {
     "name": "dataimport.file",
     "type": "java.lang.String",
     "description": "YAML file containing data",
-    "sourceType": "com.baeldung.autoconfiguration.annotationprocessor.DatabaseProperties"
+    "sourceType": "de.gmasil.webproject.service.dataimport.DataImportProperties"
   },
   {
     "name": "dataimport.clean",
     "type": "java.lang.Boolean",
     "description": "Delete existing data before import",
-    "sourceType": "com.baeldung.autoconfiguration.annotationprocessor.DatabaseProperties"
+    "sourceType": "de.gmasil.webproject.service.dataimport.DataImportProperties"
   },
   {
     "name": "init.skip",

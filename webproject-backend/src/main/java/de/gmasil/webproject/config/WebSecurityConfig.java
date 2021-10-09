@@ -46,6 +46,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private AppProperties app;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
@@ -56,7 +59,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.exceptionHandling().defaultAuthenticationEntryPointFor(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED),
                 new AntPathRequestMatcher("/api/**"));
 
-        http.authorizeRequests().anyRequest().permitAll();
+        if (app.isPublicAccess()) {
+            http.authorizeRequests().anyRequest().permitAll();
+        } else {
+            http.authorizeRequests() //
+                    .antMatchers("/static/**").permitAll() //
+                    .antMatchers("/api/users/current", "/api/app/config").permitAll() //
+                    .antMatchers("/api/themes/active.css", "/api/themes/active").permitAll() //
+                    .antMatchers("/login", "/logout", "/performlogin").permitAll() //
+                    .anyRequest().authenticated();
+        }
 
         http.formLogin().loginPage("/login").failureUrl("/login?error") //
                 .loginProcessingUrl("/performlogin") //

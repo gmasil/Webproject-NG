@@ -17,20 +17,23 @@
  * You should have received a copy of the GNU General Public License
  * along with Webproject NG. If not, see <https://www.gnu.org/licenses/>.
  */
-package de.gmasil.webproject.controller;
+package de.gmasil.webproject.config;
 
-import javax.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 
-import org.springframework.boot.web.servlet.error.ErrorController;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Controller
-public class ErrorRedirectController implements ErrorController {
+@Getter
+@Setter
+@NoArgsConstructor
+@Configuration
+@ConfigurationProperties(prefix = "app")
+public class AppProperties {
 
-    @RequestMapping("/error")
-    public String handleError(HttpServletResponse response) {
-        response.setStatus(200);
-        return "index.html";
-    }
+    @Value("${app.access.public}")
+    private boolean publicAccess;
 }

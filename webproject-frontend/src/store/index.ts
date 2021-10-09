@@ -21,11 +21,19 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import axios from "axios";
-import { Page, Theme, User, Video, ChangePasswordData } from "@/types";
+import {
+  AppProperties,
+  Page,
+  Theme,
+  User,
+  Video,
+  ChangePasswordData,
+} from "@/types";
 
 export class State {
-  initialized = false;
+  initializedUser = false;
   currentUser: User | null = null;
+  appProperties: AppProperties | null = null;
   activeTheme: Theme | null = null;
 }
 
@@ -35,10 +43,23 @@ export default new Vuex.Store({
   state: new State(),
   getters: {
     isInitialized(state): boolean {
-      return state.initialized;
+      return state.initializedUser && state.appProperties != null;
+    },
+    isAccessRestricted(state): boolean {
+      if (state.appProperties == null) {
+        return true;
+      }
+      if (state.appProperties.publicAccess == true) {
+        return false;
+      } else {
+        return state.currentUser == null;
+      }
     },
     getCurrentUser(state): User | null {
       return state.currentUser;
+    },
+    getAppProperties(state): AppProperties | null {
+      return state.appProperties;
     },
     getActiveTheme(state): Theme | null {
       return state.activeTheme;
@@ -48,6 +69,20 @@ export default new Vuex.Store({
     },
   },
   actions: {
+    loadAppProperties({ commit }): Promise<AppProperties> {
+      return new Promise<AppProperties>((resolve, reject) => {
+        axios
+          .get("/api/app/config")
+          .then((response) => {
+            const props: AppProperties = response.data;
+            commit("setAppProperties", props);
+            resolve(props);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    },
     loadCurrentUser({ commit }): Promise<User> {
       return new Promise<User>((resolve, reject) => {
         axios
@@ -55,11 +90,9 @@ export default new Vuex.Store({
           .then((response) => {
             const user: User = response.data;
             commit("setCurrentUser", user);
-            commit("initialized");
             resolve(user);
           })
           .catch((error) => {
-            commit("initialized");
             reject(error);
           });
       });
@@ -177,11 +210,12 @@ export default new Vuex.Store({
     },
   },
   mutations: {
+    setAppProperties(state, data): void {
+      Vue.set(state, "appProperties", data);
+    },
     setCurrentUser(state, data): void {
       Vue.set(state, "currentUser", data);
-    },
-    initialized(state): void {
-      Vue.set(state, "initialized", true);
+      Vue.set(state, "initializedUser", true);
     },
     setActiveTheme(state, data: Theme): void {
       Vue.set(state, "activeTheme", data);

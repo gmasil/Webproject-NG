@@ -17,7 +17,11 @@
  * You should have received a copy of the GNU General Public License
  * along with Webproject NG. If not, see <https://www.gnu.org/licenses/>.
  */
+const path = require("path");
+
 module.exports = {
+  outputDir: path.resolve(__dirname, "dist"),
+  assetsDir: "static",
   devServer: {
     proxy: {
       "^/api": {

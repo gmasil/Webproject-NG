@@ -17,20 +17,32 @@
  * You should have received a copy of the GNU General Public License
  * along with Webproject NG. If not, see <https://www.gnu.org/licenses/>.
  */
-package de.gmasil.webproject.controller;
+package de.gmasil.webproject.controller.rest;
 
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.boot.web.servlet.error.ErrorController;
-import org.springframework.stereotype.Controller;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
-public class ErrorRedirectController implements ErrorController {
+import de.gmasil.webproject.config.AppProperties;
+import de.gmasil.webproject.controller.PermitAll;
 
-    @RequestMapping("/error")
-    public String handleError(HttpServletResponse response) {
-        response.setStatus(200);
-        return "index.html";
+@RestController
+@RequestMapping("/api/app")
+public class AppPropertiesRestController {
+
+    @Autowired
+    private AppProperties appProperties;
+
+    @Autowired
+    private ModelMapper mapper;
+
+    @PermitAll
+    @GetMapping("/config")
+    public AppProperties config() {
+        AppProperties props = new AppProperties();
+        mapper.map(appProperties, props);
+        return props;
     }
 }

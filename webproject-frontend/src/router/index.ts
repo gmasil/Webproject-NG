@@ -26,7 +26,7 @@ import Themes from "@/components/Themes.vue";
 import Login from "@/components/Login.vue";
 import ChangePassword from "@/components/account/ChangePassword.vue";
 import Error from "@/components/Error.vue";
-import { CallbackFunction } from "@/types";
+import { AppProperties, CallbackFunction, User } from "@/types";
 
 Vue.use(Router);
 
@@ -69,8 +69,24 @@ const router = new Router({
   ],
 });
 
+function isInitialized(): boolean {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
+  return store.getters["isInitialized"];
+}
+
+function isPublicAccess(): boolean {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+  const props: AppProperties = store.getters["getAppProperties"];
+  return props.publicAccess;
+}
+
+function getCurrentUser(): User | null {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+  return store.getters["getCurrentUser"] as User | null;
+}
+
 function waitForInit(callback: CallbackFunction): void {
-  if (!store.state.initialized) {
+  if (!isInitialized()) {
     setTimeout(function () {
       waitForInit(callback);
     }, 50);
@@ -80,18 +96,26 @@ function waitForInit(callback: CallbackFunction): void {
 }
 
 router.beforeEach((to, from, next) => {
-  const authorize: boolean = to.meta?.authorize as boolean;
-  if (authorize) {
-    waitForInit(() => {
-      if (!store.state.currentUser) {
+  if (to.path == "/login" || to.path == "/logout" || to.path == "/error") {
+    next();
+  }
+  waitForInit(() => {
+    if (!isPublicAccess()) {
+      if (getCurrentUser() == null) {
+        return next({ path: "/login" });
+      }
+    }
+    const authorize: boolean = to.meta?.authorize as boolean;
+    if (authorize) {
+      if (getCurrentUser() == null) {
         return next({ path: "/error" });
       } else {
         next();
       }
-    });
-  } else {
-    next();
-  }
+    } else {
+      next();
+    }
+  });
 });
 
 export default router;

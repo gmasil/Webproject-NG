@@ -25,6 +25,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -35,6 +36,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.PreRemove;
 import javax.persistence.Table;
+
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import de.gmasil.webproject.jpa.Auditable;
 import de.gmasil.webproject.jpa.artist.Artist;
@@ -56,6 +59,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity(name = "VIDEO")
 @Table(name = "VIDEO")
+@EntityListeners(AuditingEntityListener.class)
 public class Video extends Auditable {
 
     @Id

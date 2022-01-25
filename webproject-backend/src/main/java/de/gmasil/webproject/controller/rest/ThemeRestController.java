@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
@@ -63,7 +64,7 @@ public class ThemeRestController {
     @Autowired
     private ColorConverter colorConverter;
 
-    @Autowired
+    @PersistenceContext
     private EntityManager entityManager;
 
     @Transactional

@@ -21,10 +21,13 @@ package de.gmasil.webproject.jpa.globalproperty;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import de.gmasil.webproject.jpa.Auditable;
 import lombok.AccessLevel;
@@ -40,6 +43,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity(name = "PROPERTY")
 @Table(name = "PROPERTY")
+@EntityListeners(AuditingEntityListener.class)
 public class Property extends Auditable {
 
     public static final String DEFAULT_THEME = "default_theme";

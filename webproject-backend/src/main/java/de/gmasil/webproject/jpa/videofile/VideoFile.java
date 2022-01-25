@@ -25,6 +25,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
@@ -34,6 +35,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.PreRemove;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import de.gmasil.webproject.jpa.Auditable;
 import de.gmasil.webproject.jpa.VideoQuality;
@@ -51,6 +54,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity(name = "FILE")
 @Table(name = "FILE", uniqueConstraints = { @UniqueConstraint(columnNames = { "name", "quality" }) })
+@EntityListeners(AuditingEntityListener.class)
 public class VideoFile extends Auditable {
 
     @Id

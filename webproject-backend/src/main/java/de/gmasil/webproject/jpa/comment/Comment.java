@@ -21,6 +21,7 @@ package de.gmasil.webproject.jpa.comment;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,6 +30,8 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.PreRemove;
 import javax.persistence.Table;
+
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import de.gmasil.webproject.jpa.Auditable;
 import de.gmasil.webproject.jpa.user.User;
@@ -46,6 +49,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity(name = "COMMENT")
 @Table(name = "COMMENT")
+@EntityListeners(AuditingEntityListener.class)
 public class Comment extends Auditable {
 
     @Id

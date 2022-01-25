@@ -26,6 +26,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -33,12 +34,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedAttributeNode;
-import javax.persistence.NamedEntityGraph;
 import javax.persistence.OneToMany;
 import javax.persistence.PreRemove;
 import javax.persistence.Table;
 
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -63,8 +63,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity(name = "USER")
 @Table(name = "USER")
-@NamedEntityGraph(name = "UserDto", attributeNodes = { @NamedAttributeNode("roles"),
-        @NamedAttributeNode("activeTheme") })
+@EntityListeners(AuditingEntityListener.class)
 public class User extends Auditable implements UserDetails {
 
     @Id

@@ -25,6 +25,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -32,6 +33,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.PreRemove;
 import javax.persistence.Table;
 
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 
 import de.gmasil.webproject.jpa.Auditable;
@@ -49,6 +51,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity(name = "ROLE")
 @Table(name = "ROLE")
+@EntityListeners(AuditingEntityListener.class)
 public class Role extends Auditable implements GrantedAuthority {
 
     @Id

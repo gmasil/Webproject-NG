@@ -21,6 +21,7 @@ package de.gmasil.webproject.jpa.videorating;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -30,6 +31,8 @@ import javax.persistence.PreRemove;
 import javax.persistence.Table;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import de.gmasil.webproject.jpa.Auditable;
 import de.gmasil.webproject.jpa.user.User;
@@ -47,6 +50,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity(name = "VIDEO_RATING")
 @Table(name = "VIDEO_RATING")
+@EntityListeners(AuditingEntityListener.class)
 public class VideoRating extends Auditable {
 
     @Id

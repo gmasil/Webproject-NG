@@ -21,9 +21,7 @@ package de.gmasil.webproject.jpa.globalproperty;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
 
-@Repository
 public interface PropertyRepository extends JpaRepository<Property, Long>, PropertyRepositoryExtension {
 
     @Query("SELECT p.value FROM PROPERTY p WHERE p.key = ?1")

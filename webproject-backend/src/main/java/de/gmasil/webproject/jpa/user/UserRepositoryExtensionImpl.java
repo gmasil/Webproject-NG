@@ -20,20 +20,20 @@
 package de.gmasil.webproject.jpa.user;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import de.gmasil.webproject.projection.UserProjection;
 
-@Repository
 public class UserRepositoryExtensionImpl implements UserRepositoryExtension {
 
-    @Autowired
+    @PersistenceContext
     private EntityManager entityManager;
 
     @Override
@@ -44,5 +44,36 @@ public class UserRepositoryExtensionImpl implements UserRepositoryExtension {
         Join<Object, Object> roles = from.join("roles");
         criteria.where(builder.equal(roles.get("name"), role));
         return entityManager.createQuery(criteria).getResultList();
+    }
+
+    @Override
+    public Optional<User> findWithRolesByUsername(String username) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<User> criteria = builder.createQuery(User.class);
+        Root<User> from = criteria.from(User.class);
+        // eagerly load roles
+        from.fetch("roles");
+        criteria.where(builder.equal(from.get("username"), username));
+        List<User> resultList = entityManager.createQuery(criteria).getResultList();
+        if (resultList.size() != 1) {
+            return Optional.empty();
+        }
+        return Optional.of(resultList.get(0));
+    }
+
+    @Override
+    public Optional<UserProjection> findProjectionById(Long id) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<UserProjection> criteria = builder.createQuery(UserProjection.class);
+        Root<User> from = criteria.from(User.class);
+        // eagerly load data for full projection
+        from.fetch("roles");
+        from.fetch("activeTheme");
+        criteria.where(builder.equal(from.get("id"), id));
+        List<UserProjection> resultList = entityManager.createQuery(criteria).getResultList();
+        if (resultList.size() != 1) {
+            return Optional.empty();
+        }
+        return Optional.of(resultList.get(0));
     }
 }

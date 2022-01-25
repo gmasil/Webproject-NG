@@ -20,8 +20,15 @@
 package de.gmasil.webproject.jpa.user;
 
 import java.util.List;
+import java.util.Optional;
+
+import de.gmasil.webproject.projection.UserProjection;
 
 public interface UserRepositoryExtension {
 
+    public Optional<UserProjection> findProjectionById(Long id);
+
     public List<User> findAllWithRole(String role);
+
+    public Optional<User> findWithRolesByUsername(String username);
 }

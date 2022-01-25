@@ -22,6 +22,7 @@ package de.gmasil.webproject.controller.rest;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
@@ -56,7 +57,7 @@ public class UserRestController {
     @Autowired
     private UserService userService;
 
-    @Autowired
+    @PersistenceContext
     private EntityManager entityManager;
 
     @PermitAll

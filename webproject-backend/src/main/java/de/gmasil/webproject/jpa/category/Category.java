@@ -25,12 +25,15 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.PreRemove;
 import javax.persistence.Table;
+
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import de.gmasil.webproject.jpa.Auditable;
 import de.gmasil.webproject.jpa.video.Video;
@@ -47,6 +50,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity(name = "CATEGORY")
 @Table(name = "CATEGORY")
+@EntityListeners(AuditingEntityListener.class)
 public class Category extends Auditable {
 
     @Id

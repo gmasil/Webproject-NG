@@ -45,7 +45,7 @@ import de.gmasil.webproject.jpa.ColorConverter;
 import de.gmasil.webproject.jpa.theme.Theme;
 import de.gmasil.webproject.jpa.theme.ThemeRepository;
 import de.gmasil.webproject.jpa.user.User;
-import de.gmasil.webproject.projection.ThemeProjection;
+import de.gmasil.webproject.newprojection.ThemeProjectionNEW;
 import de.gmasil.webproject.service.UserProvider;
 
 @RestController
@@ -130,7 +130,7 @@ public class ThemeRestController {
     @GetMapping("/available")
     public ResponseEntity<Object> available() {
         User user = userProvider.getCurrent();
-        List<ThemeProjection> themes;
+        List<ThemeProjectionNEW> themes;
         if (user != null) {
             themes = themeRepo.findAllProjectionByPresetTrueOrCreator(user);
         } else {
@@ -143,7 +143,7 @@ public class ThemeRestController {
     @GetMapping("/active")
     public ResponseEntity<Object> activeTheme() {
         User user = userProvider.getCurrent();
-        Optional<ThemeProjection> themeDto;
+        Optional<ThemeProjectionNEW> themeDto;
         if (user != null) {
             themeDto = themeRepo.findProjectionActiveByUser(user.getId());
         } else {

@@ -81,7 +81,8 @@ public class DataImportService {
     @Autowired
     private Module module;
 
-    @Autowired
+    // TODO: remove optional
+    @Autowired(required = false)
     private List<JpaRepository<? extends Auditable, Long>> repositories;
 
     @Autowired

@@ -17,11 +17,36 @@
  * You should have received a copy of the GNU General Public License
  * along with Webproject NG. If not, see <https://www.gnu.org/licenses/>.
  */
-package de.gmasil.webproject.projection;
+package de.gmasil.webproject.newprojection;
 
-public interface RoleProjection {
+import java.awt.Color;
 
-    public Long getId();
+import org.modelmapper.ModelMapper;
 
-    public String getName();
+import de.gmasil.webproject.jpa.theme.Theme;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class ThemeProjectionNEW {
+
+    private Long id;
+    private String name;
+    private Color backgroundColor;
+    private Color backgroundHighlightColor;
+    private Color primaryColor;
+    private Color secondaryColor;
+    private Color textColor;
+    private boolean preset;
+
+    public ThemeProjectionNEW(Theme theme) {
+        new ModelMapper().map(theme, this);
+    }
 }

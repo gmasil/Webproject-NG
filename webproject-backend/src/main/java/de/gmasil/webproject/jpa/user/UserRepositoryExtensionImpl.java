@@ -29,8 +29,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 
-import de.gmasil.webproject.projection.UserProjection;
-
 public class UserRepositoryExtensionImpl implements UserRepositoryExtension {
 
     @PersistenceContext
@@ -46,6 +44,9 @@ public class UserRepositoryExtensionImpl implements UserRepositoryExtension {
         return entityManager.createQuery(criteria).getResultList();
     }
 
+    /*
+     * replace with entity graph when available in spring native
+     */
     @Override
     public Optional<User> findWithRolesByUsername(String username) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
@@ -55,22 +56,6 @@ public class UserRepositoryExtensionImpl implements UserRepositoryExtension {
         from.fetch("roles");
         criteria.where(builder.equal(from.get("username"), username));
         List<User> resultList = entityManager.createQuery(criteria).getResultList();
-        if (resultList.size() != 1) {
-            return Optional.empty();
-        }
-        return Optional.of(resultList.get(0));
-    }
-
-    @Override
-    public Optional<UserProjection> findProjectionById(Long id) {
-        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<UserProjection> criteria = builder.createQuery(UserProjection.class);
-        Root<User> from = criteria.from(User.class);
-        // eagerly load data for full projection
-        from.fetch("roles");
-        from.fetch("activeTheme");
-        criteria.where(builder.equal(from.get("id"), id));
-        List<UserProjection> resultList = entityManager.createQuery(criteria).getResultList();
         if (resultList.size() != 1) {
             return Optional.empty();
         }

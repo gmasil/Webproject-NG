@@ -29,6 +29,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 
+import de.gmasil.webproject.newprojection.UserProjectionNEW;
+
 public class UserRepositoryExtensionImpl implements UserRepositoryExtension {
 
     @PersistenceContext
@@ -60,5 +62,29 @@ public class UserRepositoryExtensionImpl implements UserRepositoryExtension {
             return Optional.empty();
         }
         return Optional.of(resultList.get(0));
+    }
+
+    @Override
+    public Optional<User> findWithRolesById(Long id) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<User> criteria = builder.createQuery(User.class);
+        Root<User> from = criteria.from(User.class);
+        // eagerly load roles
+        from.fetch("roles");
+        criteria.where(builder.equal(from.get("id"), id));
+        List<User> resultList = entityManager.createQuery(criteria).getResultList();
+        if (resultList.size() != 1) {
+            return Optional.empty();
+        }
+        return Optional.of(resultList.get(0));
+    }
+
+    @Override
+    public Optional<UserProjectionNEW> findProjectionById(Long id) {
+        Optional<User> optionalUser = findWithRolesById(id);
+        if (!optionalUser.isPresent()) {
+            return Optional.empty();
+        }
+        return Optional.of(new UserProjectionNEW(optionalUser.get()));
     }
 }

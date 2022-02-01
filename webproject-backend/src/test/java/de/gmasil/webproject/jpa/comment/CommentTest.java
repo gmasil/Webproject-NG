@@ -45,6 +45,7 @@ import de.gmasil.webproject.utils.SetupTestContext;
 class CommentTest {
 
     @Nested
+    @SetupTestContext
     class CommentVideoTest extends GenericEntityTester<Comment, Video> {
 
         @Autowired
@@ -101,6 +102,7 @@ class CommentTest {
     }
 
     @Nested
+    @SetupTestContext
     class CommentUserTest extends GenericEntityTester<Comment, User> {
 
         @Autowired

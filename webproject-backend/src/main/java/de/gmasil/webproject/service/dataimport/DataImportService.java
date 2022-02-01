@@ -269,6 +269,10 @@ public class DataImportService {
     }
 
     private void deleteAllData() {
-        repositories.forEach(JpaRepository::deleteAll);
+        if (repositories == null) {
+            LOG.warn("Cannot clean data, no repositories found. This is a known issue when running in native mode.");
+        } else {
+            repositories.forEach(JpaRepository::deleteAll);
+        }
     }
 }

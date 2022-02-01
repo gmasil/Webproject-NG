@@ -20,29 +20,35 @@
 package de.gmasil.webproject.config;
 
 import java.lang.invoke.MethodHandles;
+import java.util.Arrays;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.annotation.Profile;
-import org.springframework.context.event.EventListener;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+// Cannot simply use @Profile("dev") in spring native as the property is evaluated during build time
 @Component
-@Profile("dev")
 public class DevConfig implements WebMvcConfigurer {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    @EventListener(ApplicationReadyEvent.class)
-    public void info() {
-        LOG.info("Running in DEV mode");
-    }
+    @Value("${spring.profiles.active:}")
+    private String profiles;
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH");
+        if (isDevMode()) {
+            LOG.info("Running in DEV mode");
+            registry.addMapping("/**").allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH");
+        }
+    }
+
+    private boolean isDevMode() {
+        return Arrays.stream(profiles.split(",")).map(String::trim).map(String::toLowerCase)
+                .anyMatch(profile -> Objects.equals(profile, "dev"));
     }
 }

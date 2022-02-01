@@ -51,6 +51,7 @@ import de.gmasil.webproject.utils.SetupTestContext;
 public class UserTest {
 
     @Nested
+    @SetupTestContext
     class UserRoleTest extends GenericEntityTester<User, Role> {
 
         @Autowired
@@ -107,6 +108,7 @@ public class UserTest {
     }
 
     @Nested
+    @SetupTestContext
     class UserCommentTest extends GenericEntityTester<User, Comment> {
 
         @Autowired
@@ -163,6 +165,7 @@ public class UserTest {
     }
 
     @Nested
+    @SetupTestContext
     class UserVideoFavoriteTest extends GenericEntityTester<User, VideoFavorite> {
 
         @Autowired
@@ -224,6 +227,7 @@ public class UserTest {
     }
 
     @Nested
+    @SetupTestContext
     class UserVideoRatingTest extends GenericEntityTester<User, VideoRating> {
 
         @Autowired

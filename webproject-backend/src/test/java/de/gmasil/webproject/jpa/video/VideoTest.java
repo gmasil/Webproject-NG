@@ -56,6 +56,7 @@ import de.gmasil.webproject.utils.SetupTestContext;
 class VideoTest {
 
     @Nested
+    @SetupTestContext
     class VideoVideoFileTest extends GenericEntityTester<Video, VideoFile> {
 
         @Autowired
@@ -112,6 +113,7 @@ class VideoTest {
     }
 
     @Nested
+    @SetupTestContext
     class VideoArtistTest extends GenericEntityTester<Video, Artist> {
 
         @Autowired
@@ -168,6 +170,7 @@ class VideoTest {
     }
 
     @Nested
+    @SetupTestContext
     class VideoCategoryTest extends GenericEntityTester<Video, Category> {
 
         @Autowired
@@ -224,6 +227,7 @@ class VideoTest {
     }
 
     @Nested
+    @SetupTestContext
     class VideoCommentTest extends GenericEntityTester<Video, Comment> {
 
         @Autowired
@@ -280,6 +284,7 @@ class VideoTest {
     }
 
     @Nested
+    @SetupTestContext
     class VideoVideoFavoriteTest extends GenericEntityTester<Video, VideoFavorite> {
 
         @Autowired
@@ -341,6 +346,7 @@ class VideoTest {
     }
 
     @Nested
+    @SetupTestContext
     class VideoVideoRatingTest extends GenericEntityTester<Video, VideoRating> {
 
         @Autowired

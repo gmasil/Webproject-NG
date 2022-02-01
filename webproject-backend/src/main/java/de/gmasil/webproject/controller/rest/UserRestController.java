@@ -19,35 +19,60 @@
  */
 package de.gmasil.webproject.controller.rest;
 
-//@RestController
-//@RequestMapping("/api/users")
+import java.util.Optional;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import de.gmasil.webproject.controller.PermitAll;
+import de.gmasil.webproject.dto.UserPasswordDto;
+import de.gmasil.webproject.jpa.user.User;
+import de.gmasil.webproject.jpa.user.UserRepository;
+import de.gmasil.webproject.jpa.user.UserService;
+import de.gmasil.webproject.newprojection.UserProjectionNEW;
+import de.gmasil.webproject.service.UserProvider;
+
+@RestController
+@RequestMapping("/api/users")
 public class UserRestController {
-    /*-
+
     @Autowired
     private UserProvider userProvider;
-    
+
     @Autowired
     private UserRepository userRepo;
-    
+
     @Autowired
     private UserService userService;
-    
+
     @PersistenceContext
     private EntityManager entityManager;
-    
+
     @PermitAll
     @GetMapping("/current")
     public ResponseEntity<Object> currentUser() {
         User user = userProvider.getCurrent();
         if (user != null) {
-            Optional<UserProjectionNEW> eagerUser = userRepo.findProjectionById(user.getId(), UserProjectionNEW.class);
+            Optional<UserProjectionNEW> eagerUser = userRepo.findProjectionById(user.getId());
             if (eagerUser.isPresent()) {
                 return ResponseEntity.ok(eagerUser.get());
             }
         }
         return ResponseEntity.ok("null");
     }
-    
+
     @Transactional
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/updatepassword")
@@ -65,5 +90,4 @@ public class UserRestController {
         userService.save(user);
         return ResponseEntity.ok().build();
     }
-    */
 }

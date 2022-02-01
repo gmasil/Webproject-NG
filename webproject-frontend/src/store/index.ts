@@ -199,7 +199,7 @@ export default new Vuex.Store({
             `/api/videos?size=${page.size}&page=${page.page}&sort=${page.sort}`
           )
           .then((response) => {
-            const videos: Video[] = response.data["content"] as Video[];
+            const videos: Video[] = response.data as Video[];
             resolve(videos);
           })
           .catch((error) => {

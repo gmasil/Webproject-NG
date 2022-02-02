@@ -24,7 +24,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
-import org.springframework.nativex.hint.AotProxyHint;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -42,8 +41,6 @@ import de.gmasil.webproject.jpa.user.UserService;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-@AotProxyHint(targetClass = UserService.class, targetClassName = "de.gmasil.webproject.jpa.user.UserService")
-@AotProxyHint(targetClass = DaoAuthenticationProvider.class, targetClassName = "org.springframework.security.authentication.dao.DaoAuthenticationProvider")
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Lazy

@@ -17,17 +17,16 @@
  * You should have received a copy of the GNU General Public License
  * along with Webproject NG. If not, see <https://www.gnu.org/licenses/>.
  */
-package de.gmasil.webproject;
+package de.gmasil.webproject.nativehints;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.nativex.hint.AotProxyHint;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 
-@EnableJpaAuditing
-@SpringBootApplication
-public class Application {
+import de.gmasil.webproject.jpa.user.UserService;
 
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
+@Configuration
+@AotProxyHint(targetClass = UserService.class, targetClassName = "de.gmasil.webproject.jpa.user.UserService")
+@AotProxyHint(targetClass = DaoAuthenticationProvider.class, targetClassName = "org.springframework.security.authentication.dao.DaoAuthenticationProvider")
+public class ProxyHints {
 }

@@ -17,12 +17,13 @@
  * You should have received a copy of the GNU General Public License
  * along with Webproject NG. If not, see <https://www.gnu.org/licenses/>.
  */
-package de.gmasil.webproject.service.dataimport;
+package de.gmasil.webproject.nativehints;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.nativex.hint.TypeAccess;
 import org.springframework.nativex.hint.TypeHint;
 
+import de.gmasil.webproject.service.dataimport.ImportData;
 import de.gmasil.webproject.service.dataimport.ImportData.ImportTheme;
 import de.gmasil.webproject.service.dataimport.ImportData.ImportUser;
 import de.gmasil.webproject.service.dataimport.ImportData.ImportVideo;
@@ -40,10 +41,10 @@ import de.gmasil.webproject.service.dataimport.ImportData.ImportVideo.ImportRati
         ImportComment.class, //
         ImportRating.class //
 }, access = { //
-        TypeAccess.DECLARED_CLASSES, //
-        TypeAccess.DECLARED_CONSTRUCTORS, //
-        TypeAccess.DECLARED_FIELDS, //
-        TypeAccess.DECLARED_METHODS //
+        TypeAccess.PUBLIC_CLASSES, //
+        TypeAccess.PUBLIC_CONSTRUCTORS, //
+        TypeAccess.PUBLIC_FIELDS, //
+        TypeAccess.PUBLIC_METHODS //
 })
 public class ImportDataHints {
 }

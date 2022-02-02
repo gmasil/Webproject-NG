@@ -36,7 +36,6 @@
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- spring native -->
-        <repackage.classifier />
         <spring-native.version>0.11.2</spring-native.version>
         <!-- versions -->
         <modelmapper.version>2.4.4</modelmapper.version>
@@ -46,6 +45,7 @@
         <!-- plugin versions -->
         <jacoco-plugin.version>0.8.7</jacoco-plugin.version>
         <jib-plugin.version>3.1.4</jib-plugin.version>
+        <hibernate-enhance-plugin.version>5.6.3.Final</hibernate-enhance-plugin.version>
         <!-- image build -->
         <image.registry>registry.gmasil.de/docker</image.registry>
         <image.name>${project.parent.artifactId}</image.name>
@@ -95,12 +95,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-data</artifactId>
-        </dependency>
-        -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
@@ -286,70 +280,173 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- prepare hibernate for spring native -->
-            <plugin>
-                <groupId>org.hibernate.orm.tooling</groupId>
-                <artifactId>hibernate-enhance-maven-plugin</artifactId>
-                <version>5.6.3.Final</version>
-                <executions>
-                    <execution>
-                        <configuration>
-                            <failOnError>true</failOnError>
-                            <enableLazyInitialization>true</enableLazyInitialization>
-                            <enableDirtyTracking>true</enableDirtyTracking>
-                            <enableAssociationManagement>true</enableAssociationManagement>
-                            <enableExtendedEnhancement>false</enableExtendedEnhancement>
-                        </configuration>
-                        <goals>
-                            <goal>enhance</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- spring boot assembly -->
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <classifier>${repackage.classifier}</classifier>
-                    <image>
-                        <builder>paketobuildpacks/builder:tiny</builder>
-                        <env>
-                            <BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>
-                        </env>
-                    </image>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>build-image</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- spring native AOT test -->
-            <plugin>
-                <groupId>org.springframework.experimental</groupId>
-                <artifactId>spring-aot-maven-plugin</artifactId>
-                <version>${spring-native.version}</version>
-                <executions>
-                    <execution>
-                        <id>test-generate</id>
-                        <goals>
-                            <goal>test-generate</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>generate</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>com.google.cloud.tools</groupId>
+                    <artifactId>jib-maven-plugin</artifactId>
+                    <version>${jib-plugin.version}</version>
+                    <configuration>
+                        <from>
+                            <image>openjdk:8-jre-slim@sha256:0bbd24c74e14020b66b647f9f116752869d51f1d651f044eda21c22d19d56c28</image>
+                        </from>
+                        <to>
+                            <image>${target.image}</image>
+                            <tags>
+                                <tag>${target.tag}</tag>
+                            </tags>
+                        </to>
+                        <container>
+                            <mainClass>de.gmasil.webproject.Application</mainClass>
+                            <ports>
+                                <port>6900</port>
+                            </ports>
+                        </container>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
+
+    <profiles>
+        <profile>
+            <id>jib-deploy</id>
+            <build>
+                <plugins>
+                    <!-- spring boot assembly -->
+                    <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.google.cloud.tools</groupId>
+                        <artifactId>jib-maven-plugin</artifactId>
+                        <version>${jib-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>jib</id>
+            <build>
+                <plugins>
+                    <!-- spring boot assembly -->
+                    <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.google.cloud.tools</groupId>
+                        <artifactId>jib-maven-plugin</artifactId>
+                        <version>${jib-plugin.version}</version>
+                        <configuration>
+                            <from>
+                                <image>openjdk:8-jre-slim@sha256:0bbd24c74e14020b66b647f9f116752869d51f1d651f044eda21c22d19d56c28</image>
+                            </from>
+                            <to>
+                                <image>${target.image}</image>
+                                <tags>
+                                    <tag>${target.tag}</tag>
+                                </tags>
+                            </to>
+                            <container>
+                                <mainClass>de.gmasil.webproject.Application</mainClass>
+                                <ports>
+                                    <port>6900</port>
+                                </ports>
+                            </container>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>dockerBuild</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>native</id>
+            <build>
+                <plugins>
+                    <!-- prepare hibernate for spring native -->
+                    <plugin>
+                        <groupId>org.hibernate.orm.tooling</groupId>
+                        <artifactId>hibernate-enhance-maven-plugin</artifactId>
+                        <version>${hibernate-enhance-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <configuration>
+                                    <failOnError>true</failOnError>
+                                    <enableLazyInitialization>true</enableLazyInitialization>
+                                    <enableDirtyTracking>true</enableDirtyTracking>
+                                    <enableAssociationManagement>true</enableAssociationManagement>
+                                    <enableExtendedEnhancement>false</enableExtendedEnhancement>
+                                </configuration>
+                                <goals>
+                                    <goal>enhance</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- spring boot assembly -->
+                    <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                        <configuration>
+                            <classifier></classifier>
+                            <image>
+                                <builder>paketobuildpacks/builder:tiny</builder>
+                                <env>
+                                    <BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>
+                                </env>
+                            </image>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>build-image</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- spring native AOT test -->
+                    <plugin>
+                        <groupId>org.springframework.experimental</groupId>
+                        <artifactId>spring-aot-maven-plugin</artifactId>
+                        <version>${spring-native.version}</version>
+                        <executions>
+                            <execution>
+                                <id>test-generate</id>
+                                <goals>
+                                    <goal>test-generate</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>generate</id>
+                                <goals>
+                                    <goal>generate</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <repositories>
         <repository>

@@ -53,12 +53,14 @@ import de.gmasil.webproject.jpa.role.RoleRepository;
 import de.gmasil.webproject.jpa.theme.Theme;
 import de.gmasil.webproject.jpa.theme.ThemeRepository;
 import de.gmasil.webproject.jpa.user.User;
+import de.gmasil.webproject.jpa.user.UserRepository;
 import de.gmasil.webproject.jpa.user.UserService;
 import de.gmasil.webproject.jpa.video.Video;
 import de.gmasil.webproject.jpa.video.VideoRepository;
 import de.gmasil.webproject.jpa.videofavorite.VideoFavorite;
 import de.gmasil.webproject.jpa.videofavorite.VideoFavoriteRepository;
 import de.gmasil.webproject.jpa.videofile.VideoFile;
+import de.gmasil.webproject.jpa.videofile.VideoFileRepository;
 import de.gmasil.webproject.jpa.videorating.VideoRating;
 import de.gmasil.webproject.jpa.videorating.VideoRatingRepository;
 import de.gmasil.webproject.service.dataimport.ImportData.ImportTheme;
@@ -81,7 +83,8 @@ public class DataImportService {
     @Autowired
     private Module module;
 
-    // TODO: remove optional
+    // this is not working in native mode
+    // use autowired list if possible, otherwise use manual fallback
     @Autowired(required = false)
     private List<JpaRepository<? extends Auditable, Long>> repositories;
 
@@ -89,10 +92,12 @@ public class DataImportService {
     private UserService userService;
 
     @Autowired
-    private RoleRepository roleRepo;
+    private ModelMapper mapper;
 
     @Autowired
-    private VideoRepository videoRepo;
+    private ApplicationEventPublisher eventPublisher;
+
+    // manually list all repositories as fallback for spring native
 
     @Autowired
     private ArtistRepository artistRepo;
@@ -101,25 +106,31 @@ public class DataImportService {
     private CategoryRepository categoryRepo;
 
     @Autowired
-    private VideoFavoriteRepository favoriteRepo;
-
-    @Autowired
     private CommentRepository commentRepo;
-
-    @Autowired
-    private VideoRatingRepository ratingRepo;
-
-    @Autowired
-    private ThemeRepository themeRepo;
 
     @Autowired
     private PropertyRepository propertyRepo;
 
     @Autowired
-    private ModelMapper mapper;
+    private RoleRepository roleRepo;
 
     @Autowired
-    private ApplicationEventPublisher eventPublisher;
+    private ThemeRepository themeRepo;
+
+    @Autowired
+    private UserRepository userRepo;
+
+    @Autowired
+    private VideoRepository videoRepo;
+
+    @Autowired
+    private VideoFavoriteRepository favoriteRepo;
+
+    @Autowired
+    private VideoFileRepository fileRepo;
+
+    @Autowired
+    private VideoRatingRepository ratingRepo;
 
     @EventListener(ApplicationReadyEvent.class)
     public void clean() {
@@ -270,8 +281,21 @@ public class DataImportService {
 
     private void deleteAllData() {
         if (repositories == null) {
-            LOG.warn("Cannot clean data, no repositories found. This is a known issue when running in native mode.");
+            LOG.warn("Cannot autodetect all repositories, cleaning data manually. "
+                    + "This is a known issue when running in native mode.");
+            artistRepo.deleteAll();
+            categoryRepo.deleteAll();
+            commentRepo.deleteAll();
+            propertyRepo.deleteAll();
+            roleRepo.deleteAll();
+            themeRepo.deleteAll();
+            userRepo.deleteAll();
+            videoRepo.deleteAll();
+            favoriteRepo.deleteAll();
+            fileRepo.deleteAll();
+            ratingRepo.deleteAll();
         } else {
+            LOG.info("Cleaning " + repositories.size() + " repositories");
             repositories.forEach(JpaRepository::deleteAll);
         }
     }

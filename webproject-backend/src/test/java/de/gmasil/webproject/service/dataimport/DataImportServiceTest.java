@@ -32,6 +32,7 @@ import org.springframework.test.context.TestPropertySource;
 import de.gmasil.webproject.jpa.artist.ArtistRepository;
 import de.gmasil.webproject.jpa.category.CategoryRepository;
 import de.gmasil.webproject.jpa.comment.CommentRepository;
+import de.gmasil.webproject.jpa.globalproperty.PropertyRepository;
 import de.gmasil.webproject.jpa.role.RoleRepository;
 import de.gmasil.webproject.jpa.theme.ThemeRepository;
 import de.gmasil.webproject.jpa.user.UserRepository;
@@ -49,46 +50,50 @@ import de.gmasil.webproject.utils.SetupTestContext;
 class DataImportServiceTest {
 
     @Autowired
-    private UserRepository userRepo;
-
-    @Autowired
-    private RoleRepository roleRepo;
-
-    @Autowired
-    private VideoRepository videoRepo;
-
-    @Autowired
     private ArtistRepository artistRepo;
 
     @Autowired
     private CategoryRepository categoryRepo;
 
     @Autowired
-    private VideoFileRepository fileRepo;
+    private CommentRepository commentRepo;
 
     @Autowired
-    private CommentRepository commentRepo;
+    private PropertyRepository propertyRepo;
+
+    @Autowired
+    private RoleRepository roleRepo;
+
+    @Autowired
+    private ThemeRepository themeRepo;
+
+    @Autowired
+    private UserRepository userRepo;
+
+    @Autowired
+    private VideoRepository videoRepo;
 
     @Autowired
     private VideoFavoriteRepository favoriteRepo;
 
     @Autowired
-    private VideoRatingRepository ratingRepo;
+    private VideoFileRepository fileRepo;
 
     @Autowired
-    private ThemeRepository themeRepo;
+    private VideoRatingRepository ratingRepo;
 
     @Test
     void testForExistingData() throws IOException {
-        assertThat(userRepo.count(), is(equalTo(2L)));
-        assertThat(roleRepo.count(), is(equalTo(3L)));
-        assertThat(videoRepo.count(), is(equalTo(2L)));
-        assertThat(fileRepo.count(), is(equalTo(3L)));
         assertThat(artistRepo.count(), is(equalTo(3L)));
         assertThat(categoryRepo.count(), is(equalTo(3L)));
         assertThat(commentRepo.count(), is(equalTo(2L)));
-        assertThat(favoriteRepo.count(), is(equalTo(2L)));
-        assertThat(ratingRepo.count(), is(equalTo(2L)));
+        assertThat(propertyRepo.count(), is(equalTo(1L)));
+        assertThat(roleRepo.count(), is(equalTo(3L)));
         assertThat(themeRepo.count(), is(equalTo(3L)));
+        assertThat(userRepo.count(), is(equalTo(2L)));
+        assertThat(videoRepo.count(), is(equalTo(2L)));
+        assertThat(favoriteRepo.count(), is(equalTo(2L)));
+        assertThat(fileRepo.count(), is(equalTo(3L)));
+        assertThat(ratingRepo.count(), is(equalTo(2L)));
     }
 }

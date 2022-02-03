@@ -8,11 +8,12 @@ pipeline {
   environment {
     MAVEN_ARTIFACT = sh(script: "mvn -q -Dexec.executable=echo -Dexec.args='\${project.groupId}:\${project.artifactId}' --non-recursive exec:exec", returnStdout: true).trim()
     MAVEN_PROJECT_NAME = sh(script: "mvn -q -Dexec.executable=echo -Dexec.args='\${project.name}' --non-recursive exec:exec", returnStdout: true).trim()
+    MAVEN_PROJECT_VERSION = sh(script: "mvn -q -Dexec.executable=echo -Dexec.args='\${project.version}' --non-recursive exec:exec", returnStdout: true).trim()
   }
   stages {
     stage("build") {
       steps {
-        sh "mvn clean deploy --no-transfer-progress"
+        sh "mvn clean install --no-transfer-progress -P jib-deploy"
       }
     }
     stage("analyze") {

@@ -44,7 +44,7 @@ spring:
 
 app:
   access:
-    public: true
+    public: false
 
 dataimport:
   enabled: false

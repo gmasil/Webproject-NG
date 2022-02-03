@@ -21,6 +21,7 @@
 -->
 <template>
   <div>
+    <h1 v-if="isAccessRestricted()">Restricted Access!</h1>
     <h1>Login</h1>
     <form method="post" action="/performlogin">
       <input type="text" name="username" />
@@ -31,3 +32,17 @@
     </form>
   </div>
 </template>
+
+<script lang="ts">
+import Vue from "vue";
+import { mapGetters } from "vuex";
+
+const Login = Vue.extend({
+  name: "Login",
+  methods: {
+    ...mapGetters(["isAccessRestricted"]),
+  },
+});
+
+export default Login;
+</script>

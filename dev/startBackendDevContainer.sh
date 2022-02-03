@@ -28,6 +28,7 @@ SOURCE_FOLDER="$( cd "$( dirname "${BASH_SOURCE[0]}" )"/.. && pwd )"
 : "${LOCAL_PORT:=6900}"
 : "${CONTAINER_NAME:=webproject}"
 : "${DATA_FILE:=webproject-backend/webproject-data.yml}"
+: "${PUBLIC_ACCESS:=true}"
 : "${VERBOSE:=false}"
 : "${NATIVE:=false}"
 : "${BUILD:=true}"
@@ -41,6 +42,7 @@ echo "IMAGE_TAG      = ${IMAGE_TAG}"
 echo "LOCAL_PORT     = ${LOCAL_PORT}"
 echo "CONTAINER_NAME = ${CONTAINER_NAME}"
 echo "DATA_FILE      = ${DATA_FILE}"
+echo "PUBLIC_ACCESS  = ${PUBLIC_ACCESS}"
 echo "VERBOSE        = ${VERBOSE}"
 echo "NATIVE         = ${NATIVE}"
 echo "BUILD          = ${BUILD}"
@@ -69,6 +71,7 @@ fi
 MSYS_NO_PATHCONV=1 docker run -d --rm --name "${CONTAINER_NAME}" \
     -p ${LOCAL_PORT}:6900 \
     -e "SPRING_PROFILES_ACTIVE=dev" \
+    -e "APP_ACCESS_PUBLIC=${PUBLIC_ACCESS}" \
     -e "INIT_THEME_NAME=Webproject Purple" \
     -e "INIT_THEME_BACKGROUNDCOLOR=#5f0066" \
     -e "INIT_THEME_BACKGROUNDHIGHLIGHTCOLOR=#300033" \

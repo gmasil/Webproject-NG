@@ -30,6 +30,7 @@ SOURCE_FOLDER="$( cd "$( dirname "${BASH_SOURCE[0]}" )"/.. && pwd )"
 : "${DATA_FILE:=webproject-backend/webproject-data.yml}"
 : "${VERBOSE:=false}"
 : "${NATIVE:=false}"
+: "${BUILD:=true}"
 
 if [ ${NATIVE} == "true" ]; then
     IMAGE_TAG="${IMAGE_TAG}-native"
@@ -42,11 +43,14 @@ echo "CONTAINER_NAME = ${CONTAINER_NAME}"
 echo "DATA_FILE      = ${DATA_FILE}"
 echo "VERBOSE        = ${VERBOSE}"
 echo "NATIVE         = ${NATIVE}"
+echo "BUILD          = ${BUILD}"
 
-if [ ${NATIVE} == "true" ]; then
-    mvn -f ${SOURCE_FOLDER}/pom.xml clean install --no-transfer-progress -DskipTests -Dnpm.skip=true -Dtarget.image=${IMAGE_NAME} -Dtarget.tag=${IMAGE_TAG} -P native
-else
-    mvn -f ${SOURCE_FOLDER}/pom.xml clean install --no-transfer-progress -DskipTests -Dnpm.skip=true -Dtarget.image=${IMAGE_NAME} -Dtarget.tag=${IMAGE_TAG} -P jib
+if [ ${BUILD} == "true" ]; then
+    if [ ${NATIVE} == "true" ]; then
+        mvn -f ${SOURCE_FOLDER}/pom.xml clean install --no-transfer-progress -DskipTests -Dnpm.skip=true -Dtarget.image=${IMAGE_NAME} -Dtarget.tag=${IMAGE_TAG} -P native
+    else
+        mvn -f ${SOURCE_FOLDER}/pom.xml clean install --no-transfer-progress -DskipTests -Dnpm.skip=true -Dtarget.image=${IMAGE_NAME} -Dtarget.tag=${IMAGE_TAG} -P jib
+    fi
 fi
 
 # check if previous container is still running
@@ -62,7 +66,17 @@ if test -f "${SOURCE_FOLDER}/${DATA_FILE}"; then
     IMPORT_ARGS="-v ${SOURCE_FOLDER}/${DATA_FILE}:/import.yml:Z -e DATAIMPORT_ENABLED=true -e DATAIMPORT_FILE=/import.yml"
 fi
 
-MSYS_NO_PATHCONV=1 docker run -d --rm --name "${CONTAINER_NAME}" -p ${LOCAL_PORT}:6900 -e SPRING_PROFILES_ACTIVE=dev ${IMPORT_ARGS} ${IMAGE_NAME}:${IMAGE_TAG}
+MSYS_NO_PATHCONV=1 docker run -d --rm --name "${CONTAINER_NAME}" \
+    -p ${LOCAL_PORT}:6900 \
+    -e "SPRING_PROFILES_ACTIVE=dev" \
+    -e "INIT_THEME_NAME=Webproject Purple" \
+    -e "INIT_THEME_BACKGROUNDCOLOR=#5f0066" \
+    -e "INIT_THEME_BACKGROUNDHIGHLIGHTCOLOR=#300033" \
+    -e "INIT_THEME_PRIMARYCOLOR=#f221ff" \
+    -e "INIT_THEME_SECONDARYCOLOR=#b253b8" \
+    -e "INIT_THEME_TEXTCOLOR=#f2f2f2" \
+    ${IMPORT_ARGS} \
+    ${IMAGE_NAME}:${IMAGE_TAG}
 
 if [ ${VERBOSE} == "true" ]; then
     docker logs -f "${CONTAINER_NAME}"

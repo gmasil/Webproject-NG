@@ -17,9 +17,13 @@
  * You should have received a copy of the GNU General Public License
  * along with Webproject NG. If not, see <https://www.gnu.org/licenses/>.
  */
-package de.gmasil.webproject.newprojection;
+package de.gmasil.webproject.projection;
 
-import de.gmasil.webproject.jpa.video.Video;
+import java.awt.Color;
+
+import org.modelmapper.ModelMapper;
+
+import de.gmasil.webproject.jpa.theme.Theme;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,19 +35,18 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class VideoProjectionNEW {
+public class ThemeProjection {
 
     private Long id;
-    private String title;
-    private String description;
-    private float length;
-    private String thumbnail;
+    private String name;
+    private Color backgroundColor;
+    private Color backgroundHighlightColor;
+    private Color primaryColor;
+    private Color secondaryColor;
+    private Color textColor;
+    private boolean preset;
 
-    public VideoProjectionNEW(Video video) {
-        this.id = video.getId();
-        this.title = video.getTitle();
-        this.description = video.getDescription();
-        this.length = video.getLength();
-        this.thumbnail = video.getThumbnail();
+    public ThemeProjection(Theme theme) {
+        new ModelMapper().map(theme, this);
     }
 }

@@ -23,9 +23,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import de.gmasil.webproject.newprojection.VideoProjectionNEW;
+import de.gmasil.webproject.projection.VideoProjection;
 
 public interface VideoRepository extends JpaRepository<Video, Long> {
 
-    Page<VideoProjectionNEW> findAllProjectionBy(Pageable pageable);
+    Page<VideoProjection> findAllProjectionBy(Pageable pageable);
 }

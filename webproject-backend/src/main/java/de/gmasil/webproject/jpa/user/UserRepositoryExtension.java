@@ -22,7 +22,7 @@ package de.gmasil.webproject.jpa.user;
 import java.util.List;
 import java.util.Optional;
 
-import de.gmasil.webproject.newprojection.UserProjectionNEW;
+import de.gmasil.webproject.projection.UserProjection;
 
 public interface UserRepositoryExtension {
 
@@ -32,5 +32,5 @@ public interface UserRepositoryExtension {
 
     public Optional<User> findWithRolesById(Long id);
 
-    public Optional<UserProjectionNEW> findProjectionById(Long id);
+    public Optional<UserProjection> findProjectionById(Long id);
 }

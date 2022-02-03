@@ -29,7 +29,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 
-import de.gmasil.webproject.newprojection.UserProjectionNEW;
+import de.gmasil.webproject.projection.UserProjection;
 
 public class UserRepositoryExtensionImpl implements UserRepositoryExtension {
 
@@ -80,11 +80,11 @@ public class UserRepositoryExtensionImpl implements UserRepositoryExtension {
     }
 
     @Override
-    public Optional<UserProjectionNEW> findProjectionById(Long id) {
+    public Optional<UserProjection> findProjectionById(Long id) {
         Optional<User> optionalUser = findWithRolesById(id);
         if (!optionalUser.isPresent()) {
             return Optional.empty();
         }
-        return Optional.of(new UserProjectionNEW(optionalUser.get()));
+        return Optional.of(new UserProjection(optionalUser.get()));
     }
 }

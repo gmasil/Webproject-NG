@@ -17,12 +17,9 @@
  * You should have received a copy of the GNU General Public License
  * along with Webproject NG. If not, see <https://www.gnu.org/licenses/>.
  */
-package de.gmasil.webproject.newprojection;
+package de.gmasil.webproject.projection;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import de.gmasil.webproject.jpa.user.User;
+import de.gmasil.webproject.jpa.role.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,17 +31,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserProjectionNEW {
+public class RoleProjection {
 
     private Long id;
-    private String username;
-    private Set<RoleProjectionNEW> roles;
-    private ThemeProjectionNEW activeTheme;
+    private String name;
 
-    public UserProjectionNEW(User user) {
-        this.id = user.getId();
-        this.username = user.getUsername();
-        this.roles = user.getRoles().stream().map(RoleProjectionNEW::new).collect(Collectors.toSet());
-        this.activeTheme = new ThemeProjectionNEW(user.getActiveTheme());
+    public RoleProjection(Role role) {
+        this.id = role.getId();
+        this.name = role.getName();
     }
 }

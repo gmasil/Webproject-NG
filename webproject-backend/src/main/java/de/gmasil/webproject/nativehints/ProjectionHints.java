@@ -27,21 +27,21 @@ import de.gmasil.webproject.jpa.role.Role;
 import de.gmasil.webproject.jpa.theme.Theme;
 import de.gmasil.webproject.jpa.user.User;
 import de.gmasil.webproject.jpa.video.Video;
-import de.gmasil.webproject.newprojection.RoleProjectionNEW;
-import de.gmasil.webproject.newprojection.ThemeProjectionNEW;
-import de.gmasil.webproject.newprojection.UserProjectionNEW;
-import de.gmasil.webproject.newprojection.VideoProjectionNEW;
+import de.gmasil.webproject.projection.RoleProjection;
+import de.gmasil.webproject.projection.ThemeProjection;
+import de.gmasil.webproject.projection.UserProjection;
+import de.gmasil.webproject.projection.VideoProjection;
 
 @Configuration
 @TypeHint(types = { //
         Role.class, //
-        RoleProjectionNEW.class, //
+        RoleProjection.class, //
         Theme.class, //
-        ThemeProjectionNEW.class, //
+        ThemeProjection.class, //
         User.class, //
-        UserProjectionNEW.class, //
+        UserProjection.class, //
         Video.class, //
-        VideoProjectionNEW.class //
+        VideoProjection.class //
 }, access = { //
         TypeAccess.PUBLIC_CONSTRUCTORS, //
         TypeAccess.PUBLIC_FIELDS, //

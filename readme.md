@@ -4,14 +4,20 @@
 
 Build:
 
-```
+```bash
 mvn clean package
 ```
 
-Build docker image to local daemon:
+Build docker image to local daemon using jib:
 
+```bash
+mvn clean install -P jib
 ```
-mvn -f webproject-backend jib:dockerBuild
+
+Build spring native docker image to local daemon using buildpacks:
+
+```bash
+mvn clean install -P native
 ```
 
 ### Dev mode
@@ -26,17 +32,47 @@ Dev mode functions:
 
 You can simply start the backend running inside a Docker container:
 
+```bash
+./dev/startBackendDevContainer.sh
 ```
-dev/startBackendDevContainer.sh
-```
+
+**Note:** This container will not provide a frontend to prevent any confusion during development.
 
 and stop that container using:
 
-```
-dev/stopBackendDevContainer.sh
+```bash
+./dev/stopBackendDevContainer.sh
 ```
 
 The Dev container will automatically enable `dev` mode and import data from the file `webproject-backend/webproject-data.yml` if it exists. See next section for further information.
+
+There are several options available for the startup script:
+
+| Argument         | Default                                |
+| ---------------- | -------------------------------------- |
+| `IMAGE_NAME`     | webproject-ng                          |
+| `IMAGE_TAG`      | local-dev                              |
+| `LOCAL_PORT`     | 6900                                   |
+| `CONTAINER_NAME` | webproject                             |
+| `DATA_FILE`      | webproject-backend/webproject-data.yml |
+| `PUBLIC_ACCESS`  | true                                   |
+| `VERBOSE`        | false                                  |
+| `NATIVE`         | false                                  |
+| `BUILD`          | true                                   |
+
+**Examples**:
+
+Build and start the native application:
+
+```bash
+NATIVE=true ./dev/startBackendDevContainer.sh
+```
+
+Start the native application without building again, disabled public access, show log in terminal:
+
+```bash
+NATIVE=true BUILD=false PUBLIC_ACCESS=false VERBOSE=true ./dev/startBackendDevContainer.sh
+```
 
 ### Data Import
 

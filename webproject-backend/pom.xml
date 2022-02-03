@@ -19,7 +19,8 @@
     along with Webproject NG. If not, see <https://www.gnu.org/licenses/>.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>webproject-backend</artifactId>
     <name>Backend</name>
@@ -52,7 +53,7 @@
         <target.image>${image.registry}/${image.name}</target.image>
         <target.tag>${project.version}</target.tag>
         <!-- frontend config -->
-        <skipCopyFrontend>false</skipCopyFrontend>
+        <npm.skip>false</npm.skip>
         <!-- skip test config -->
         <skipITs>true</skipITs>
         <skip.surefire.tests>${skipTests}</skip.surefire.tests>
@@ -233,7 +234,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <skip>${skipCopyFrontend}</skip>
+                            <skip>${npm.skip}</skip>
                             <outputDirectory>target/classes/public</outputDirectory>
                             <overwrite>true</overwrite>
                             <resources>
@@ -289,7 +290,7 @@
                     <version>${jib-plugin.version}</version>
                     <configuration>
                         <from>
-                            <image>openjdk:8-jre-slim@sha256:0bbd24c74e14020b66b647f9f116752869d51f1d651f044eda21c22d19d56c28</image>
+                            <image>openjdk:11-jre-slim@sha256:a1c0966d3dbb7c286832d376549a4c637bbb11576b5fe6a66df6100336f9b007</image>
                         </from>
                         <to>
                             <image>${target.image}</image>
@@ -298,7 +299,6 @@
                             </tags>
                         </to>
                         <container>
-                            <mainClass>de.gmasil.webproject.Application</mainClass>
                             <ports>
                                 <port>6900</port>
                             </ports>
@@ -314,11 +314,6 @@
             <id>jib-deploy</id>
             <build>
                 <plugins>
-                    <!-- spring boot assembly -->
-                    <plugin>
-                        <groupId>org.springframework.boot</groupId>
-                        <artifactId>spring-boot-maven-plugin</artifactId>
-                    </plugin>
                     <plugin>
                         <groupId>com.google.cloud.tools</groupId>
                         <artifactId>jib-maven-plugin</artifactId>
@@ -339,32 +334,10 @@
             <id>jib</id>
             <build>
                 <plugins>
-                    <!-- spring boot assembly -->
-                    <plugin>
-                        <groupId>org.springframework.boot</groupId>
-                        <artifactId>spring-boot-maven-plugin</artifactId>
-                    </plugin>
                     <plugin>
                         <groupId>com.google.cloud.tools</groupId>
                         <artifactId>jib-maven-plugin</artifactId>
                         <version>${jib-plugin.version}</version>
-                        <configuration>
-                            <from>
-                                <image>openjdk:8-jre-slim@sha256:0bbd24c74e14020b66b647f9f116752869d51f1d651f044eda21c22d19d56c28</image>
-                            </from>
-                            <to>
-                                <image>${target.image}</image>
-                                <tags>
-                                    <tag>${target.tag}</tag>
-                                </tags>
-                            </to>
-                            <container>
-                                <mainClass>de.gmasil.webproject.Application</mainClass>
-                                <ports>
-                                    <port>6900</port>
-                                </ports>
-                            </container>
-                        </configuration>
                         <executions>
                             <execution>
                                 <phase>install</phase>
@@ -412,6 +385,7 @@
                                 <env>
                                     <BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>
                                 </env>
+                                <name>${target.image}:${target.tag}</name>
                             </image>
                         </configuration>
                         <executions>

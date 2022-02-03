@@ -29,8 +29,25 @@ SOURCE_FOLDER="$( cd "$( dirname "${BASH_SOURCE[0]}" )"/.. && pwd )"
 : "${CONTAINER_NAME:=webproject}"
 : "${DATA_FILE:=webproject-backend/webproject-data.yml}"
 : "${VERBOSE:=false}"
+: "${NATIVE:=false}"
 
-mvn -f ${SOURCE_FOLDER}/webproject-backend clean package jib:dockerBuild --no-transfer-progress -DskipCopyFrontend=true -DskipTests -Dtarget.image=${IMAGE_NAME} -Dtarget.tag=${IMAGE_TAG}
+if [ ${NATIVE} == "true" ]; then
+    IMAGE_TAG="${IMAGE_TAG}-native"
+fi
+
+echo "IMAGE_NAME     = ${IMAGE_NAME}"
+echo "IMAGE_TAG      = ${IMAGE_TAG}"
+echo "LOCAL_PORT     = ${LOCAL_PORT}"
+echo "CONTAINER_NAME = ${CONTAINER_NAME}"
+echo "DATA_FILE      = ${DATA_FILE}"
+echo "VERBOSE        = ${VERBOSE}"
+echo "NATIVE         = ${NATIVE}"
+
+if [ ${NATIVE} == "true" ]; then
+    mvn -f ${SOURCE_FOLDER}/pom.xml clean install --no-transfer-progress -DskipTests -Dnpm.skip=true -Dtarget.image=${IMAGE_NAME} -Dtarget.tag=${IMAGE_TAG} -P native
+else
+    mvn -f ${SOURCE_FOLDER}/pom.xml clean install --no-transfer-progress -DskipTests -Dnpm.skip=true -Dtarget.image=${IMAGE_NAME} -Dtarget.tag=${IMAGE_TAG} -P jib
+fi
 
 # check if previous container is still running
 if docker inspect --format="{{.Id}}" ${CONTAINER_NAME} > /dev/null 2>&1; then

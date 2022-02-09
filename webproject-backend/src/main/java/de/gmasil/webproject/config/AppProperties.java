@@ -25,10 +25,8 @@ import org.springframework.context.annotation.Configuration;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @Configuration
 @ConfigurationProperties(prefix = "app")

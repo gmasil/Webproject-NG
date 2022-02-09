@@ -52,6 +52,8 @@ import de.gmasil.webproject.service.UserProvider;
 @RequestMapping("/api/themes")
 public class ThemeRestController {
 
+    private static final String UNAUTHORIZED = "Unauthorized";
+
     @Autowired
     private ThemeRepository themeRepo;
 
@@ -73,7 +75,7 @@ public class ThemeRestController {
     public ResponseEntity<Object> postTheme(@RequestBody ThemeDto themeDto) {
         User user = userProvider.getCurrent();
         if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(UNAUTHORIZED);
         }
         if (themeDto.isPreset()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Posting preset is not allowed");
@@ -94,7 +96,7 @@ public class ThemeRestController {
     public ResponseEntity<String> putTheme(@PathVariable Long id, @RequestBody ThemeDto themeDto) {
         User user = userProvider.getCurrent();
         if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(UNAUTHORIZED);
         }
         Optional<Theme> theme = themeRepo.findByIdAndCreator(id, user);
         if (theme.isPresent()) {
@@ -113,7 +115,7 @@ public class ThemeRestController {
     public ResponseEntity<String> setActiveTheme(@PathVariable Long id) {
         User user = userProvider.getCurrent();
         if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(UNAUTHORIZED);
         }
         user = entityManager.merge(user);
         Optional<Theme> theme = themeRepo.findAvailableById(id, user);

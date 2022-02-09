@@ -295,7 +295,7 @@ public class DataImportService {
             fileRepo.deleteAll();
             ratingRepo.deleteAll();
         } else {
-            LOG.info("Cleaning " + repositories.size() + " repositories");
+            LOG.info("Cleaning {} repositories", repositories.size());
             repositories.forEach(JpaRepository::deleteAll);
         }
     }

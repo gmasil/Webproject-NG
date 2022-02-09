@@ -33,6 +33,8 @@ import de.gmasil.webproject.projection.UserProjection;
 
 public class UserRepositoryExtensionImpl implements UserRepositoryExtension {
 
+    private static final String ROLES = "roles";
+
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -41,7 +43,7 @@ public class UserRepositoryExtensionImpl implements UserRepositoryExtension {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<User> criteria = builder.createQuery(User.class);
         Root<User> from = criteria.from(User.class);
-        Join<Object, Object> roles = from.join("roles");
+        Join<Object, Object> roles = from.join(ROLES);
         criteria.where(builder.equal(roles.get("name"), role));
         return entityManager.createQuery(criteria).getResultList();
     }
@@ -55,7 +57,7 @@ public class UserRepositoryExtensionImpl implements UserRepositoryExtension {
         CriteriaQuery<User> criteria = builder.createQuery(User.class);
         Root<User> from = criteria.from(User.class);
         // eagerly load roles
-        from.fetch("roles");
+        from.fetch(ROLES);
         criteria.where(builder.equal(from.get("username"), username));
         List<User> resultList = entityManager.createQuery(criteria).getResultList();
         if (resultList.size() != 1) {
@@ -70,7 +72,7 @@ public class UserRepositoryExtensionImpl implements UserRepositoryExtension {
         CriteriaQuery<User> criteria = builder.createQuery(User.class);
         Root<User> from = criteria.from(User.class);
         // eagerly load roles
-        from.fetch("roles");
+        from.fetch(ROLES);
         criteria.where(builder.equal(from.get("id"), id));
         List<User> resultList = entityManager.createQuery(criteria).getResultList();
         if (resultList.size() != 1) {

@@ -46,7 +46,7 @@
         <!-- plugin versions -->
         <jacoco-plugin.version>0.8.7</jacoco-plugin.version>
         <jib-plugin.version>3.1.4</jib-plugin.version>
-        <hibernate-enhance-plugin.version>5.6.3.Final</hibernate-enhance-plugin.version>
+        <hibernate-enhance-plugin.version>5.6.4.Final</hibernate-enhance-plugin.version>
         <!-- image build -->
         <image.registry>registry.gmasil.de/docker</image.registry>
         <image.name>${project.parent.artifactId}</image.name>
@@ -112,12 +112,6 @@
             <optional>true</optional>
         </dependency>
         <!-- database -->
-        <!--
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-c3p0</artifactId>
-        </dependency>
-        -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
@@ -312,6 +306,12 @@
     <profiles>
         <profile>
             <id>jib-deploy</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.hibernate</groupId>
+                    <artifactId>hibernate-c3p0</artifactId>
+                </dependency>
+            </dependencies>
             <build>
                 <plugins>
                     <plugin>
@@ -332,6 +332,12 @@
         </profile>
         <profile>
             <id>jib</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.hibernate</groupId>
+                    <artifactId>hibernate-c3p0</artifactId>
+                </dependency>
+            </dependencies>
             <build>
                 <plugins>
                     <plugin>

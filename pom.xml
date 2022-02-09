@@ -1,7 +1,7 @@
 <!--
 
     Webproject NG
-    Copyright © 2021 Gmasil
+    Copyright © 2022 Gmasil
 
     This file is part of Webproject NG.
 
@@ -30,7 +30,7 @@
     <name>Webproject NG</name>
     <description>Next Generation of Webproject using Vue.js frontend</description>
 
-    <inceptionYear>2021</inceptionYear>
+    <inceptionYear>2022</inceptionYear>
     <url>https://github.com/gmasil/Webproject-NG</url>
 
     <organization>

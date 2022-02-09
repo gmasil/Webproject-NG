@@ -1,7 +1,7 @@
 #! /bin/bash
 #
 # Webproject NG
-# Copyright © 2021 Gmasil
+# Copyright © 2022 Gmasil
 #
 # This file is part of Webproject NG.
 #

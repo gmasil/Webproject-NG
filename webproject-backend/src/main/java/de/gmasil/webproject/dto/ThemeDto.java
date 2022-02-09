@@ -21,13 +21,18 @@ package de.gmasil.webproject.dto;
 
 import java.awt.Color;
 
+import org.modelmapper.ModelMapper;
+
+import de.gmasil.webproject.jpa.theme.Theme;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ThemeDto {
@@ -40,4 +45,8 @@ public class ThemeDto {
     private Color secondaryColor;
     private Color textColor;
     private boolean preset;
+
+    public ThemeDto(Theme theme) {
+        new ModelMapper().map(theme, this);
+    }
 }

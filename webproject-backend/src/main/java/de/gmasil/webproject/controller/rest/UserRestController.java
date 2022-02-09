@@ -37,11 +37,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import de.gmasil.webproject.controller.PermitAll;
+import de.gmasil.webproject.dto.UserDto;
 import de.gmasil.webproject.dto.UserPasswordDto;
 import de.gmasil.webproject.jpa.user.User;
 import de.gmasil.webproject.jpa.user.UserRepository;
 import de.gmasil.webproject.jpa.user.UserService;
-import de.gmasil.webproject.projection.UserProjection;
 import de.gmasil.webproject.service.UserProvider;
 
 @RestController
@@ -65,7 +65,7 @@ public class UserRestController {
     public ResponseEntity<Object> currentUser() {
         User user = userProvider.getCurrent();
         if (user != null) {
-            Optional<UserProjection> eagerUser = userRepo.findProjectionById(user.getId());
+            Optional<UserDto> eagerUser = userRepo.findProjectionById(user.getId());
             if (eagerUser.isPresent()) {
                 return ResponseEntity.ok(eagerUser.get());
             }

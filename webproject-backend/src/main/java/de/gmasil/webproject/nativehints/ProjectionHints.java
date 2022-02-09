@@ -23,25 +23,25 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.nativex.hint.TypeAccess;
 import org.springframework.nativex.hint.TypeHint;
 
+import de.gmasil.webproject.dto.RoleDto;
+import de.gmasil.webproject.dto.ThemeDto;
+import de.gmasil.webproject.dto.UserDto;
+import de.gmasil.webproject.dto.VideoDto;
 import de.gmasil.webproject.jpa.role.Role;
 import de.gmasil.webproject.jpa.theme.Theme;
 import de.gmasil.webproject.jpa.user.User;
 import de.gmasil.webproject.jpa.video.Video;
-import de.gmasil.webproject.projection.RoleProjection;
-import de.gmasil.webproject.projection.ThemeProjection;
-import de.gmasil.webproject.projection.UserProjection;
-import de.gmasil.webproject.projection.VideoProjection;
 
 @Configuration
 @TypeHint(types = { //
         Role.class, //
-        RoleProjection.class, //
+        RoleDto.class, //
         Theme.class, //
-        ThemeProjection.class, //
+        ThemeDto.class, //
         User.class, //
-        UserProjection.class, //
+        UserDto.class, //
         Video.class, //
-        VideoProjection.class //
+        VideoDto.class //
 }, access = { //
         TypeAccess.PUBLIC_CONSTRUCTORS, //
         TypeAccess.PUBLIC_FIELDS, //

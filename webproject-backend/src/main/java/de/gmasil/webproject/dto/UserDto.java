@@ -17,13 +17,12 @@
  * You should have received a copy of the GNU General Public License
  * along with Webproject NG. If not, see <https://www.gnu.org/licenses/>.
  */
-package de.gmasil.webproject.projection;
+package de.gmasil.webproject.dto;
 
-import java.awt.Color;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-import org.modelmapper.ModelMapper;
-
-import de.gmasil.webproject.jpa.theme.Theme;
+import de.gmasil.webproject.jpa.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,21 +31,20 @@ import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class ThemeProjection {
+public class UserDto {
 
     private Long id;
-    private String name;
-    private Color backgroundColor;
-    private Color backgroundHighlightColor;
-    private Color primaryColor;
-    private Color secondaryColor;
-    private Color textColor;
-    private boolean preset;
+    private String username;
+    private Set<RoleDto> roles;
+    private ThemeDto activeTheme;
 
-    public ThemeProjection(Theme theme) {
-        new ModelMapper().map(theme, this);
+    public UserDto(User user) {
+        this.id = user.getId();
+        this.username = user.getUsername();
+        this.roles = user.getRoles().stream().map(RoleDto::new).collect(Collectors.toSet());
+        this.activeTheme = new ThemeDto(user.getActiveTheme());
     }
 }

@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Webproject NG. If not, see <https://www.gnu.org/licenses/>.
  */
-package de.gmasil.webproject.projection;
+package de.gmasil.webproject.dto;
 
 import de.gmasil.webproject.jpa.video.Video;
 import lombok.AllArgsConstructor;
@@ -28,10 +28,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class VideoProjection {
+public class VideoDto {
 
     private Long id;
     private String title;
@@ -39,7 +39,7 @@ public class VideoProjection {
     private float length;
     private String thumbnail;
 
-    public VideoProjection(Video video) {
+    public VideoDto(Video video) {
         this.id = video.getId();
         this.title = video.getTitle();
         this.description = video.getDescription();

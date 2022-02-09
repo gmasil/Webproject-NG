@@ -26,17 +26,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@TestPropertySource(properties = { "init.skip=true" })
-@Import(RestTemplateConfig.class)
-public @interface SetupTestContext {
+@TestPropertySource(properties = { "app.access.public=true" })
+public @interface EnablePublicAccess {
 }

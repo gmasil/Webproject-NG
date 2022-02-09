@@ -19,24 +19,26 @@
  */
 package de.gmasil.webproject.utils;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.web.client.RestTemplate;
 
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.TestPropertySource;
+@Lazy
+@TestConfiguration
+public class RestTemplateConfig {
 
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-@Inherited
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@TestPropertySource(properties = { "init.skip=true" })
-@Import(RestTemplateConfig.class)
-public @interface SetupTestContext {
+    @LocalServerPort
+    private int port;
+
+    @Autowired
+    private RestTemplateBuilder restTemplateBuilder;
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return restTemplateBuilder.rootUri("http://127.0.0.1:" + port).build();
+    }
 }

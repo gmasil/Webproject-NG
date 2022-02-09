@@ -27,7 +27,6 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.TestPropertySource;
 
 import de.gmasil.webproject.jpa.artist.ArtistRepository;
 import de.gmasil.webproject.jpa.category.CategoryRepository;
@@ -40,13 +39,11 @@ import de.gmasil.webproject.jpa.video.VideoRepository;
 import de.gmasil.webproject.jpa.videofavorite.VideoFavoriteRepository;
 import de.gmasil.webproject.jpa.videofile.VideoFileRepository;
 import de.gmasil.webproject.jpa.videorating.VideoRatingRepository;
+import de.gmasil.webproject.utils.ImportTestData;
 import de.gmasil.webproject.utils.SetupTestContext;
 
+@ImportTestData
 @SetupTestContext
-@TestPropertySource(properties = { //
-        "dataimport.enabled=true", //
-        "dataimport.file=src/test/resources/test-data-import.yml", //
-        "dataimport.clean=true" })
 class DataImportServiceTest {
 
     @Autowired

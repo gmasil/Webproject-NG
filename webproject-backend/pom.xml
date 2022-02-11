@@ -32,26 +32,6 @@
     </parent>
 
     <properties>
-        <java.version>11</java.version>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!-- spring native -->
-        <spring-native.version>0.11.2</spring-native.version>
-        <!-- versions -->
-        <modelmapper.version>3.0.0</modelmapper.version>
-        <!-- test versions -->
-        <hamcrest-all.version>1.3</hamcrest-all.version>
-        <gherkin-extension.version>1.1</gherkin-extension.version>
-        <!-- plugin versions -->
-        <jacoco-plugin.version>0.8.7</jacoco-plugin.version>
-        <jib-plugin.version>3.1.4</jib-plugin.version>
-        <hibernate-enhance-plugin.version>5.6.4.Final</hibernate-enhance-plugin.version>
-        <!-- image build -->
-        <image.registry>registry.gmasil.de/docker</image.registry>
-        <image.name>${project.parent.artifactId}</image.name>
-        <target.image>${image.registry}/${image.name}</target.image>
-        <target.tag>${project.version}</target.tag>
         <!-- frontend config -->
         <npm.skip>false</npm.skip>
         <!-- skip test config -->
@@ -148,16 +128,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>junit</groupId>
-                    <artifactId>junit</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.junit.vintage</groupId>
-                    <artifactId>junit-vintage-engine</artifactId>
-                </exclusion>
-            </exclusions>
             <scope>test</scope>
         </dependency>
         <!-- jupiter -->
@@ -169,28 +139,6 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-runner</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>junit</groupId>
-                    <artifactId>junit</artifactId>
-                </exclusion>
-            </exclusions>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-launcher</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>junit</groupId>
-                    <artifactId>junit</artifactId>
-                </exclusion>
-            </exclusions>
             <scope>test</scope>
         </dependency>
         <!-- mockito -->
@@ -320,7 +268,7 @@
                         <version>${jib-plugin.version}</version>
                         <executions>
                             <execution>
-                                <phase>install</phase>
+                                <phase>package</phase>
                                 <goals>
                                     <goal>build</goal>
                                 </goals>
@@ -346,7 +294,7 @@
                         <version>${jib-plugin.version}</version>
                         <executions>
                             <execution>
-                                <phase>install</phase>
+                                <phase>package</phase>
                                 <goals>
                                     <goal>dockerBuild</goal>
                                 </goals>
@@ -396,7 +344,7 @@
                         </configuration>
                         <executions>
                             <execution>
-                                <phase>install</phase>
+                                <phase>package</phase>
                                 <goals>
                                     <goal>build-image</goal>
                                 </goals>

@@ -49,10 +49,11 @@ echo "BUILD          = ${BUILD}"
 
 if [ ${BUILD} == "true" ]; then
     if [ ${NATIVE} == "true" ]; then
-        mvn -f ${SOURCE_FOLDER}/pom.xml clean package --no-transfer-progress -DskipTests -Dnpm.skip=true -Dtarget.image=${IMAGE_NAME} -Dtarget.tag=${IMAGE_TAG} -P native
+        PROFILE=native
     else
-        mvn -f ${SOURCE_FOLDER}/pom.xml clean package --no-transfer-progress -DskipTests -Dnpm.skip=true -Dtarget.image=${IMAGE_NAME} -Dtarget.tag=${IMAGE_TAG} -P jib
+        PROFILE=jib
     fi
+    mvn -f ${SOURCE_FOLDER}/pom.xml clean package --no-transfer-progress -DskipTests -Dnpm.skip=true -Dtarget.image=${IMAGE_NAME} -Dtarget.tag=${IMAGE_TAG} -P ${PROFILE}
 fi
 
 # check if previous container is still running

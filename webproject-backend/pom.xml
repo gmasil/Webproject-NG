@@ -306,6 +306,9 @@
         </profile>
         <profile>
             <id>native</id>
+            <properties>
+                <target.tag>${project.version}-native</target.tag>
+            </properties>
             <build>
                 <plugins>
                     <!-- prepare hibernate for spring native -->
@@ -338,6 +341,7 @@
                                 <builder>paketobuildpacks/builder:tiny</builder>
                                 <env>
                                     <BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>
+                                    <BP_JVM_VERSION>17</BP_JVM_VERSION>
                                 </env>
                                 <name>${target.image}:${target.tag}</name>
                             </image>

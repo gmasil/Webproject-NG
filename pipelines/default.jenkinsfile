@@ -13,7 +13,7 @@ pipeline {
   stages {
     stage("build") {
       steps {
-        sh "mvn clean install --no-transfer-progress -P jib-deploy"
+        sh "mvn clean package --no-transfer-progress -P jib-deploy"
       }
     }
     stage("analyze") {

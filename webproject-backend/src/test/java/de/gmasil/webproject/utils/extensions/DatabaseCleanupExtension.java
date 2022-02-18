@@ -17,28 +17,18 @@
  * You should have received a copy of the GNU General Public License
  * along with Webproject NG. If not, see <https://www.gnu.org/licenses/>.
  */
-package de.gmasil.webproject.utils;
+package de.gmasil.webproject.utils.extensions;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.web.client.RestTemplate;
+import org.junit.jupiter.api.extension.BeforeEachCallback;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@Lazy
-@TestConfiguration
-public class RestTemplateConfig {
+public class DatabaseCleanupExtension implements BeforeEachCallback {
 
-    @LocalServerPort
-    private int port;
-
-    @Autowired
-    private RestTemplateBuilder restTemplateBuilder;
-
-    @Bean
-    public RestTemplate restTemplate() {
-        return restTemplateBuilder.rootUri("http://127.0.0.1:" + port).build();
+    @Override
+    public void beforeEach(ExtensionContext context) throws Exception {
+        SpringExtension.getApplicationContext(context).getBeansOfType(JpaRepository.class).values()
+                .forEach(JpaRepository::deleteAll);
     }
 }

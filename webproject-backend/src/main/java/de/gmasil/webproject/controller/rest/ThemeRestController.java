@@ -19,6 +19,7 @@
  */
 package de.gmasil.webproject.controller.rest;
 
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +28,8 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,6 +53,8 @@ import de.gmasil.webproject.service.UserProvider;
 @RestController
 @RequestMapping("/api/themes")
 public class ThemeRestController {
+
+    private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private static final String UNAUTHORIZED = "Unauthorized";
 
@@ -153,6 +158,7 @@ public class ThemeRestController {
         if (themeDto.isPresent()) {
             return ResponseEntity.ok(themeDto.get());
         }
+        LOG.warn("There is no default theme set");
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
@@ -167,6 +173,7 @@ public class ThemeRestController {
         if (theme == null) {
             theme = themeRepo.findDefault().orElseThrow(() -> new IllegalStateException("No default theme found"));
         }
+        LOG.warn("There is no default theme set");
         return theme.toCss(colorConverter);
     }
 }

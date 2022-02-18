@@ -100,7 +100,9 @@ public class Theme extends Auditable {
     public Theme(String name, User creator, Color backgroundColor, Color backgroundHighlightColor, Color primaryColor,
             Color secondaryColor, Color textColor, boolean preset) {
         this.name = name;
-        setCreator(creator);
+        if (creator != null) {
+            setCreator(creator);
+        }
         this.backgroundColor = backgroundColor;
         this.backgroundHighlightColor = backgroundHighlightColor;
         this.primaryColor = primaryColor;

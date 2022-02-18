@@ -19,6 +19,8 @@
  */
 package de.gmasil.webproject.utils.serialization;
 
+import static com.fasterxml.jackson.annotation.JsonCreator.Mode.PROPERTIES;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +34,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public class PaginatedResponse<T> extends PageImpl<T> {
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    @JsonCreator(mode = PROPERTIES)
     public PaginatedResponse(@JsonProperty("content") List<T> content, @JsonProperty("number") int number,
             @JsonProperty("size") int size, @JsonProperty("totalElements") Long totalElements,
             @JsonProperty("pageable") JsonNode pageable, @JsonProperty("last") boolean last,

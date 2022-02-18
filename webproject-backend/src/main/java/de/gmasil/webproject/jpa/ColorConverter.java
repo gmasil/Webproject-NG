@@ -32,6 +32,9 @@ public class ColorConverter implements AttributeConverter<Color, String> {
 
     @Override
     public String convertToDatabaseColumn(Color color) {
+        if (color == null) {
+            return "#000000";
+        }
         StringBuilder sb = new StringBuilder();
         sb.append(Integer.toHexString(0xFFFFFF & color.getRGB()));
         while (sb.length() < 6) {

@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -32,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -42,7 +44,6 @@ import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
-import de.gmasil.webproject.jpa.Auditable;
 import de.gmasil.webproject.jpa.artist.ArtistRepository;
 import de.gmasil.webproject.jpa.category.CategoryRepository;
 import de.gmasil.webproject.jpa.comment.Comment;
@@ -53,14 +54,12 @@ import de.gmasil.webproject.jpa.role.RoleRepository;
 import de.gmasil.webproject.jpa.theme.Theme;
 import de.gmasil.webproject.jpa.theme.ThemeRepository;
 import de.gmasil.webproject.jpa.user.User;
-import de.gmasil.webproject.jpa.user.UserRepository;
 import de.gmasil.webproject.jpa.user.UserService;
 import de.gmasil.webproject.jpa.video.Video;
 import de.gmasil.webproject.jpa.video.VideoRepository;
 import de.gmasil.webproject.jpa.videofavorite.VideoFavorite;
 import de.gmasil.webproject.jpa.videofavorite.VideoFavoriteRepository;
 import de.gmasil.webproject.jpa.videofile.VideoFile;
-import de.gmasil.webproject.jpa.videofile.VideoFileRepository;
 import de.gmasil.webproject.jpa.videorating.VideoRating;
 import de.gmasil.webproject.jpa.videorating.VideoRatingRepository;
 import de.gmasil.webproject.service.dataimport.ImportData.ImportTheme;
@@ -83,10 +82,8 @@ public class DataImportService {
     @Autowired
     private Module module;
 
-    // this is not working in native mode
-    // use autowired list if possible, otherwise use manual fallback
-    @Autowired(required = false)
-    private List<JpaRepository<? extends Auditable, Long>> repositories;
+    @Autowired
+    private ApplicationContext ctx;
 
     @Autowired
     private UserService userService;
@@ -96,8 +93,6 @@ public class DataImportService {
 
     @Autowired
     private ApplicationEventPublisher eventPublisher;
-
-    // manually list all repositories as fallback for spring native
 
     @Autowired
     private ArtistRepository artistRepo;
@@ -118,16 +113,10 @@ public class DataImportService {
     private ThemeRepository themeRepo;
 
     @Autowired
-    private UserRepository userRepo;
-
-    @Autowired
     private VideoRepository videoRepo;
 
     @Autowired
     private VideoFavoriteRepository favoriteRepo;
-
-    @Autowired
-    private VideoFileRepository fileRepo;
 
     @Autowired
     private VideoRatingRepository ratingRepo;
@@ -280,23 +269,9 @@ public class DataImportService {
     }
 
     private void deleteAllData() {
-        if (repositories == null) {
-            LOG.warn("Cannot autodetect all repositories, cleaning data manually. "
-                    + "This is a known issue when running in native mode.");
-            artistRepo.deleteAll();
-            categoryRepo.deleteAll();
-            commentRepo.deleteAll();
-            propertyRepo.deleteAll();
-            roleRepo.deleteAll();
-            themeRepo.deleteAll();
-            userRepo.deleteAll();
-            videoRepo.deleteAll();
-            favoriteRepo.deleteAll();
-            fileRepo.deleteAll();
-            ratingRepo.deleteAll();
-        } else {
-            LOG.info("Cleaning {} repositories", repositories.size());
-            repositories.forEach(JpaRepository::deleteAll);
-        }
+        List<JpaRepository<?, ?>> repositories = ctx.getBeansOfType(JpaRepository.class).values().stream()
+                .map(s -> (JpaRepository<?, ?>) s).collect(Collectors.toList());
+        LOG.info("Cleaning {} repositories", repositories.size());
+        repositories.forEach(JpaRepository::deleteAll);
     }
 }

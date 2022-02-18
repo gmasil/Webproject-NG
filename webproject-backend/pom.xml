@@ -217,6 +217,7 @@
                             </tags>
                         </to>
                         <container>
+                            <mainClass>de.gmasil.webproject.Application</mainClass>
                             <ports>
                                 <port>6900</port>
                             </ports>

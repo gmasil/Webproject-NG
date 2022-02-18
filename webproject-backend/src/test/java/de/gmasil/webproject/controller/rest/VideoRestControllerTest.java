@@ -32,13 +32,13 @@ import org.springframework.web.client.RestTemplate;
 
 import de.gmasil.webproject.jpa.video.Video;
 import de.gmasil.webproject.utils.EnablePublicAccess;
-import de.gmasil.webproject.utils.ImportTestData;
 import de.gmasil.webproject.utils.SetupTestContext;
+import de.gmasil.webproject.utils.extensions.EnableTestDataImportBeforeAll;
 import de.gmasil.webproject.utils.serialization.PaginatedResponse;
 
-@ImportTestData
 @SetupTestContext
 @EnablePublicAccess
+@EnableTestDataImportBeforeAll
 class VideoRestControllerTest {
 
     private static final ParameterizedTypeReference<PaginatedResponse<Video>> PAGINATED_VIDEO = new ParameterizedTypeReference<PaginatedResponse<Video>>() {

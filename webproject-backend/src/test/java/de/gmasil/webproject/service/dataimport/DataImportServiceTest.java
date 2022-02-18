@@ -39,11 +39,11 @@ import de.gmasil.webproject.jpa.video.VideoRepository;
 import de.gmasil.webproject.jpa.videofavorite.VideoFavoriteRepository;
 import de.gmasil.webproject.jpa.videofile.VideoFileRepository;
 import de.gmasil.webproject.jpa.videorating.VideoRatingRepository;
-import de.gmasil.webproject.utils.ImportTestData;
 import de.gmasil.webproject.utils.SetupTestContext;
+import de.gmasil.webproject.utils.extensions.EnableTestDataImportBeforeAll;
 
-@ImportTestData
 @SetupTestContext
+@EnableTestDataImportBeforeAll
 class DataImportServiceTest {
 
     @Autowired

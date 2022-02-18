@@ -25,17 +25,19 @@ import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-public class DatabaseCleanupExtension implements BeforeEachCallback {
+import de.gmasil.webproject.service.dataimport.DataImportService;
+
+public class TestDataImportExtension implements BeforeEachCallback {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
-        LOG.info("Cleaning database before \"{}\"", context.getDisplayName());
-        SpringExtension.getApplicationContext(context).getBeansOfType(JpaRepository.class).values()
-                .forEach(JpaRepository::deleteAll);
+        LOG.info("Importing test data before \"{}\"", context.getDisplayName());
+        DataImportService service = SpringExtension.getApplicationContext(context).getBean(DataImportService.class);
+        service.performClean();
+        service.performDataImport();
     }
 }

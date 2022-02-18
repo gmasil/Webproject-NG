@@ -124,29 +124,40 @@ public class DataImportService {
     @EventListener(ApplicationReadyEvent.class)
     public void clean() {
         if (properties.isEnabled() && properties.isClean()) {
-            LOG.info("Cleaning existing data");
-            deleteAllData();
+            performClean();
         }
         eventPublisher.publishEvent(new CleanFinishedEvent(this));
+    }
+
+    public void performClean() {
+        List<JpaRepository<?, ?>> repositories = ctx.getBeansOfType(JpaRepository.class).values().stream()
+                .map(s -> (JpaRepository<?, ?>) s).collect(Collectors.toList());
+        LOG.info("Cleaning {} repositories", repositories.size());
+        repositories.forEach(JpaRepository::deleteAll);
     }
 
     @Transactional
     @EventListener(InitializeFinishedEvent.class)
     public void importData() throws IOException {
         if (properties.isEnabled()) {
-            File file = new File(properties.getFile());
-            if (file.exists()) {
-                StopWatch watch = new StopWatch();
-                watch.start();
-                LOG.info("Importing data from {}", file.getAbsolutePath());
-                importData(file);
-                watch.stop();
-                LOG.info("Data import finished in {}s", watch.getTotalTimeSeconds());
-            } else {
-                LOG.warn("Cannot import data, file does not exist: {}", file.getAbsolutePath());
-            }
+            performDataImport();
         }
         eventPublisher.publishEvent(new DataImportFinishedEvent(this));
+    }
+
+    @Transactional
+    public void performDataImport() throws IOException {
+        File file = new File(properties.getFile());
+        if (file.exists()) {
+            StopWatch watch = new StopWatch();
+            watch.start();
+            LOG.info("Importing data from {}", file.getAbsolutePath());
+            importData(file);
+            watch.stop();
+            LOG.info("Data import finished in {}s", watch.getTotalTimeSeconds());
+        } else {
+            LOG.warn("Cannot import data, file does not exist: {}", file.getAbsolutePath());
+        }
     }
 
     private void importData(File file) throws IOException {
@@ -266,12 +277,5 @@ public class DataImportService {
             throw new IllegalStateException(String.format(UNREFERENCED_USER, username, video.getTitle()));
         }
         return optionalUser.get();
-    }
-
-    private void deleteAllData() {
-        List<JpaRepository<?, ?>> repositories = ctx.getBeansOfType(JpaRepository.class).values().stream()
-                .map(s -> (JpaRepository<?, ?>) s).collect(Collectors.toList());
-        LOG.info("Cleaning {} repositories", repositories.size());
-        repositories.forEach(JpaRepository::deleteAll);
     }
 }

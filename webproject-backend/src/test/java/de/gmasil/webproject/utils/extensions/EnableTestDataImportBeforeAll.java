@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Webproject NG. If not, see <https://www.gnu.org/licenses/>.
  */
-package de.gmasil.webproject.utils;
+package de.gmasil.webproject.utils.extensions;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -36,5 +36,5 @@ import org.springframework.test.context.TestPropertySource;
         "dataimport.enabled=true", //
         "dataimport.file=src/test/resources/test-data-import.yml", //
         "dataimport.clean=true" })
-public @interface ImportTestData {
+public @interface EnableTestDataImportBeforeAll {
 }

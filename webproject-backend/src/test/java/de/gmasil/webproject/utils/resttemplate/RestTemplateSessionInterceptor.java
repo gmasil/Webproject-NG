@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Webproject NG. If not, see <https://www.gnu.org/licenses/>.
  */
-package de.gmasil.webproject.utils.rest;
+package de.gmasil.webproject.utils.resttemplate;
 
 import java.io.IOException;
 

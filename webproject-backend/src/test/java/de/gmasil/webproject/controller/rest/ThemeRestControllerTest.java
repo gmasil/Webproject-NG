@@ -30,8 +30,8 @@ import org.springframework.http.ResponseEntity;
 import de.gmasil.webproject.dto.ThemeDto;
 import de.gmasil.webproject.utils.SetupTestContext;
 import de.gmasil.webproject.utils.extensions.EnableTestDataImportBeforeEach;
-import de.gmasil.webproject.utils.rest.AdvRestTemplate;
-import de.gmasil.webproject.utils.rest.RestTemplateFactory;
+import de.gmasil.webproject.utils.resttemplate.AdvRestTemplate;
+import de.gmasil.webproject.utils.resttemplate.RestTemplateFactory;
 
 @SetupTestContext
 @EnableTestDataImportBeforeEach

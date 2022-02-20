@@ -44,6 +44,7 @@ public class UserRepositoryExtensionImpl implements UserRepositoryExtension {
     public List<User> findAllWithRole(String role) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<User> criteria = builder.createQuery(User.class);
+        criteria.distinct(true);
         Root<User> from = criteria.from(User.class);
         Join<Object, Object> roles = from.join(ROLES);
         criteria.where(builder.equal(roles.get("name"), role));
@@ -57,6 +58,7 @@ public class UserRepositoryExtensionImpl implements UserRepositoryExtension {
     public Optional<User> findWithRolesByUsername(String username) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<User> criteria = builder.createQuery(User.class);
+        criteria.distinct(true);
         Root<User> from = criteria.from(User.class);
         // eagerly load roles
         from.fetch(ROLES);
@@ -72,6 +74,7 @@ public class UserRepositoryExtensionImpl implements UserRepositoryExtension {
     public Optional<User> findWithRolesById(Long id) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<User> criteria = builder.createQuery(User.class);
+        criteria.distinct(true);
         Root<User> from = criteria.from(User.class);
         // eagerly load roles
         from.fetch(ROLES);

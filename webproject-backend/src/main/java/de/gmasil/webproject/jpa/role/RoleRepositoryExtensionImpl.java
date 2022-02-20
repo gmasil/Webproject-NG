@@ -37,8 +37,9 @@ public class RoleRepositoryExtensionImpl implements RoleRepositoryExtension {
     public Role findByNameOrCreate(String name) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Role> criteria = builder.createQuery(Role.class);
-        Root<Role> root = criteria.from(Role.class);
-        criteria.where(builder.equal(root.get("name"), name));
+        criteria.distinct(true);
+        Root<Role> from = criteria.from(Role.class);
+        criteria.where(builder.equal(from.get("name"), name));
         try {
             return entityManager.createQuery(criteria).getSingleResult();
         } catch (NoResultException e) {

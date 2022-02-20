@@ -27,5 +27,5 @@ import de.gmasil.webproject.dto.VideoDto;
 
 public interface VideoRepository extends JpaRepository<Video, Long> {
 
-    Page<VideoDto> findAllProjectionBy(Pageable pageable);
+    public Page<VideoDto> findAllProjectionBy(Pageable pageable);
 }

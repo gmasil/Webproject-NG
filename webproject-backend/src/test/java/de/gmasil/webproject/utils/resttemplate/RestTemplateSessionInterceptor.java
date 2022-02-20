@@ -20,6 +20,10 @@
 package de.gmasil.webproject.utils.resttemplate;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
@@ -29,20 +33,33 @@ import org.springframework.http.client.ClientHttpResponse;
 
 public class RestTemplateSessionInterceptor implements ClientHttpRequestInterceptor {
 
-    private String cookies;
+    private Map<String, String> cookies = new HashMap<>();
 
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution)
             throws IOException {
-        // FIXME: implement actual SET-COOKIE functionality
-        // currently only saving the first cookies received
-        if (cookies != null) {
-            request.getHeaders().add(HttpHeaders.COOKIE, cookies);
+        if (!cookies.isEmpty()) {
+            request.getHeaders().add(HttpHeaders.COOKIE, createCookieHeader());
         }
         ClientHttpResponse response = execution.execute(request, body);
-        if (cookies == null) {
-            cookies = response.getHeaders().getFirst(HttpHeaders.SET_COOKIE);
+        List<String> setCookies = response.getHeaders().get(HttpHeaders.SET_COOKIE);
+        if (setCookies != null) {
+            setCookies.forEach(this::addCookie);
         }
         return response;
+    }
+
+    private String createCookieHeader() {
+        return cookies.entrySet().stream() //
+                .map(entry -> entry.getKey() + "=" + entry.getValue()) //
+                .collect(Collectors.joining("; "));
+    }
+
+    private void addCookie(String cookie) {
+        String keyValue = cookie.split(";")[0];
+        String[] data = keyValue.split("=");
+        if (data.length > 1) {
+            cookies.put(data[0], data[1]);
+        }
     }
 }

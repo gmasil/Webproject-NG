@@ -37,6 +37,7 @@ public class CategoryRepositoryExtensionImpl implements CategoryRepositoryExtens
     public Category findByNameOrCreate(String name) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Category> criteria = builder.createQuery(Category.class);
+        criteria.distinct(true);
         Root<Category> root = criteria.from(Category.class);
         criteria.where(builder.equal(root.get("name"), name));
         try {

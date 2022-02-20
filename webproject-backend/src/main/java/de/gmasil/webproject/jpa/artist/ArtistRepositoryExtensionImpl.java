@@ -38,6 +38,7 @@ public class ArtistRepositoryExtensionImpl implements ArtistRepositoryExtension 
     public Artist findByNameOrCreate(String name) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Artist> criteria = builder.createQuery(Artist.class);
+        criteria.distinct(true);
         Root<Artist> root = criteria.from(Artist.class);
         criteria.where(builder.equal(root.get("name"), name));
         List<Artist> resultList = entityManager.createQuery(criteria).getResultList();

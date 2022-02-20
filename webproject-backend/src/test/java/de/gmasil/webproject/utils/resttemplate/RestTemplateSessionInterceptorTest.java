@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Webproject NG. If not, see <https://www.gnu.org/licenses/>.
  */
-package de.gmasil.webproject.controller.rest;
+package de.gmasil.webproject.utils.resttemplate;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
@@ -30,17 +30,13 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 
 import de.gmasil.webproject.jpa.video.Video;
-import de.gmasil.webproject.utils.EnablePublicAccess;
 import de.gmasil.webproject.utils.SetupTestContext;
 import de.gmasil.webproject.utils.extensions.EnableTestDataImportBeforeAll;
-import de.gmasil.webproject.utils.resttemplate.AdvRestTemplate;
-import de.gmasil.webproject.utils.resttemplate.RestTemplateFactory;
 import de.gmasil.webproject.utils.serialization.PaginatedResponse;
 
 @SetupTestContext
-@EnablePublicAccess
 @EnableTestDataImportBeforeAll
-class VideoRestControllerTest {
+class RestTemplateSessionInterceptorTest {
 
     private static final ParameterizedTypeReference<PaginatedResponse<Video>> PAGINATED_VIDEO = new ParameterizedTypeReference<PaginatedResponse<Video>>() {
     };
@@ -49,20 +45,13 @@ class VideoRestControllerTest {
     private RestTemplateFactory restTemplateFactory;
 
     @Test
-    void testVideosAreShown() {
+    void testPrivateVideosAreShown() {
         AdvRestTemplate rest = restTemplateFactory.createRestTemplate();
+        rest.loginUser();
+
         ResponseEntity<PaginatedResponse<Video>> exchange = rest.exchange("/api/videos", HttpMethod.GET, null,
                 PAGINATED_VIDEO);
         PaginatedResponse<Video> pagedVideos = exchange.getBody();
         assertThat(pagedVideos.getContent(), hasSize(greaterThan(0)));
-    }
-
-    @Test
-    void testVideoPageSize() {
-        AdvRestTemplate rest = restTemplateFactory.createRestTemplate();
-        ResponseEntity<PaginatedResponse<Video>> exchange = rest.exchange("/api/videos?size=1", HttpMethod.GET, null,
-                PAGINATED_VIDEO);
-        PaginatedResponse<Video> pagedVideos = exchange.getBody();
-        assertThat(pagedVideos.getContent(), hasSize(1));
     }
 }

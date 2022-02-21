@@ -104,3 +104,13 @@ Using Java VM arguments:
 -Ddataimport.file=data.yml
 -Ddataimport.clean=true
 ```
+
+## License
+
+Webproject NG is licensed under the **Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International Public License** ("Public License").
+
+Webproject NG is non-free software: you can redistribute it and/or modify it under the terms of the Public License.
+
+You can find a copy of the Public License [here](LICENSE.txt)
+
+[![CC BY-NC-SA](https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png)](https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode)

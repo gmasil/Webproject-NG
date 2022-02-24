@@ -18,7 +18,6 @@
 package de.gmasil.webproject.service.initialize;
 
 import java.lang.invoke.MethodHandles;
-import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -32,8 +31,6 @@ import de.gmasil.webproject.jpa.globalproperty.Property;
 import de.gmasil.webproject.jpa.globalproperty.PropertyRepository;
 import de.gmasil.webproject.jpa.theme.Theme;
 import de.gmasil.webproject.jpa.theme.ThemeRepository;
-import de.gmasil.webproject.jpa.user.User;
-import de.gmasil.webproject.jpa.user.UserService;
 
 @Service
 public class InitializeThemeService {
@@ -51,9 +48,6 @@ public class InitializeThemeService {
     @Autowired
     private PropertyRepository propertyRepo;
 
-    @Autowired
-    private UserService userService;
-
     @Transactional
     public void initTheme() {
         if (themeRepo.count() == 0) {
@@ -62,16 +56,6 @@ public class InitializeThemeService {
             theme.setPreset(true);
             theme = themeRepo.save(theme);
             propertyRepo.setProperty(Property.DEFAULT_THEME, "" + theme.getId());
-            // set default theme for admin user
-            Optional<User> adminUser = userService.findByUsername(properties.getAdmin().getName());
-            if (adminUser.isPresent()) {
-                User admin = adminUser.get();
-                admin.setActiveTheme(theme);
-                userService.save(admin);
-            } else {
-                LOG.warn("Admin user '{}' does not exist, cannot assign default theme",
-                        properties.getAdmin().getName());
-            }
             LOG.info("Initialized theme");
         }
     }

@@ -15,7 +15,7 @@
  * with Webproject NG. If not, see
  * https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt
  */
-package de.gmasil.webproject.utils.extensions;
+package de.gmasil.webproject.utils.extension;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -24,15 +24,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.springframework.test.context.TestPropertySource;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@TestPropertySource(properties = { //
-        "dataimport.enabled=true", //
-        "dataimport.file=src/test/resources/test-data-import.yml", //
-        "dataimport.clean=true" })
-public @interface EnableTestDataImportBeforeAll {
+@ExtendWith(TestDataImportExtension.class)
+public @interface EnableTestDataImport {
 }

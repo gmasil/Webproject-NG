@@ -38,10 +38,10 @@ import de.gmasil.webproject.jpa.videofavorite.VideoFavoriteRepository;
 import de.gmasil.webproject.jpa.videofile.VideoFileRepository;
 import de.gmasil.webproject.jpa.videorating.VideoRatingRepository;
 import de.gmasil.webproject.utils.SetupTestContext;
-import de.gmasil.webproject.utils.extensions.EnableTestDataImportBeforeAll;
+import de.gmasil.webproject.utils.extension.EnableTestDataImport;
 
 @SetupTestContext
-@EnableTestDataImportBeforeAll
+@EnableTestDataImport
 class DataImportServiceTest {
 
     @Autowired
@@ -83,7 +83,7 @@ class DataImportServiceTest {
         assertThat(categoryRepo.count(), is(equalTo(3L)));
         assertThat(commentRepo.count(), is(equalTo(2L)));
         assertThat(propertyRepo.count(), is(equalTo(1L)));
-        assertThat(roleRepo.count(), is(equalTo(3L)));
+        assertThat(roleRepo.count(), is(equalTo(2L)));
         assertThat(themeRepo.count(), is(equalTo(3L)));
         assertThat(userRepo.count(), is(equalTo(2L)));
         assertThat(videoRepo.count(), is(equalTo(2L)));

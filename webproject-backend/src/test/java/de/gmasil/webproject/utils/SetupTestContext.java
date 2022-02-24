@@ -36,7 +36,10 @@ import de.gmasil.webproject.utils.resttemplate.RestTemplateFactory;
 @Documented
 @Inherited
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@TestPropertySource(properties = { "init.skip=true" })
+@TestPropertySource(properties = { //
+        "init.skip=true", //
+        "dataimport.file=src/test/resources/test-data-import.yml", //
+        "dataimport.clean=true" })
 @Import(RestTemplateFactory.class)
 public @interface SetupTestContext {
 }

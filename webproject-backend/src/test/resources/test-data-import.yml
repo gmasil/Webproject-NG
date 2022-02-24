@@ -17,11 +17,10 @@
 #
 
 users:
-- username: Simon
-  password: pass1
+- username: admin
+  password: admin
   roles:
   - ADMIN
-  - DEV
   active-theme: "Original"
   themes:
   - name: "Original"
@@ -30,11 +29,10 @@ users:
     primary-color: "#d10d0d"
     secondary-color: "#a82d18"
     text-color: "#ffffff"
-- username: James
-  password: pass2
+- username: user
+  password: user
   roles:
   - DEV
-  - USER
 
 themes:
 - name: "Webproject Purple"
@@ -70,16 +68,16 @@ videos:
   - Action
   - Adventure
   comments:
-  - username: Simon
+  - username: admin
     comment: I liked this
-  - username: James
+  - username: user
     comment: Could be better...
   favoriters:
-  - Simon
+  - admin
   ratings:
-  - username: Simon
+  - username: admin
     rating: 4
-  - username: James
+  - username: user
     rating: 2
 - title: Movie Part 2
   description: Just another movie...
@@ -95,4 +93,4 @@ videos:
   - Action
   - Comedy
   favoriters:
-  - James
+  - user

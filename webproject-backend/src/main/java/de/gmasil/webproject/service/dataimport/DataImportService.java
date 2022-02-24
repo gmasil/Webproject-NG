@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
@@ -119,6 +121,10 @@ public class DataImportService {
     @Autowired
     private VideoRatingRepository ratingRepo;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Transactional
     @EventListener(ApplicationReadyEvent.class)
     public void clean() {
         if (properties.isEnabled() && properties.isClean()) {
@@ -127,11 +133,14 @@ public class DataImportService {
         eventPublisher.publishEvent(new CleanFinishedEvent(this));
     }
 
+    @Transactional
     public void performClean() {
         List<JpaRepository<?, ?>> repositories = ctx.getBeansOfType(JpaRepository.class).values().stream()
                 .map(s -> (JpaRepository<?, ?>) s).collect(Collectors.toList());
         LOG.info("Cleaning {} repositories", repositories.size());
-        repositories.forEach(JpaRepository::deleteAll);
+        entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
+        repositories.forEach(JpaRepository::deleteAllInBatch);
+        entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
     }
 
     @Transactional
@@ -181,13 +190,12 @@ public class DataImportService {
     }
 
     private void importUsers(ImportData data) {
-        Theme defaultTheme = themeRepo.findDefault()
-                .orElseThrow(() -> new IllegalStateException("No default theme found"));
         for (ImportUser u : data.getUsers()) {
             User user = User.builder() //
                     .username(u.getUsername()) //
                     .password(u.getPassword()) //
                     .build();
+            userService.encodePassword(user);
             for (ImportTheme t : u.getThemes()) {
                 Theme theme = new Theme();
                 mapper.map(t, theme);
@@ -197,18 +205,13 @@ public class DataImportService {
             for (String r : u.getRoles()) {
                 user.addRole(roleRepo.findByNameOrCreate(r));
             }
-            userService.encodePassword(user);
             user = userService.save(user);
-            if (u.getActiveTheme() == null) {
-                user.setActiveTheme(defaultTheme);
-            } else {
-                Optional<Theme> optionalTheme = themeRepo.findAllAvailable(user).stream()
-                        .filter(t -> t.getName().equals(u.getActiveTheme())).findFirst();
-                if (optionalTheme.isPresent()) {
-                    user.setActiveTheme(optionalTheme.get());
-                } else {
-                    user.setActiveTheme(defaultTheme);
-                }
+            if (u.getActiveTheme() != null) {
+                Theme userActiveTheme = themeRepo.findAllAvailable(user).stream()
+                        .filter(t -> t.getName().equals(u.getActiveTheme())).findAny().orElseThrow(() -> {
+                            return new IllegalStateException("The theme '" + u.getActiveTheme() + ": does not exist.");
+                        });
+                user.setActiveTheme(userActiveTheme);
             }
             userService.save(user);
         }

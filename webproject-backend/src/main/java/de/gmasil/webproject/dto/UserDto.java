@@ -43,6 +43,8 @@ public class UserDto {
         this.id = user.getId();
         this.username = user.getUsername();
         this.roles = user.getRoles().stream().map(RoleDto::new).collect(Collectors.toSet());
-        this.activeTheme = new ThemeDto(user.getActiveTheme());
+        if (user.getActiveTheme() != null) {
+            this.activeTheme = new ThemeDto(user.getActiveTheme());
+        }
     }
 }

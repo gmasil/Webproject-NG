@@ -41,8 +41,6 @@ class ColorConverterTest {
         samples.put("#00ff00", new Color(0, 255, 0));
         samples.put("#0000ff", new Color(0, 0, 255));
         samples.put("#6901a5", new Color(105, 1, 165));
-        samples.put("#6901a5", new Color(105, 1, 165));
-        samples.put("#6901a5", new Color(105, 1, 165));
         samples.put("#b63f21", new Color(182, 63, 33));
         samples.put("#1ab82c", new Color(26, 184, 44));
         samples.put("#d5ee24", new Color(213, 238, 36));

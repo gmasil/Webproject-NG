@@ -48,10 +48,15 @@ public interface ThemeRepository extends JpaRepository<Theme, Long> {
     @Query("SELECT t FROM THEME t WHERE t.id = :id AND (t.preset = true OR t.creator = :user)")
     public Optional<Theme> findAvailableById(@Param("id") Long id, @Param("user") User user);
 
+    @Query("SELECT t FROM THEME t WHERE t.id = :id AND t.preset = true")
+    public Optional<Theme> findPresetById(@Param("id") Long id);
+
     @Query("SELECT t FROM THEME t WHERE t.preset = true OR t.creator = :user")
     public List<Theme> findAllAvailable(@Param("user") User user);
 
     public List<ThemeDto> findAllProjectionByPresetTrue();
 
     public List<ThemeDto> findAllProjectionByPresetTrueOrCreator(User creator);
+
+    public List<Theme> findAllByName(String name);
 }

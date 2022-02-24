@@ -43,9 +43,12 @@ import org.springframework.web.bind.annotation.RestController;
 import de.gmasil.webproject.controller.PermitAll;
 import de.gmasil.webproject.dto.ThemeDto;
 import de.gmasil.webproject.jpa.ColorConverter;
+import de.gmasil.webproject.jpa.globalproperty.Property;
+import de.gmasil.webproject.jpa.globalproperty.PropertyRepository;
 import de.gmasil.webproject.jpa.theme.Theme;
 import de.gmasil.webproject.jpa.theme.ThemeRepository;
 import de.gmasil.webproject.jpa.user.User;
+import de.gmasil.webproject.jpa.user.UserRepository;
 import de.gmasil.webproject.service.UserProvider;
 
 @RestController
@@ -54,10 +57,14 @@ public class ThemeRestController {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    private static final String UNAUTHORIZED = "Unauthorized";
-
     @Autowired
     private ThemeRepository themeRepo;
+
+    @Autowired
+    private UserRepository userRepo;
+
+    @Autowired
+    private PropertyRepository propertyRepo;
 
     @Autowired
     private UserProvider userProvider;
@@ -76,9 +83,6 @@ public class ThemeRestController {
     @PostMapping("")
     public ResponseEntity<Object> postTheme(@RequestBody ThemeDto themeDto) {
         User user = userProvider.getCurrent();
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(UNAUTHORIZED);
-        }
         if (themeDto.isPreset()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Posting preset is not allowed");
         }
@@ -97,9 +101,6 @@ public class ThemeRestController {
     @PutMapping("/{id}")
     public ResponseEntity<String> putTheme(@PathVariable Long id, @RequestBody ThemeDto themeDto) {
         User user = userProvider.getCurrent();
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(UNAUTHORIZED);
-        }
         Optional<Theme> theme = themeRepo.findByIdAndCreator(id, user);
         if (theme.isPresent()) {
             mapper.map(themeDto, theme.get());
@@ -113,17 +114,37 @@ public class ThemeRestController {
 
     @Transactional
     @PreAuthorize("isAuthenticated()")
+    @PutMapping("/resetactive")
+    public ResponseEntity<String> resetActiveTheme() {
+        User user = userProvider.getCurrent();
+        user = entityManager.merge(user);
+        user.setActiveTheme(null);
+        userRepo.save(user);
+        return ResponseEntity.ok().build();
+    }
+
+    @Transactional
+    @PreAuthorize("isAuthenticated()")
     @PutMapping("/activate/{id}")
     public ResponseEntity<String> setActiveTheme(@PathVariable Long id) {
         User user = userProvider.getCurrent();
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(UNAUTHORIZED);
-        }
         user = entityManager.merge(user);
         Optional<Theme> theme = themeRepo.findAvailableById(id, user);
         if (theme.isPresent()) {
             user.setActiveTheme(theme.get());
             themeRepo.save(theme.get());
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Theme with id " + id + " not found");
+        }
+    }
+
+    @PreAuthorize("isAuthenticated() and hasAuthority('ADMIN')")
+    @PutMapping("/setdefault/{id}")
+    public ResponseEntity<String> setDefaultTheme(@PathVariable Long id) {
+        Optional<Theme> theme = themeRepo.findPresetById(id);
+        if (theme.isPresent()) {
+            propertyRepo.setProperty(Property.DEFAULT_THEME, "" + id);
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Theme with id " + id + " not found");
@@ -150,6 +171,9 @@ public class ThemeRestController {
         Optional<ThemeDto> themeDto;
         if (user != null) {
             themeDto = themeRepo.findProjectionActiveByUser(user.getId());
+            if (!themeDto.isPresent()) {
+                themeDto = themeRepo.findDefaultProjection();
+            }
         } else {
             themeDto = themeRepo.findDefaultProjection();
         }

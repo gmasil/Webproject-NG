@@ -33,6 +33,7 @@ pipeline {
     always {
       junit testResults: '**/surefire-reports/**/*.xml', allowEmptyResults: true
       archiveArtifacts artifacts: '**/selenium-screenshots/*.png', fingerprint: true, allowEmptyArchive: true
+      archiveArtifacts artifacts: '**/gherkin/gherkin-report.html', fingerprint: true, allowEmptyArchive: true
     }
   }
 }

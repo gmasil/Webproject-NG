@@ -28,7 +28,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.jupiter.api.Test;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,11 +40,15 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import de.gmasil.gherkin.extension.GherkinTest;
+import de.gmasil.gherkin.extension.Scenario;
+import de.gmasil.gherkin.extension.Story;
 import de.gmasil.webproject.controller.PermitAll;
 import de.gmasil.webproject.utils.SetupTestContext;
 
 @SetupTestContext
-class WebSecurityConfigTest {
+@Story("Test spring security config")
+class WebSecurityConfigTest extends GherkinTest {
 
     private static final List<Class<? extends Annotation>> MAPPING_ANNOTATIONS = Arrays.asList( //
             DeleteMapping.class, //
@@ -59,24 +62,26 @@ class WebSecurityConfigTest {
     @Autowired
     private ListableBeanFactory listableBeanFactory;
 
-    @Test
+    @Scenario("All REST methods are protected or explicitly public")
     void testAllRestMethodsAreProtected() {
         List<String> violations = new LinkedList<>();
-
-        for (Method m : getAllRequestMappingMethods()) {
-            PreAuthorize preAuthorize = m.getDeclaredAnnotation(PreAuthorize.class);
-            if (preAuthorize == null && m.getDeclaredAnnotation(PermitAll.class) == null) {
-                violations.add(m.getDeclaringClass().getName() + "." + m.getName());
+        when("all rest methods are inspected", () -> {
+            for (Method m : getAllRequestMappingMethods()) {
+                PreAuthorize preAuthorize = m.getDeclaredAnnotation(PreAuthorize.class);
+                if (preAuthorize == null && m.getDeclaredAnnotation(PermitAll.class) == null) {
+                    violations.add(m.getDeclaringClass().getName() + "." + m.getName());
+                }
             }
-        }
-
-        if (!violations.isEmpty()) {
-            Collections.sort(violations);
-            String msg = String.format(
-                    "There are %d methods in RestControllers not protected by @PreAuthorize or explicitly made public with @PermitAll:\n\t- %s\n",
-                    violations.size(), String.join("\n\t- ", violations));
-            assertThat(msg, violations, hasSize(0));
-        }
+        });
+        then("there is no missing @PreAuthorize or @PermitAll annotation", () -> {
+            if (!violations.isEmpty()) {
+                Collections.sort(violations);
+                String msg = String.format(
+                        "There are %d methods in RestControllers not protected by @PreAuthorize or explicitly made public with @PermitAll:\n\t- %s\n",
+                        violations.size(), String.join("\n\t- ", violations));
+                assertThat(msg, violations, hasSize(0));
+            }
+        });
     }
 
     private boolean hasAnyAnnotation(Method method) {

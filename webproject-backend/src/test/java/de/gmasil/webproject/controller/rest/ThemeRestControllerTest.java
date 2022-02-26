@@ -21,12 +21,13 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
 import de.gmasil.gherkin.extension.GherkinTest;
+import de.gmasil.gherkin.extension.Reference;
 import de.gmasil.gherkin.extension.Scenario;
+import de.gmasil.gherkin.extension.Story;
 import de.gmasil.webproject.dto.ThemeDto;
 import de.gmasil.webproject.jpa.theme.ThemeRepository;
 import de.gmasil.webproject.utils.SetupTestContext;
@@ -36,6 +37,7 @@ import de.gmasil.webproject.utils.resttemplate.RestTemplateFactory;
 
 @SetupTestContext
 @EnableTestDataImport
+@Story("Test theme REST endpoint")
 class ThemeRestControllerTest extends GherkinTest {
 
     @Autowired
@@ -44,30 +46,34 @@ class ThemeRestControllerTest extends GherkinTest {
     @Autowired
     private ThemeRepository themeRepo;
 
-    @Test
-    void testGetDefaultActiveTheme() {
-        AdvRestTemplate template = factory.createRestTemplate();
-        ResponseEntity<ThemeDto> response = template.getForEntity("/api/themes/active", ThemeDto.class);
-        assertThat(response.getBody().getName(), is(equalTo("Webproject Purple")));
+    @Scenario("The default theme is shown as active theme")
+    void testGetDefaultActiveTheme(Reference<ResponseEntity<ThemeDto>> response) {
+        AdvRestTemplate rest = factory.createRestTemplate();
+        when("an anonymous user retrieves the active theme", () -> {
+            response.set(rest.getForEntity("/api/themes/active", ThemeDto.class));
+        });
+        then("the default theme is returned", () -> {
+            assertThat(response.get().getBody().getName(), is(equalTo("Webproject Purple")));
+        });
     }
 
     @Scenario("A users default theme changes with the system default theme")
     void testDefaultActiveThemeChangesWithSystem() {
-        AdvRestTemplate template = factory.createRestTemplate();
+        AdvRestTemplate rest = factory.createRestTemplate();
         given("a user has the default theme selected", () -> {
-            template.loginUser();
-            template.put("/api/themes/resetactive", null);
-            ResponseEntity<ThemeDto> response = template.getForEntity("/api/themes/active", ThemeDto.class);
+            rest.loginUser();
+            rest.put("/api/themes/resetactive", null);
+            ResponseEntity<ThemeDto> response = rest.getForEntity("/api/themes/active", ThemeDto.class);
             assertThat(response.getBody().getName(), is(equalTo("Webproject Purple")));
         });
         when("the admin changes the default theme", () -> {
-            template.loginAdmin();
+            rest.loginAdmin();
             Long newThemeId = themeRepo.findAllByName("Webproject Dark").get(0).getId();
-            template.put("/api/themes/setdefault/" + newThemeId, null);
+            rest.put("/api/themes/setdefault/" + newThemeId, null);
         });
         then("the active theme of the user was also changed", () -> {
-            template.loginUser();
-            ResponseEntity<ThemeDto> response = template.getForEntity("/api/themes/active", ThemeDto.class);
+            rest.loginUser();
+            ResponseEntity<ThemeDto> response = rest.getForEntity("/api/themes/active", ThemeDto.class);
             assertThat(response.getBody().getName(), is(equalTo("Webproject Dark")));
         });
     }

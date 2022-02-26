@@ -173,6 +173,25 @@
                     <skipTests>${skip.surefire.tests}</skipTests>
                 </configuration>
             </plugin>
+            <!-- gherkin -->
+            <plugin>
+                <groupId>de.gmasil</groupId>
+                <artifactId>gherkin-maven-plugin</artifactId>
+                <version>${gherkin-plugin.version}</version>
+                <configuration>
+                    <failBuild>false</failBuild>
+                    <enforceStory>true</enforceStory>
+                    <enforceScenario>true</enforceScenario>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- jacoco -->
             <plugin>
                 <groupId>org.jacoco</groupId>

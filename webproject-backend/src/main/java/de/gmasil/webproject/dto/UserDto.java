@@ -39,6 +39,18 @@ public class UserDto {
     private Set<RoleDto> roles;
     private ThemeDto activeTheme;
 
+    /**
+     * Do not use! Workaround for tests in spring native
+     *
+     * @param s must be the String "null"
+     */
+    public UserDto(String s) {
+        if (!"null".equals(s)) {
+            throw new IllegalArgumentException(
+                    "Constructor UserDto(String) may only be used as a workaround for tests in spring native");
+        }
+    }
+
     public UserDto(User user) {
         this.id = user.getId();
         this.username = user.getUsername();

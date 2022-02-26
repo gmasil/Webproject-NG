@@ -22,36 +22,43 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
 
+import de.gmasil.gherkin.extension.GherkinTest;
+import de.gmasil.gherkin.extension.Reference;
+import de.gmasil.gherkin.extension.Scenario;
+import de.gmasil.gherkin.extension.Story;
 import de.gmasil.webproject.utils.SetupTestContext;
+import de.gmasil.webproject.utils.resttemplate.AdvRestTemplate;
+import de.gmasil.webproject.utils.resttemplate.RestTemplateFactory;
 
 @SetupTestContext
-class ErrorRedirectControllerTest {
+@Story("Error controller shows vue frontend on all endpoints")
+class ErrorRedirectControllerTest extends GherkinTest {
 
     @Autowired
-    private RestTemplate rest;
+    private RestTemplateFactory factory;
 
-    @Test
+    @Scenario("All non-api endpoints show vue frontend")
     void testAllEndpointsShowVueIndex() {
-        checkUri("/");
-        checkUri("/login");
-        checkUri("/something/not/existing");
+        testAllEndpointsShowVueIndex("/");
+        testAllEndpointsShowVueIndex("/login");
+        testAllEndpointsShowVueIndex("/something/not/existing");
     }
 
-    private void checkUri(String uri) {
-        ResponseEntity<String> responseEntity = rest.getForEntity(uri, String.class);
-        checkResponseEntity(responseEntity);
-    }
-
-    private void checkResponseEntity(ResponseEntity<String> responseEntity) {
-        assertThat(responseEntity.getStatusCode(), is(equalTo(HttpStatus.OK)));
-        assertThat(responseEntity.getBody(), containsString("We're sorry but"));
-        assertThat(responseEntity.getBody(),
-                containsString("doesn't work properly without JavaScript enabled. Please enable it to continue"));
+    private void testAllEndpointsShowVueIndex(String uri) {
+        Reference<ResponseEntity<String>> response = new Reference<>();
+        AdvRestTemplate rest = factory.createRestTemplate();
+        when("the URI '" + uri + "' is called", () -> {
+            response.set(rest.getForEntity(uri, String.class));
+        });
+        then("the vue frontend is shown", () -> {
+            assertThat(response.get().getStatusCode(), is(equalTo(HttpStatus.OK)));
+            assertThat(response.get().getBody(), containsString("We're sorry but"));
+            assertThat(response.get().getBody(),
+                    containsString("doesn't work properly without JavaScript enabled. Please enable it to continue"));
+        });
     }
 }

@@ -27,9 +27,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 
-class ColorConverterTest {
+import de.gmasil.gherkin.extension.GherkinTest;
+import de.gmasil.gherkin.extension.Scenario;
+import de.gmasil.gherkin.extension.Story;
+
+@Story("Color conversion is tested")
+class ColorConverterTest extends GherkinTest {
 
     private ColorConverter converter = new ColorConverter();
 
@@ -62,14 +66,18 @@ class ColorConverterTest {
         samples.put("#70ffdb", new Color(112, 255, 219));
     }
 
-    @Test
+    @Scenario("All colors can be converted")
     void testColorConversion() {
-        for (Entry<String, Color> sample : samples.entrySet()) {
-            String hex = sample.getKey();
-            Color color = sample.getValue();
-            assertColor(color, hex);
-            assertHexColor(hex, color);
-        }
+        when("a color is converted", () -> {
+        });
+        then("the correct color is returned", () -> {
+            for (Entry<String, Color> sample : samples.entrySet()) {
+                String hex = sample.getKey();
+                Color color = sample.getValue();
+                assertColor(color, hex);
+                assertHexColor(hex, color);
+            }
+        });
     }
 
     private void assertColor(Color color, String hex) {

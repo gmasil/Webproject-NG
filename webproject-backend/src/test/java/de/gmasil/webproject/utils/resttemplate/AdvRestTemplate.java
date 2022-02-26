@@ -19,6 +19,7 @@ package de.gmasil.webproject.utils.resttemplate;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.springframework.web.client.RestTemplate;
@@ -26,6 +27,13 @@ import org.springframework.web.client.RestTemplate;
 import de.gmasil.webproject.dto.UserDto;
 
 public class AdvRestTemplate extends RestTemplate {
+
+    public void logout() {
+        postForObject("/logout", null, String.class);
+        UserDto user = getForObject("/api/users/current", UserDto.class);
+        String loadedName = user != null ? user.getUsername() : null;
+        assertThat("Logout failed", loadedName, is(nullValue()));
+    }
 
     public void loginAdmin() {
         login("admin", "admin");

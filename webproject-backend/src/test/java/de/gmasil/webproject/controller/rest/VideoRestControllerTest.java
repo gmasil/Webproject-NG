@@ -17,16 +17,21 @@
  */
 package de.gmasil.webproject.controller.rest;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasSize;
 
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 
+import de.gmasil.gherkin.extension.GherkinTest;
+import de.gmasil.gherkin.extension.Reference;
+import de.gmasil.gherkin.extension.Scenario;
+import de.gmasil.gherkin.extension.Story;
 import de.gmasil.webproject.jpa.video.Video;
 import de.gmasil.webproject.utils.SetupTestContext;
 import de.gmasil.webproject.utils.extension.EnableTestDataImport;
@@ -36,7 +41,8 @@ import de.gmasil.webproject.utils.serialization.PaginatedResponse;
 
 @SetupTestContext
 @EnableTestDataImport
-class VideoRestControllerTest {
+@Story("Test video REST endpoint")
+class VideoRestControllerTest extends GherkinTest {
 
     private static final ParameterizedTypeReference<PaginatedResponse<Video>> PAGINATED_VIDEO = new ParameterizedTypeReference<PaginatedResponse<Video>>() {
     };
@@ -44,23 +50,48 @@ class VideoRestControllerTest {
     @Autowired
     private RestTemplateFactory restTemplateFactory;
 
-    @Test
-    void testVideosAreShown() {
+    @Scenario("Videos are shown to authenticated users")
+    void testVideosAreShown(Reference<PaginatedResponse<Video>> response) {
         AdvRestTemplate rest = restTemplateFactory.createRestTemplate();
-        rest.loginUser();
-        ResponseEntity<PaginatedResponse<Video>> exchange = rest.exchange("/api/videos", HttpMethod.GET, null,
-                PAGINATED_VIDEO);
-        PaginatedResponse<Video> pagedVideos = exchange.getBody();
-        assertThat(pagedVideos.getContent(), hasSize(greaterThan(0)));
+        given("a user is authenticated", () -> {
+            rest.loginUser();
+        });
+        when("the user executes a GET request on /api/videos", () -> {
+            response.set(rest.exchange("/api/videos", HttpMethod.GET, null, PAGINATED_VIDEO).getBody());
+        });
+        then("some videos are shown", () -> {
+            assertThat(response.get().getContent(), hasSize(greaterThan(0)));
+        });
     }
 
-    @Test
-    void testVideoPageSize() {
+    @Scenario("Video pages are shown to authenticated users")
+    void testVideoPageSize(Reference<PaginatedResponse<Video>> response) {
         AdvRestTemplate rest = restTemplateFactory.createRestTemplate();
-        rest.loginUser();
-        ResponseEntity<PaginatedResponse<Video>> exchange = rest.exchange("/api/videos?size=1", HttpMethod.GET, null,
-                PAGINATED_VIDEO);
-        PaginatedResponse<Video> pagedVideos = exchange.getBody();
-        assertThat(pagedVideos.getContent(), hasSize(1));
+        given("a user is authenticated", () -> {
+            rest.loginUser();
+        });
+        when("the user executes a GET request on /api/videos?size=1", () -> {
+            response.set(rest.exchange("/api/videos?size=1", HttpMethod.GET, null, PAGINATED_VIDEO).getBody());
+        });
+        then("exactly one video is shown", () -> {
+            assertThat(response.get().getContent(), hasSize(1));
+        });
+    }
+
+    @Scenario("No videos are shown to unauthenticated users")
+    void testNoVideosAreShownUnauthenticated(Reference<Integer> statusCode) {
+        AdvRestTemplate rest = restTemplateFactory.createRestTemplate();
+        given("the user is not authenticated", () -> {
+        });
+        when("the user executes a GET request on /api/videos", () -> {
+            try {
+                rest.exchange("/api/videos", HttpMethod.GET, null, PAGINATED_VIDEO).getBody();
+            } catch (HttpClientErrorException e) {
+                statusCode.set(e.getRawStatusCode());
+            }
+        });
+        then("status code 401 Unauthorized is shown", () -> {
+            assertThat(statusCode.get(), is(equalTo(401)));
+        });
     }
 }

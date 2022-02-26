@@ -23,9 +23,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.IOException;
 
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import de.gmasil.gherkin.extension.GherkinTest;
+import de.gmasil.gherkin.extension.Scenario;
+import de.gmasil.gherkin.extension.Story;
 import de.gmasil.webproject.jpa.artist.ArtistRepository;
 import de.gmasil.webproject.jpa.category.CategoryRepository;
 import de.gmasil.webproject.jpa.comment.CommentRepository;
@@ -42,7 +44,8 @@ import de.gmasil.webproject.utils.extension.EnableTestDataImport;
 
 @SetupTestContext
 @EnableTestDataImport
-class DataImportServiceTest {
+@Story("Data import is tested")
+class DataImportServiceTest extends GherkinTest {
 
     @Autowired
     private ArtistRepository artistRepo;
@@ -77,18 +80,22 @@ class DataImportServiceTest {
     @Autowired
     private VideoRatingRepository ratingRepo;
 
-    @Test
+    @Scenario("Data is imported from file upon startup")
     void testForExistingData() throws IOException {
-        assertThat(artistRepo.count(), is(equalTo(3L)));
-        assertThat(categoryRepo.count(), is(equalTo(3L)));
-        assertThat(commentRepo.count(), is(equalTo(2L)));
-        assertThat(propertyRepo.count(), is(equalTo(1L)));
-        assertThat(roleRepo.count(), is(equalTo(2L)));
-        assertThat(themeRepo.count(), is(equalTo(3L)));
-        assertThat(userRepo.count(), is(equalTo(2L)));
-        assertThat(videoRepo.count(), is(equalTo(2L)));
-        assertThat(favoriteRepo.count(), is(equalTo(2L)));
-        assertThat(fileRepo.count(), is(equalTo(3L)));
-        assertThat(ratingRepo.count(), is(equalTo(2L)));
+        when("data is imported on startup", () -> {
+        });
+        then("all repositories contain the expected data", () -> {
+            assertThat(artistRepo.count(), is(equalTo(3L)));
+            assertThat(categoryRepo.count(), is(equalTo(3L)));
+            assertThat(commentRepo.count(), is(equalTo(2L)));
+            assertThat(propertyRepo.count(), is(equalTo(1L)));
+            assertThat(roleRepo.count(), is(equalTo(2L)));
+            assertThat(themeRepo.count(), is(equalTo(3L)));
+            assertThat(userRepo.count(), is(equalTo(2L)));
+            assertThat(videoRepo.count(), is(equalTo(2L)));
+            assertThat(favoriteRepo.count(), is(equalTo(2L)));
+            assertThat(fileRepo.count(), is(equalTo(3L)));
+            assertThat(ratingRepo.count(), is(equalTo(2L)));
+        });
     }
 }

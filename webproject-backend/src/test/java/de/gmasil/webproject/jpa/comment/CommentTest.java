@@ -44,6 +44,7 @@ class CommentTest {
 
     @Nested
     @SetupTestContext
+    @Story("Testing database operation behaviour")
     class CommentVideoTest extends GenericEntityTester<Comment, Video> {
 
         @Autowired
@@ -101,6 +102,7 @@ class CommentTest {
 
     @Nested
     @SetupTestContext
+    @Story("Testing database operation behaviour")
     class CommentUserTest extends GenericEntityTester<Comment, User> {
 
         @Autowired

@@ -50,6 +50,7 @@ public class UserTest {
 
     @Nested
     @SetupTestContext
+    @Story("Testing database operation behaviour")
     class UserRoleTest extends GenericEntityTester<User, Role> {
 
         @Autowired
@@ -107,6 +108,7 @@ public class UserTest {
 
     @Nested
     @SetupTestContext
+    @Story("Testing database operation behaviour")
     class UserCommentTest extends GenericEntityTester<User, Comment> {
 
         @Autowired
@@ -164,6 +166,7 @@ public class UserTest {
 
     @Nested
     @SetupTestContext
+    @Story("Testing database operation behaviour")
     class UserVideoFavoriteTest extends GenericEntityTester<User, VideoFavorite> {
 
         @Autowired
@@ -226,6 +229,7 @@ public class UserTest {
 
     @Nested
     @SetupTestContext
+    @Story("Testing database operation behaviour")
     class UserVideoRatingTest extends GenericEntityTester<User, VideoRating> {
 
         @Autowired

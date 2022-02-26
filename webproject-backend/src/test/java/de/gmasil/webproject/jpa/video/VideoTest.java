@@ -55,6 +55,7 @@ class VideoTest {
 
     @Nested
     @SetupTestContext
+    @Story("Testing database operation behaviour")
     class VideoVideoFileTest extends GenericEntityTester<Video, VideoFile> {
 
         @Autowired
@@ -112,6 +113,7 @@ class VideoTest {
 
     @Nested
     @SetupTestContext
+    @Story("Testing database operation behaviour")
     class VideoArtistTest extends GenericEntityTester<Video, Artist> {
 
         @Autowired
@@ -169,6 +171,7 @@ class VideoTest {
 
     @Nested
     @SetupTestContext
+    @Story("Testing database operation behaviour")
     class VideoCategoryTest extends GenericEntityTester<Video, Category> {
 
         @Autowired
@@ -226,6 +229,7 @@ class VideoTest {
 
     @Nested
     @SetupTestContext
+    @Story("Testing database operation behaviour")
     class VideoCommentTest extends GenericEntityTester<Video, Comment> {
 
         @Autowired
@@ -283,6 +287,7 @@ class VideoTest {
 
     @Nested
     @SetupTestContext
+    @Story("Testing database operation behaviour")
     class VideoVideoFavoriteTest extends GenericEntityTester<Video, VideoFavorite> {
 
         @Autowired
@@ -345,6 +350,7 @@ class VideoTest {
 
     @Nested
     @SetupTestContext
+    @Story("Testing database operation behaviour")
     class VideoVideoRatingTest extends GenericEntityTester<Video, VideoRating> {
 
         @Autowired

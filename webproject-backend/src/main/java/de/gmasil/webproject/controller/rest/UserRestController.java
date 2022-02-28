@@ -68,7 +68,7 @@ public class UserRestController {
                 return ResponseEntity.ok(eagerUser.get());
             }
         }
-        return ResponseEntity.ok("null");
+        return ResponseEntity.ok(null);
     }
 
     @Transactional

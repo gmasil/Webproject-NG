@@ -81,14 +81,20 @@ export default new Vuex.Store({
           });
       });
     },
-    loadCurrentUser({ commit }): Promise<User> {
-      return new Promise<User>((resolve, reject) => {
+    loadCurrentUser({ commit }): Promise<User | null> {
+      return new Promise<User | null>((resolve, reject) => {
         axios
           .get("/api/users/current")
           .then((response) => {
-            const user: User = response.data;
-            commit("setCurrentUser", user);
-            resolve(user);
+            if (response.data !== "") {
+              console.log("user good");
+              const user: User = response.data;
+              commit("setCurrentUser", user);
+              resolve(user);
+            } else {
+              commit("setCurrentUser", null);
+              resolve(null);
+            }
           })
           .catch((error) => {
             reject(error);

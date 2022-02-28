@@ -195,7 +195,6 @@ public class ThemeRestController {
         if (theme == null) {
             theme = themeRepo.findDefault().orElseThrow(() -> new IllegalStateException("No default theme found"));
         }
-        LOG.warn("There is no default theme set");
         return theme.toCss(colorConverter);
     }
 }

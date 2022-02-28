@@ -76,9 +76,6 @@ public class UserRestController {
     @PutMapping("/updatepassword")
     public ResponseEntity<String> updatePassword(@RequestBody @Valid UserPasswordDto userPassword) {
         User user = userProvider.getCurrent();
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
-        }
         user = entityManager.merge(user);
         if (!userService.verifyPassword(userPassword.getCurrentPassword(), user)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Current password does not match");

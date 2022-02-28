@@ -43,6 +43,10 @@ public class AdvRestTemplate extends RestTemplate {
         login("user", "user");
     }
 
+    public void loginUser(String password) {
+        login("user", password);
+    }
+
     private void login(String username, String password) {
         postForObject("/performlogin?username=" + username + "&password=" + password, null, String.class);
         UserDto user = getForObject("/api/users/current", UserDto.class);

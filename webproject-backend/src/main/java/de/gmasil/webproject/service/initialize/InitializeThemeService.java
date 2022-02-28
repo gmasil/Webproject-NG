@@ -19,8 +19,6 @@ package de.gmasil.webproject.service.initialize;
 
 import java.lang.invoke.MethodHandles;
 
-import javax.transaction.Transactional;
-
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +46,6 @@ public class InitializeThemeService {
     @Autowired
     private PropertyRepository propertyRepo;
 
-    @Transactional
     public void initTheme() {
         if (themeRepo.count() == 0) {
             Theme theme = new Theme();

@@ -82,13 +82,13 @@ public class ThemeRestController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping("")
     public ResponseEntity<Object> postTheme(@RequestBody ThemeDto themeDto) {
-        User user = userProvider.getCurrent();
         if (themeDto.isPreset()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Posting preset is not allowed");
         }
         if (themeDto.getId() != null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Posting specific ID is not allowed");
         }
+        User user = userProvider.getCurrent();
         user = entityManager.merge(user);
         Theme theme = mapper.map(themeDto, Theme.class);
         theme.setCreator(user);

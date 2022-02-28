@@ -21,6 +21,8 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import java.awt.Color;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
@@ -29,13 +31,18 @@ import de.gmasil.gherkin.extension.Reference;
 import de.gmasil.gherkin.extension.Scenario;
 import de.gmasil.gherkin.extension.Story;
 import de.gmasil.webproject.dto.ThemeDto;
+import de.gmasil.webproject.jpa.theme.Theme;
 import de.gmasil.webproject.jpa.theme.ThemeRepository;
 import de.gmasil.webproject.utils.SetupTestContext;
+import de.gmasil.webproject.utils.extension.DisableTestDataImport;
+import de.gmasil.webproject.utils.extension.EnableDataProvider;
 import de.gmasil.webproject.utils.extension.EnableTestDataImport;
+import de.gmasil.webproject.utils.extension.ProvideUser;
 import de.gmasil.webproject.utils.resttemplate.AdvRestTemplate;
 import de.gmasil.webproject.utils.resttemplate.RestTemplateFactory;
 
 @SetupTestContext
+@EnableDataProvider
 @EnableTestDataImport
 @Story("Test theme REST endpoint")
 class ThemeRestControllerTest extends GherkinTest {
@@ -45,6 +52,31 @@ class ThemeRestControllerTest extends GherkinTest {
 
     @Autowired
     private ThemeRepository themeRepo;
+
+    @ProvideUser
+    @DisableTestDataImport
+    @Scenario("A theme can be saved")
+    void testThemesCanBeSaved(Reference<ResponseEntity<ThemeDto>> response) {
+        AdvRestTemplate rest = factory.createRestTemplate();
+        given("a user is authenticated", () -> {
+            rest.loginUser();
+        });
+        when("the user saves a theme", () -> {
+            ThemeDto theme = new ThemeDto(Theme.builder() //
+                    .name("ThemePersistenceTest") //
+                    .backgroundColor(Color.GRAY) //
+                    .backgroundHighlightColor(Color.LIGHT_GRAY) //
+                    .primaryColor(Color.RED) //
+                    .secondaryColor(Color.ORANGE) //
+                    .textColor(Color.white) //
+                    .preset(false) //
+                    .build());
+            response.set(rest.postForEntity("/api/themes", theme, ThemeDto.class));
+        });
+        then("the theme is saved", () -> {
+            assertThat(response.get().getBody().getName(), is(equalTo("ThemePersistenceTest")));
+        });
+    }
 
     @Scenario("The default theme is shown as active theme")
     void testGetDefaultActiveTheme(Reference<ResponseEntity<ThemeDto>> response) {

@@ -25,6 +25,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
@@ -59,7 +60,7 @@ public class UserRepositoryExtensionImpl implements UserRepositoryExtension {
         criteria.distinct(true);
         Root<User> from = criteria.from(User.class);
         // eagerly load roles
-        from.fetch(ROLES);
+        from.fetch(ROLES, JoinType.LEFT);
         criteria.where(builder.equal(from.get("username"), username));
         List<User> resultList = entityManager.createQuery(criteria).getResultList();
         if (resultList.size() != 1) {
@@ -75,7 +76,7 @@ public class UserRepositoryExtensionImpl implements UserRepositoryExtension {
         criteria.distinct(true);
         Root<User> from = criteria.from(User.class);
         // eagerly load roles
-        from.fetch(ROLES);
+        from.fetch(ROLES, JoinType.LEFT);
         criteria.where(builder.equal(from.get("id"), id));
         List<User> resultList = entityManager.createQuery(criteria).getResultList();
         if (resultList.size() != 1) {

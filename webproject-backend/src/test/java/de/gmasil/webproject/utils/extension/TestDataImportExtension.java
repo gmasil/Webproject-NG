@@ -28,8 +28,10 @@ public class TestDataImportExtension implements BeforeEachCallback, AfterEachCal
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
-        DataImportService service = SpringExtension.getApplicationContext(context).getBean(DataImportService.class);
-        service.performDataImport();
+        if (context.getRequiredTestMethod().getAnnotation(DisableTestDataImport.class) == null) {
+            DataImportService service = SpringExtension.getApplicationContext(context).getBean(DataImportService.class);
+            service.performDataImport();
+        }
     }
 
     @Override

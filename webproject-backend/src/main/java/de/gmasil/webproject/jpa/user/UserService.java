@@ -45,8 +45,9 @@ public class UserService implements UserDetailsService {
         throw new UsernameNotFoundException(String.format("The username '%s' does not exist", username));
     }
 
-    public void encodePassword(User user) {
+    public User encodePassword(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return user;
     }
 
     public boolean verifyPassword(String rawPassword, User user) {

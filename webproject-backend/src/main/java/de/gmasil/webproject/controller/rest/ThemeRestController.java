@@ -99,7 +99,7 @@ public class ThemeRestController {
 
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/{id}")
-    public ResponseEntity<String> putTheme(@PathVariable Long id, @RequestBody ThemeDto themeDto) {
+    public ResponseEntity<Object> putTheme(@PathVariable Long id, @RequestBody ThemeDto themeDto) {
         User user = userProvider.getCurrent();
         Optional<Theme> theme = themeRepo.findByIdAndCreator(id, user);
         if (theme.isPresent()) {
@@ -108,7 +108,19 @@ public class ThemeRestController {
             themeRepo.save(theme.get());
             return ResponseEntity.ok().build();
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Theme with id " + id + " not found");
+            return createThemeNotFound(id);
+        }
+    }
+
+    @PermitAll
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> getTheme(@PathVariable Long id) {
+        User user = userProvider.getCurrent();
+        Optional<Theme> theme = themeRepo.findAvailableById(id, user);
+        if (theme.isPresent()) {
+            return ResponseEntity.ok(new ThemeDto(theme.get()));
+        } else {
+            return createThemeNotFound(id);
         }
     }
 
@@ -126,7 +138,7 @@ public class ThemeRestController {
     @Transactional
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/activate/{id}")
-    public ResponseEntity<String> setActiveTheme(@PathVariable Long id) {
+    public ResponseEntity<Object> setActiveTheme(@PathVariable Long id) {
         User user = userProvider.getCurrent();
         user = entityManager.merge(user);
         Optional<Theme> theme = themeRepo.findAvailableById(id, user);
@@ -135,19 +147,19 @@ public class ThemeRestController {
             themeRepo.save(theme.get());
             return ResponseEntity.ok().build();
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Theme with id " + id + " not found");
+            return createThemeNotFound(id);
         }
     }
 
     @PreAuthorize("isAuthenticated() and hasAuthority('ADMIN')")
     @PutMapping("/setdefault/{id}")
-    public ResponseEntity<String> setDefaultTheme(@PathVariable Long id) {
+    public ResponseEntity<Object> setDefaultTheme(@PathVariable Long id) {
         Optional<Theme> theme = themeRepo.findPresetById(id);
         if (theme.isPresent()) {
             propertyRepo.setProperty(Property.DEFAULT_THEME, "" + id);
             return ResponseEntity.ok().build();
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Theme with id " + id + " not found");
+            return createThemeNotFound(id);
         }
     }
 
@@ -196,5 +208,11 @@ public class ThemeRestController {
             theme = themeRepo.findDefault().orElseThrow(() -> new IllegalStateException("No default theme found"));
         }
         return theme.toCss(colorConverter);
+    }
+
+    // utils
+
+    private ResponseEntity<Object> createThemeNotFound(Long id) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Theme with id " + id + " not found");
     }
 }

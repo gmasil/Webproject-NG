@@ -208,9 +208,9 @@ public class DataImportService {
             user = userService.save(user);
             if (u.getActiveTheme() != null) {
                 Theme userActiveTheme = themeRepo.findAllAvailable(user).stream()
-                        .filter(t -> t.getName().equals(u.getActiveTheme())).findAny().orElseThrow(() -> {
-                            return new IllegalStateException("The theme '" + u.getActiveTheme() + ": does not exist.");
-                        });
+                        .filter(t -> t.getName().equals(u.getActiveTheme())).findAny()
+                        .orElseThrow(() -> new IllegalStateException(
+                                "The theme with id " + u.getActiveTheme() + " does not exist."));
                 user.setActiveTheme(userActiveTheme);
             }
             userService.save(user);

@@ -2,7 +2,7 @@ pipeline {
   agent {
     docker {
       image "registry.gmasil.de/docker/maven-build-container"
-      args "-v /maven:/maven -v /root/.docker/config.json:/root/.docker/config.json -e JAVA_TOOL_OPTIONS='-Duser.home=/maven'"
+      args "-v /maven:/maven -v /root/.docker/config.json:/root/.docker/config.json -e JAVA_TOOL_OPTIONS='-Duser.home=/maven' --network servicenet_default -v /usr/bin/docker:/usr/bin/docker"
     }
   }
   environment {

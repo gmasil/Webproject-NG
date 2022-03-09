@@ -67,6 +67,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         } else {
             http.authorizeRequests() //
                     .antMatchers("/static/**").permitAll() //
+                    .antMatchers("/health").permitAll() //
+                    .antMatchers("/actuator/**").permitAll() //
                     .antMatchers("/api/users/current", "/api/app/config").permitAll() //
                     .antMatchers("/api/themes/active.css", "/api/themes/active").permitAll() //
                     .antMatchers("/login", "/logout", "/performlogin").permitAll() //

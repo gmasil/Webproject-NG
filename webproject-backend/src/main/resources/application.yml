@@ -16,6 +16,11 @@
 # https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt
 #
 
+management:
+  endpoint:
+    health:
+      show-details: always
+
 server:
   port: 6900
   tomcat:

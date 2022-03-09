@@ -235,10 +235,7 @@
                             <image>openjdk:11-jre-slim@sha256:a1c0966d3dbb7c286832d376549a4c637bbb11576b5fe6a66df6100336f9b007</image>
                         </from>
                         <to>
-                            <image>${target.image}</image>
-                            <tags>
-                                <tag>${target.tag}</tag>
-                            </tags>
+                            <image>${target.image}:${target.tag}</image>
                         </to>
                         <container>
                             <mainClass>de.gmasil.webproject.Application</mainClass>

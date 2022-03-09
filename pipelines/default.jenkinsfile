@@ -10,14 +10,26 @@ pipeline {
     MAVEN_PROJECT_NAME = sh(script: "mvn -q -Dexec.executable=echo -Dexec.args='\${project.name}' --non-recursive exec:exec", returnStdout: true).trim()
     MAVEN_PROJECT_VERSION = sh(script: "mvn -q -Dexec.executable=echo -Dexec.args='\${project.version}' --non-recursive exec:exec", returnStdout: true).trim()
     GIT_COMMIT_SHORT = sh(script: "git rev-parse --short ${GIT_COMMIT}", returnStdout: true).trim()
+    NETWORK_NAME = "servicenet_default"
+    SUT_NAME_NATIVE = "wng_sut_native"
+    SUT_NAME_JIB = "wng_sut_jib"
+    SUT_IMAGE_NAME = "registry.gmasil.de/docker/webproject-ng"
+    SUT_IMAGE_TAG_NATIVE = "${GIT_COMMIT_SHORT}-native"
+    SUT_IMAGE_TAG_JIB = "${GIT_COMMIT_SHORT}"
   }
   stages {
-    stage("build") {
+    stage("Build") {
       steps {
-        sh "mvn clean package --no-transfer-progress -P jib -Dtarget.tag=${GIT_COMMIT_SHORT}"
+        sh "mvn clean package --no-transfer-progress -P jib -Dtarget.image=${SUT_IMAGE_NAME} -Dtarget.tag=${SUT_IMAGE_TAG_JIB}"
+      }
+      post {
+        always {
+          junit testResults: '**/surefire-reports/**/*.xml', allowEmptyResults: true
+          archiveArtifacts artifacts: '**/gherkin/gherkin-report.html', fingerprint: true, allowEmptyArchive: true
+        }
       }
     }
-    stage("analyze") {
+    stage("Analyze") {
       environment {
         SONAR_TOKEN = credentials("SONAR_TOKEN")
       }
@@ -29,17 +41,104 @@ pipeline {
         }
       }
     }
-    stage("build-native") {
+    stage("Build Native") {
       steps {
-        sh "mvn -f webproject-backend clean package --no-transfer-progress -P native -Dtarget.tag=${GIT_COMMIT_SHORT}-native"
+        sh "mvn -f webproject-backend clean package --no-transfer-progress -P native -Dtarget.image=${SUT_IMAGE_NAME} -Dtarget.tag=${SUT_IMAGE_TAG_NATIVE}"
+      }
+    }
+    stage("Integration Test") {
+      parallel {
+        stage("Native") {
+          environment {
+            SUT_NAME = "${SUT_NAME_NATIVE}"
+            SUT_TAG = "${SUT_IMAGE_TAG_NATIVE}"
+          }
+          stages {
+            stage("Start") {
+              steps {
+                script {
+                  sh("docker stop ${SUT_NAME} && docker rm ${SUT_NAME} || true")
+                  sh("docker run --rm -d --network ${NETWORK_NAME} --name ${SUT_NAME} registry.gmasil.de/docker/webproject-ng:${SUT_TAG}")
+                  sh("ENDPOINT=${SUT_NAME}:6900/health INTERVAL=1 VERBOSE=true wait-for-service.sh")
+                }
+              }
+            }
+            stage("Test") {
+              steps {
+                script {
+                  env.TEST_STATUS_NATIVE = "FAILED";
+                }
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                  script {
+                    sh("curl -s ${SUT_NAME}:6900/health | jq -r '.status' | grep UP")
+                    env.TEST_STATUS_NATIVE = "OK";
+                  }
+                }
+              }
+            }
+            stage("Stop") {
+              steps {
+                script {
+                  sh("docker stop ${SUT_NAME} && docker rm ${SUT_NAME} || true")
+                }
+              }
+            }
+          }
+        }
+        stage("Jib") {
+          environment {
+            SUT_NAME = "${SUT_NAME_JIB}"
+            SUT_TAG = "${SUT_IMAGE_TAG_JIB}"
+          }
+          stages {
+            stage("Start") {
+              steps {
+                script {
+                  sh("docker stop ${SUT_NAME} && docker rm ${SUT_NAME} || true")
+                  sh("docker run --rm -d --network ${NETWORK_NAME} --name ${SUT_NAME} registry.gmasil.de/docker/webproject-ng:${SUT_TAG}")
+                  sh("ENDPOINT=${SUT_NAME}:6900/health INTERVAL=1 VERBOSE=true wait-for-service.sh")
+                }
+              }
+            }
+            stage("Test") {
+              steps {
+                script {
+                  env.TEST_STATUS_JIB = "FAILED";
+                }
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                  script {
+                    sh("curl -s ${SUT_NAME}:6900/health | jq -r '.status' | grep UP")
+                    env.TEST_STATUS_JIB = "OK";
+                  }
+                }
+              }
+            }
+            stage("Stop") {
+              steps {
+                script {
+                  sh("docker stop ${SUT_NAME} && docker rm ${SUT_NAME} || true")
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    stage("Cleanup") {
+      steps {
+        script {
+          sh("docker image rm ${SUT_IMAGE_NAME}:${SUT_IMAGE_TAG_JIB}")
+          sh("docker image rm ${SUT_IMAGE_NAME}:${SUT_IMAGE_TAG_NATIVE}")
+          if(env.TEST_STATUS_NATIVE == "FAILED" || env.TEST_STATUS_JIB == "FAILED") {
+            currentBuild.result = 'FAILURE'
+          }  
+        }
       }
     }
   }
   post {
     always {
-      junit testResults: '**/surefire-reports/**/*.xml', allowEmptyResults: true
       archiveArtifacts artifacts: '**/selenium-screenshots/*.png', fingerprint: true, allowEmptyArchive: true
-      archiveArtifacts artifacts: '**/gherkin/gherkin-report.html', fingerprint: true, allowEmptyArchive: true
     }
   }
 }

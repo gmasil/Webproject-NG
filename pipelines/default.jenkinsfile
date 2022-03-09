@@ -11,8 +11,8 @@ pipeline {
     MAVEN_PROJECT_VERSION = sh(script: "mvn -q -Dexec.executable=echo -Dexec.args='\${project.version}' --non-recursive exec:exec", returnStdout: true).trim()
     GIT_COMMIT_SHORT = sh(script: "git rev-parse --short ${GIT_COMMIT}", returnStdout: true).trim()
     NETWORK_NAME = "servicenet_default"
-    SUT_NAME_NATIVE = "wng_sut_native"
-    SUT_NAME_JIB = "wng_sut_jib"
+    SUT_NAME_NATIVE = "wng-sut-native"
+    SUT_NAME_JIB = "wng-sut-jib"
     SUT_IMAGE_NAME = "registry.gmasil.de/docker/webproject-ng"
     SUT_IMAGE_TAG_NATIVE = "${GIT_COMMIT_SHORT}-native"
     SUT_IMAGE_TAG_JIB = "${GIT_COMMIT_SHORT}"

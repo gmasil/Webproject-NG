@@ -60,7 +60,7 @@ pipeline {
               }
               steps {
                 script {
-                  sh("mvn -f webproject-tests clean verify --no-transfer-progress -Dtarget.image=${SUT_IMAGE_NAME} -Dtarget.tag=${SUT_IMAGE_TAG} -Dsut.network=${NETWORK_NAME} -Dsut.port= -Dsut.name=${SUT_IMAGE_TAG} -Dcontainer.name=${SUT_IMAGE_TAG}")
+                  sh("xvfb-run mvn -f webproject-tests clean verify --no-transfer-progress -Dtarget.image=${SUT_IMAGE_NAME} -Dtarget.tag=${SUT_IMAGE_TAG} -Dsut.network=${NETWORK_NAME} -Dsut.port= -Dsut.name=${SUT_IMAGE_TAG} -Dcontainer.name=${SUT_IMAGE_TAG}")
                 }
               }
             }
@@ -78,8 +78,6 @@ pipeline {
               steps {
                 script {
                   sh("cp -r ${MAIN_WORKSPACE}/webproject-frontend/dist/ webproject-frontend/")
-                  sh("ls -lah webproject-frontend/")
-                  sh("ls -lah webproject-frontend/dist/")
                 }
               }
             }
@@ -96,7 +94,7 @@ pipeline {
               }
               steps {
                 script {
-                  sh("mvn -f webproject-tests clean verify --no-transfer-progress -Dtarget.image=${SUT_IMAGE_NAME} -Dtarget.tag=${SUT_IMAGE_TAG} -Dsut.network=${NETWORK_NAME} -Dsut.port= -Dsut.name=${SUT_IMAGE_TAG} -Dcontainer.name=${SUT_IMAGE_TAG}")
+                  sh("xvfb-run mvn -f webproject-tests clean verify --no-transfer-progress -Dtarget.image=${SUT_IMAGE_NAME} -Dtarget.tag=${SUT_IMAGE_TAG} -Dsut.network=${NETWORK_NAME} -Dsut.port= -Dsut.name=${SUT_IMAGE_TAG} -Dcontainer.name=${SUT_IMAGE_TAG}")
                 }
               }
             }

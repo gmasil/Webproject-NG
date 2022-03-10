@@ -1,0 +1,66 @@
+<!--
+
+    Webproject NG
+    Copyright © 2021 - 2022 Gmasil
+
+    This file is part of Webproject NG.
+
+    Webproject NG is licensed under the Creative Commons
+    Attribution-NonCommercial-ShareAlike 4.0 International
+    Public License ("Public License").
+
+    Webproject NG is non-free software: you can redistribute
+    it and/or modify it under the terms of the Public License.
+
+    You should have received a copy of the Public License along
+    with Webproject NG. If not, see
+    https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>webproject-tests</artifactId>
+    <name>Tests</name>
+
+    <parent>
+        <groupId>de.gmasil</groupId>
+        <artifactId>webproject-ng</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <dependencies>
+        <!-- spring test -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- gherkin -->
+        <dependency>
+            <groupId>de.gmasil</groupId>
+            <artifactId>gherkin-extension-jupiter</artifactId>
+            <version>${gherkin-extension.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- selenium -->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+        </dependency>
+        <!-- utils -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -56,7 +56,7 @@ pipeline {
             }
             stage("Integration Test") {
               environment {
-                SUT_IMAGE_TAG = SUT_IMAGE_TAG_JIB
+                SUT_IMAGE_TAG = "${SUT_IMAGE_TAG_JIB}"
               }
               steps {
                 script {
@@ -92,7 +92,7 @@ pipeline {
             }
             stage("Integration Test") {
               environment {
-                SUT_IMAGE_TAG = SUT_IMAGE_TAG_NATIVE
+                SUT_IMAGE_TAG = "${SUT_IMAGE_TAG_NATIVE}"
               }
               steps {
                 script {

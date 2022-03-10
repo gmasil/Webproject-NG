@@ -49,6 +49,30 @@ public class ScreenshotDriver {
 
     /**
      * Take a screenshot of the current browser view, but wait <i>millis</i> ms
+     * before doing so. Save the screenshot to the file specified in property
+     * <code>webdriver.screenshot.filename</code>. <br>
+     * <br>
+     * The placeholder <code>%ts</code> will be replaced by the current timestamp.
+     * The format can be changed with the
+     * <code>webdriver.screenshot.timestamp.format</code> property, default is
+     * <code>yyyy-MM-dd-HH-mm-ss</code>. <br>
+     * The placeholder <code>%i</code> will be replaced with an ongoing number
+     * prepended with zeros to match the length of 3.
+     *
+     * @param millis time in ms to wait before screenshot is taken
+     * @return file of the created screenshot
+     */
+    public File take(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        return take();
+    }
+
+    /**
+     * Take a screenshot of the current browser view, but wait <i>millis</i> ms
      * before doing so. Save the screenshot to the specified <i>file</i>. <br>
      * <br>
      * The placeholder <code>%ts</code> will be replaced by the current timestamp.

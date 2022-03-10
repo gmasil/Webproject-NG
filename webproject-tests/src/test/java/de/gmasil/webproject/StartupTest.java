@@ -40,6 +40,6 @@ class StartupTest {
     @Test
     void testApplicationStartup() {
         browser.navigate().to(url.from("/"));
-        screenshot.take();
+        screenshot.take(100);
     }
 }

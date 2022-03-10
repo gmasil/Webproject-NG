@@ -56,11 +56,12 @@ pipeline {
             }
             stage("Integration Test") {
               environment {
+                MODUS = "jib"
                 SUT_IMAGE_TAG = "${SUT_IMAGE_TAG_JIB}"
               }
               steps {
                 script {
-                  sh("xvfb-run mvn -f webproject-tests clean verify --no-transfer-progress -Dtarget.image=${SUT_IMAGE_NAME} -Dtarget.tag=${SUT_IMAGE_TAG} -Dsut.network=${NETWORK_NAME} -Dsut.port= -Dsut.name=${SUT_IMAGE_TAG} -Dcontainer.name=${SUT_IMAGE_TAG}")
+                  sh("xvfb-run mvn -f webproject-tests clean verify --no-transfer-progress -Dtarget.image=${SUT_IMAGE_NAME} -Dtarget.tag=${SUT_IMAGE_TAG} -Dsut.network=${NETWORK_NAME} -Dsut.port= -Dsut.name=${SUT_IMAGE_TAG} -Dcontainer.name=${SUT_IMAGE_TAG} -Dwebdriver.screenshot.folder=target/selenium-screenshots/${MODUS}")
                 }
               }
             }
@@ -90,11 +91,12 @@ pipeline {
             }
             stage("Integration Test") {
               environment {
+                MODUS = "native"
                 SUT_IMAGE_TAG = "${SUT_IMAGE_TAG_NATIVE}"
               }
               steps {
                 script {
-                  sh("xvfb-run mvn -f webproject-tests clean verify --no-transfer-progress -Dtarget.image=${SUT_IMAGE_NAME} -Dtarget.tag=${SUT_IMAGE_TAG} -Dsut.network=${NETWORK_NAME} -Dsut.port= -Dsut.name=${SUT_IMAGE_TAG} -Dcontainer.name=${SUT_IMAGE_TAG}")
+                  sh("xvfb-run mvn -f webproject-tests clean verify --no-transfer-progress -Dtarget.image=${SUT_IMAGE_NAME} -Dtarget.tag=${SUT_IMAGE_TAG} -Dsut.network=${NETWORK_NAME} -Dsut.port= -Dsut.name=${SUT_IMAGE_TAG} -Dcontainer.name=${SUT_IMAGE_TAG} -Dwebdriver.screenshot.folder=target/selenium-screenshots/${MODUS}")
                 }
               }
             }
@@ -102,23 +104,14 @@ pipeline {
         }
       }
     }
-    stage("Cleanup") {
-      steps {
-        script {
-          try {
-            sh("docker image rm ${SUT_IMAGE_NAME}:${SUT_IMAGE_TAG_JIB}")
-          } catch(err) {
-            sh("docker image rm ${SUT_IMAGE_NAME}:${SUT_IMAGE_TAG_NATIVE}")
-            sh("echo 'Error while performing cleanup' && false")
-          }
-          sh("docker image rm ${SUT_IMAGE_NAME}:${SUT_IMAGE_TAG_NATIVE}")
-        }
-      }
-    }
   }
   post {
     always {
       archiveArtifacts artifacts: '**/selenium-screenshots/**/*.png', fingerprint: true, allowEmptyArchive: true
+      script {
+        sh("docker image rm ${SUT_IMAGE_NAME}:${SUT_IMAGE_TAG_JIB} || true")
+        sh("docker image rm ${SUT_IMAGE_NAME}:${SUT_IMAGE_TAG_NATIVE} || true")
+      }
     }
   }
 }

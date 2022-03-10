@@ -50,6 +50,7 @@ pipeline {
       parallel {
         stage("Native") {
           environment {
+            DISPLAY = ":55"
             MODUS = "native"
             SUT_NAME = "${SUT_NAME_NATIVE}"
             SUT_TAG = "${SUT_IMAGE_TAG_NATIVE}"
@@ -62,6 +63,7 @@ pipeline {
                     sh("docker stop ${SUT_NAME} && docker rm ${SUT_NAME} || true")
                     sh("docker run --rm -d --network ${NETWORK_NAME} --name ${SUT_NAME} registry.gmasil.de/docker/webproject-ng:${SUT_TAG}")
                     sh("ENDPOINT=${SUT_NAME}:6900/health INTERVAL=1 VERBOSE=true wait-for-service.sh")
+                    sh("Xvfb ${DISPLAY} -screen 0 800x600x24 &")
                   } catch(err) {
                     sh("docker stop ${SUT_NAME} && docker rm ${SUT_NAME} || true")
                     sh("echo 'Error while starting ${MODUS} SUT' && false")
@@ -70,14 +72,18 @@ pipeline {
               }
             }
             stage("Test") {
+              environment {
+                CONTAINER_NAME = "${SUT_NAME}"
+                WEBDRIVER_SCREENSHOT_FOLDER = "target/selenium-screenshots/${MODUS}"
+                WEBDRIVER_FIREFOX_LOGFILE = "target/selenium-firefox.${MODUS}.log"
+              }
               steps {
                 script {
                   env.TEST_STATUS_NATIVE = "FAILED";
                 }
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                   script {
-                    sh("unset DISPLAY")
-                    sh("CONTAINER_NAME=${SUT_NAME} WEBDRIVER_SCREENSHOT_FOLDER=target/selenium-screenshots/${MODUS} WEBDRIVER_FIREFOX_LOGFILE=target/selenium-firefox.${MODUS}.log xvfb-run mvn -f webproject-tests test")
+                    sh("mvn -f webproject-tests clean test")
                     env.TEST_STATUS_NATIVE = "OK";
                     currentBuild.result = 'FAILURE'
                   }
@@ -95,6 +101,7 @@ pipeline {
         }
         stage("Jib") {
           environment {
+            DISPLAY = ":66"
             MODUS = "jib"
             SUT_NAME = "${SUT_NAME_JIB}"
             SUT_TAG = "${SUT_IMAGE_TAG_JIB}"
@@ -107,6 +114,7 @@ pipeline {
                     sh("docker stop ${SUT_NAME} && docker rm ${SUT_NAME} || true")
                     sh("docker run --rm -d --network ${NETWORK_NAME} --name ${SUT_NAME} registry.gmasil.de/docker/webproject-ng:${SUT_TAG}")
                     sh("ENDPOINT=${SUT_NAME}:6900/health INTERVAL=1 VERBOSE=true wait-for-service.sh")
+                    sh("Xvfb ${DISPLAY} -screen 0 800x600x24 &")
                   } catch(err) {
                     sh("docker stop ${SUT_NAME} && docker rm ${SUT_NAME} || true")
                     sh("echo 'Error while starting ${MODUS} SUT' && false")
@@ -115,14 +123,18 @@ pipeline {
               }
             }
             stage("Test") {
+              environment {
+                CONTAINER_NAME = "${SUT_NAME}"
+                WEBDRIVER_SCREENSHOT_FOLDER = "target/selenium-screenshots/${MODUS}"
+                WEBDRIVER_FIREFOX_LOGFILE = "target/selenium-firefox.${MODUS}.log"
+              }
               steps {
                 script {
                   env.TEST_STATUS_JIB = "FAILED";
                 }
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                   script {
-                    sh("unset DISPLAY")
-                    sh("CONTAINER_NAME=${SUT_NAME} WEBDRIVER_SCREENSHOT_FOLDER=target/selenium-screenshots/${MODUS} WEBDRIVER_FIREFOX_LOGFILE=target/selenium-firefox.${MODUS}.log xvfb-run mvn -f webproject-tests test")
+                    sh("mvn -f webproject-tests clean test")
                     env.TEST_STATUS_JIB = "OK";
                   }
                 }

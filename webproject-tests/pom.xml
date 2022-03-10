@@ -29,6 +29,15 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
+    <properties>
+        <skip.unit>true</skip.unit>
+        <sut.name>webproject-sut</sut.name>
+        <sut.network></sut.network>
+        <sut.port>6900:6900</sut.port>
+        <!-- hostname in test -->
+        <container.name>localhost</container.name>
+    </properties>
+
     <dependencies>
         <!-- spring test -->
         <dependency>
@@ -56,10 +65,91 @@
         </dependency>
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>local</id>
+            <!-- use with maven goal test -->
+            <properties>
+                <skip.unit>false</skip.unit>
+            </properties>
+        </profile>
+    </profiles>
+
     <build>
         <plugins>
+            <!-- skip surefire unit tests -->
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skipTests>${skip.unit}</skipTests>
+                </configuration>
+            </plugin>
+            <!-- failsafe -->
+            <plugin>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
+                    <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
+                    <includes>
+                        <include>**/*</include>
+                    </includes>
+                    <systemPropertyVariables>
+                        <CONTAINER_NAME>${container.name}</CONTAINER_NAME>
+                        <container.name>${container.name}</container.name>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+            <!-- docker config for integration tests -->
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>${docker-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>start-sut</id>
+                        <goals>
+                            <goal>start</goal>
+                        </goals>
+                        <phase>pre-integration-test</phase>
+                    </execution>
+                    <execution>
+                        <id>stop-sut</id>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                        <phase>post-integration-test</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <autoPull>off</autoPull>
+                    <images>
+                        <image>
+                            <name>${target.image}:${target.tag}</name>
+                            <alias>${sut.name}</alias>
+                            <run>
+                                <containerNamePattern>%a</containerNamePattern>
+                                <env>
+                                    <DATAIMPORT_ENABLED>false</DATAIMPORT_ENABLED>
+                                    <DATAIMPORT_FILE>/data.yml</DATAIMPORT_FILE>
+                                </env>
+                                <ports>
+                                    <port>${sut.port}</port>
+                                </ports>
+                                <!-- 
+                                <volumes>
+                                    <bind>
+                                        <volume>${project.parent.basedir}/webproject-backend/webproject-data.yml:/data.yml</volume>
+                                    </bind>
+                                </volumes>
+                                 -->
+                                <net>${sut.network}</net>
+                                <wait>
+                                    <log>Initialized application in</log>
+                                    <time>30000</time>
+                                </wait>
+                            </run>
+                        </image>
+                    </images>
+                </configuration>
             </plugin>
         </plugins>
     </build>

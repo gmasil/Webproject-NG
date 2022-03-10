@@ -85,7 +85,6 @@ pipeline {
                   script {
                     sh("mvn -f webproject-tests clean test")
                     env.TEST_STATUS_NATIVE = "OK";
-                    currentBuild.result = 'FAILURE'
                   }
                 }
               }

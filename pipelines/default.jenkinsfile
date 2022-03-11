@@ -21,7 +21,7 @@ pipeline {
       steps {
         script {
           MAIN_WORKSPACE = WORKSPACE
-          dir("folder") {
+          dir("webproject-frontend") {
             sh("npm install")
             sh("npm run build")
             sh("npm run sonar")

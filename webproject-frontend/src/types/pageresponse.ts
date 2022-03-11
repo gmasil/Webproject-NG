@@ -16,11 +16,12 @@
 /// https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt
 ///
 
-export * from "@/types/appproperties";
-export * from "@/types/callbackfunction";
-export * from "@/types/changepassworddata";
-export * from "@/types/page";
-export * from "@/types/pageresponse";
-export * from "@/types/theme";
-export * from "@/types/user";
-export * from "@/types/video";
+export interface PageResponse<T> {
+  content: T[];
+  last: boolean;
+  totalPages: number;
+  totalElements: number;
+  number: number;
+  size: number;
+  first: boolean;
+}

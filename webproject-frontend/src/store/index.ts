@@ -22,6 +22,7 @@ import axios from "axios";
 import {
   AppProperties,
   Page,
+  PageResponse,
   Theme,
   User,
   Video,
@@ -47,7 +48,7 @@ export default new Vuex.Store({
       if (state.appProperties == null) {
         return true;
       }
-      if (state.appProperties.publicAccess == true) {
+      if (state.appProperties.publicAccess) {
         return false;
       } else {
         return state.currentUser == null;
@@ -72,7 +73,7 @@ export default new Vuex.Store({
         axios
           .get("/api/app/config")
           .then((response) => {
-            const props: AppProperties = response.data;
+            const props: AppProperties = response.data as AppProperties;
             commit("setAppProperties", props);
             resolve(props);
           })
@@ -87,8 +88,7 @@ export default new Vuex.Store({
           .get("/api/users/current")
           .then((response) => {
             if (response.data !== "") {
-              console.log("user good");
-              const user: User = response.data;
+              const user: User = response.data as User;
               commit("setCurrentUser", user);
               resolve(user);
             } else {
@@ -106,7 +106,7 @@ export default new Vuex.Store({
         axios
           .get("/api/themes/active")
           .then((response) => {
-            const theme: Theme = Object.assign(new Theme(), response.data);
+            const theme: Theme = Theme.fromResponse(response);
             commit("setActiveTheme", theme);
             resolve(theme);
           })
@@ -141,11 +141,7 @@ export default new Vuex.Store({
           axios
             .put(`/api/themes/${theme.id}`, theme, config)
             .then((response) => {
-              const savedTheme: Theme = Object.assign(
-                new Theme(),
-                response.data
-              );
-              resolve(savedTheme);
+              resolve(Theme.fromResponse(response));
             })
             .catch((error: Error) => {
               commit("dummy");
@@ -156,11 +152,7 @@ export default new Vuex.Store({
           axios
             .post("/api/themes", theme, config)
             .then((response) => {
-              const savedTheme: Theme = Object.assign(
-                new Theme(),
-                response.data
-              );
-              resolve(savedTheme);
+              resolve(Theme.fromResponse(response));
             })
             .catch((error: Error) => {
               commit("dummy");
@@ -203,8 +195,9 @@ export default new Vuex.Store({
             `/api/videos?size=${page.size}&page=${page.page}&sort=${page.sort}`
           )
           .then((response) => {
-            const videos: Video[] = response.data["content"] as Video[];
-            resolve(videos);
+            const pageResponse: PageResponse<Video> =
+              response.data as PageResponse<Video>;
+            resolve(pageResponse.content);
           })
           .catch((error) => {
             commit("dummy");

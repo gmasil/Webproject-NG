@@ -28,11 +28,11 @@ module.exports = {
     "@vue/typescript",
     "@vue/typescript/recommended",
     "@vue/prettier",
-    //"@vue/prettier/@typescript-eslint",
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "plugin:sonarjs/recommended",
   ],
   parser: "vue-eslint-parser",
   parserOptions: {
@@ -40,14 +40,12 @@ module.exports = {
     project: "./tsconfig.json",
     ecmaVersion: 2020,
   },
-  plugins: ["@typescript-eslint"],
+  plugins: ["@typescript-eslint", "sonarjs"],
   rules: {
-    "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
-    "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
-    "@typescript-eslint/explicit-function-return-type": "warn",
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    "no-console": process.env.NODE_ENV === "production" ? "error" : "warn",
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    "no-debugger": process.env.NODE_ENV === "production" ? "error" : "warn",
     "vue/multi-word-component-names": "off",
-    "@typescript-eslint/no-unsafe-argument": "off",
-    "@typescript-eslint/no-unsafe-member-access": "off",
-    "@typescript-eslint/no-unsafe-assignment": "off",
   },
 };

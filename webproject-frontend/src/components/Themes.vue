@@ -81,7 +81,7 @@ const Themes = Vue.extend({
         this.themes = themes;
         const activeTheme: Theme = this.getActiveTheme() as Theme;
         if (this.themes.length > 0) {
-          this.themes.forEach((theme: Theme) => {
+          for (let theme of themes) {
             if (theme.id == activeTheme.id) {
               this.selectedTheme = theme;
               this.selectedThemeCopy = JSON.parse(
@@ -89,7 +89,7 @@ const Themes = Vue.extend({
               ) as Theme;
               return;
             }
-          });
+          }
         }
       })
       .catch((error: Error) => {
@@ -107,9 +107,7 @@ const Themes = Vue.extend({
     ]),
     ...mapGetters(["getCurrentUser", "getActiveTheme"]),
     onThemeSelectionChange(): void {
-      this.selectedThemeCopy = JSON.parse(
-        JSON.stringify(this.selectedTheme)
-      ) as Theme;
+      this.onResetClick();
     },
     onSaveClick(): void {
       if (this.selectedThemeCopy != null && this.selectedTheme != null) {

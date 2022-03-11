@@ -16,6 +16,8 @@
 /// https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt
 ///
 
+import { AxiosResponse } from "axios";
+
 export class Theme {
   id?: number | null;
   name?: string;
@@ -26,7 +28,12 @@ export class Theme {
   textColor?: string;
   preset?: boolean;
 
-  applyTheme(): void {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public static fromResponse(response: AxiosResponse<any, any>): Theme {
+    return Object.assign(new Theme(), response.data) as Theme;
+  }
+
+  public applyTheme(): void {
     if (this.name == null) {
       return;
     }

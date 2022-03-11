@@ -98,10 +98,8 @@ router.beforeEach((to, from, next) => {
     next();
   }
   waitForInit(() => {
-    if (!isPublicAccess()) {
-      if (getCurrentUser() == null) {
-        return next({ path: "/login" });
-      }
+    if (!isPublicAccess() && getCurrentUser() == null) {
+      return next({ path: "/login" });
     }
     const authorize: boolean = to.meta?.authorize as boolean;
     if (authorize) {

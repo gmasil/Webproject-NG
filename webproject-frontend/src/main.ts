@@ -46,7 +46,9 @@ Vue.use(Toast, {
   rtl: false,
 });
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 Vue.use(ColorPanel);
+// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 Vue.use(ColorPicker);
 Vue.component("VSelect", vSelect);
 

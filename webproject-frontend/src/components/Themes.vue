@@ -198,7 +198,9 @@ const Themes = Vue.extend({
       if (this.selectedTheme?.id != null) {
         this.activateTheme(this.selectedTheme.id)
           .then(() => {
-            void this.loadActiveTheme();
+            this.loadActiveTheme().catch(() =>
+              this.$toast.error("Error while loading active theme")
+            );
           })
           .catch((error: Error) => {
             this.$toast.error("Error while activating theme: " + error.message);

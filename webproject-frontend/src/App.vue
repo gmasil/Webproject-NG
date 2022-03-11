@@ -39,9 +39,15 @@ const App = Vue.extend({
     Navbar,
   },
   created(): void {
-    void this.loadAppProperties();
-    void this.loadCurrentUser();
-    void this.loadActiveTheme();
+    this.loadAppProperties().catch(() =>
+      this.$toast.error("Error while loading application properties")
+    );
+    this.loadCurrentUser().catch(() =>
+      this.$toast.error("Error while loading current user")
+    );
+    this.loadActiveTheme().catch(() =>
+      this.$toast.error("Error while loading active theme")
+    );
   },
   methods: {
     ...mapActions(["loadAppProperties", "loadCurrentUser", "loadActiveTheme"]),

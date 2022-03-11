@@ -16,8 +16,7 @@
  * https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt
  */
 module.exports = {
-  purge: ["./src/**/*.html", "./src/**/*.vue", "./src/**/*.jsx"],
-  darkMode: "media", // or 'media' or 'class'
+  content: ["./src/**/*.html", "./src/**/*.vue", "./src/**/*.jsx"],
   theme: {
     extend: {
       colors: {

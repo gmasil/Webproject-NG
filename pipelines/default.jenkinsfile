@@ -23,7 +23,6 @@ pipeline {
           MAIN_WORKSPACE = WORKSPACE
           dir("webproject-frontend") {
             sh("npm install")
-            sh("npx browserslist@latest --update-db")
             sh("npm run build")
             sh("npm run sonar")
           }

@@ -104,6 +104,34 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>non-ci</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>${docker-plugin.version}</version>
+                        <configuration>
+                            <images>
+                                <image>
+                                    <run>
+                                        <volumes>
+                                            <bind>
+                                                <volume>${sut.volume}</volume>
+                                            </bind>
+                                        </volumes>
+                                    </run>
+                                </image>
+                            </images>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 
     <build>
@@ -165,11 +193,6 @@
                                 <ports>
                                     <port>${sut.port}</port>
                                 </ports>
-                                <volumes>
-                                    <bind>
-                                        <volume>${sut.volume}</volume>
-                                    </bind>
-                                </volumes>
                                 <net>${sut.network}</net>
                                 <wait>
                                     <log>Data import finished in</log>

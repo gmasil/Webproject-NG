@@ -67,7 +67,7 @@ pipeline {
               }
               steps {
                 script {
-                  sh("xvfb-run mvn -f webproject-tests clean verify --no-transfer-progress -P ci -Dtarget.image=${SUT_IMAGE_NAME} -Dtarget.tag=${SUT_IMAGE_TAG} -Dsut.volume=${FROM_IMAGE} -Dsut.importfile=${IMPORT_FILE} -Dsut.network=${NETWORK_NAME} -Dsut.name=${SUT_IMAGE_TAG} -Dcontainer.name=${SUT_IMAGE_TAG} -Dwebdriver.screenshot.folder=target/selenium-screenshots/${MODUS}")
+                  sh("xvfb-run mvn -f webproject-tests clean verify --no-transfer-progress -P ci -Ddocker.showLogs -Dtarget.image=${SUT_IMAGE_NAME} -Dtarget.tag=${SUT_IMAGE_TAG} -Dsut.volume.from=${FROM_IMAGE} -Dsut.importfile=${IMPORT_FILE} -Dsut.network=${NETWORK_NAME} -Dsut.name=${SUT_IMAGE_TAG} -Dcontainer.name=${SUT_IMAGE_TAG} -Dwebdriver.screenshot.folder=target/selenium-screenshots/${MODUS}")
                 }
               }
               post {
@@ -109,7 +109,7 @@ pipeline {
               }
               steps {
                 script {
-                  sh("xvfb-run mvn -f webproject-tests clean verify --no-transfer-progress -P ci -Dtarget.image=${SUT_IMAGE_NAME} -Dtarget.tag=${SUT_IMAGE_TAG} -Dsut.volume=${FROM_IMAGE} -Dsut.importfile=${IMPORT_FILE} -Dsut.network=${NETWORK_NAME} -Dsut.name=${SUT_IMAGE_TAG} -Dcontainer.name=${SUT_IMAGE_TAG} -Dwebdriver.screenshot.folder=target/selenium-screenshots/${MODUS}")
+                  sh("xvfb-run mvn -f webproject-tests clean verify --no-transfer-progress -P ci -Ddocker.showLogs -Dtarget.image=${SUT_IMAGE_NAME} -Dtarget.tag=${SUT_IMAGE_TAG} -Dsut.volume.from=${FROM_IMAGE} -Dsut.importfile=${IMPORT_FILE} -Dsut.network=${NETWORK_NAME} -Dsut.name=${SUT_IMAGE_TAG} -Dcontainer.name=${SUT_IMAGE_TAG} -Dwebdriver.screenshot.folder=target/selenium-screenshots/${MODUS}")
                 }
               }
               post {

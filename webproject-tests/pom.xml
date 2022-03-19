@@ -78,9 +78,6 @@
         </profile>
         <profile>
             <id>ci</id>
-            <properties>
-                <sut.port></sut.port>
-            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -96,6 +93,7 @@
                                                 <image>${sut.volume.from}</image>
                                             </from>
                                         </volumes>
+                                        <net>${sut.network}</net>
                                     </run>
                                 </image>
                             </images>
@@ -119,6 +117,9 @@
                             <images>
                                 <image>
                                     <run>
+                                        <ports>
+                                            <port>${sut.port}</port>
+                                        </ports>
                                         <volumes>
                                             <bind>
                                                 <volume>${sut.volume}</volume>
@@ -190,10 +191,6 @@
                                     <DATAIMPORT_ENABLED>true</DATAIMPORT_ENABLED>
                                     <DATAIMPORT_FILE>${sut.importfile}</DATAIMPORT_FILE>
                                 </env>
-                                <ports>
-                                    <port>${sut.port}</port>
-                                </ports>
-                                <net>${sut.network}</net>
                                 <wait>
                                     <log>Data import finished in</log>
                                     <time>30000</time>

@@ -1,0 +1,158 @@
+#
+# Webproject NG
+# Copyright © 2021 - 2022 Gmasil
+#
+# This file is part of Webproject NG.
+#
+# Webproject NG is licensed under the Creative Commons
+# Attribution-NonCommercial-ShareAlike 4.0 International
+# Public License ("Public License").
+#
+# Webproject NG is non-free software: you can redistribute
+# it and/or modify it under the terms of the Public License.
+#
+# You should have received a copy of the Public License along
+# with Webproject NG. If not, see
+# https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt
+#
+
+videos:
+  - title: "Fly over the City"
+    length: "15.64"
+    thumbnail: "https://static.gmasil.de/webproject-ng/media/thumbnails/0de1e1edb3dfc841aa8e2b46400d2897.png"
+    thumbnailPreview: "https://static.gmasil.de/webproject-ng/media/thumbnails/preview/0de1e1edb3dfc841aa8e2b46400d2897.png"
+    files:
+      - name: "https://static.gmasil.de/webproject-ng/media/videos/0de1e1edb3dfc841aa8e2b46400d2897.mp4"
+        quality: "2160p"
+    categories:
+      - City
+      - Drone
+      - Timelapse
+
+  - title: "Calming Ocean"
+    length: "24.34"
+    thumbnail: "https://static.gmasil.de/webproject-ng/media/thumbnails/9cdd440ee421481a94297dbfd4d32560.png"
+    thumbnailPreview: "https://static.gmasil.de/webproject-ng/media/thumbnails/preview/9cdd440ee421481a94297dbfd4d32560.png"
+    files:
+      - name: "https://static.gmasil.de/webproject-ng/media/videos/9cdd440ee421481a94297dbfd4d32560.mp4"
+        quality: "1080p"
+    categories:
+      - Ocean
+      - Drone
+
+  - title: "What the Cat"
+    length: "9.66"
+    thumbnail: "https://static.gmasil.de/webproject-ng/media/thumbnails/42ca4e66a9d0008e65758fa7680c683f.png"
+    thumbnailPreview: "https://static.gmasil.de/webproject-ng/media/thumbnails/preview/42ca4e66a9d0008e65758fa7680c683f.png"
+    files:
+      - name: "https://static.gmasil.de/webproject-ng/media/videos/42ca4e66a9d0008e65758fa7680c683f.mp4"
+        quality: "2160p"
+    categories:
+      - Cat
+      - Animal
+
+  - title: "Blue Silk"
+    length: "14.68"
+    thumbnail: "https://static.gmasil.de/webproject-ng/media/thumbnails/158a407673569a57961f4509ace08307.png"
+    thumbnailPreview: "https://static.gmasil.de/webproject-ng/media/thumbnails/preview/158a407673569a57961f4509ace08307.png"
+    files:
+      - name: "https://static.gmasil.de/webproject-ng/media/videos/158a407673569a57961f4509ace08307.mp4"
+        quality: "1080p"
+    categories:
+      - Blue
+      - Fabrik
+      - Silk
+
+  - title: "Shadows"
+    length: "7.59"
+    thumbnail: "https://static.gmasil.de/webproject-ng/media/thumbnails/396e74483685c99e8394cc3fd740e1f3.png"
+    thumbnailPreview: "https://static.gmasil.de/webproject-ng/media/thumbnails/preview396e74483685c99e8394cc3fd740e1f3.png"
+    files:
+      - name: "https://static.gmasil.de/webproject-ng/media/videos/396e74483685c99e8394cc3fd740e1f3.mp4"
+        quality: "2160p"
+    categories:
+      - 3D
+      - Shadows
+      - Walkway
+
+  - title: "Lonely Cliffs"
+    length: "16.36"
+    thumbnail: "https://static.gmasil.de/webproject-ng/media/thumbnails/331161b93390b11580f087253f59383f.png"
+    thumbnailPreview: "https://static.gmasil.de/webproject-ng/media/thumbnails/preview/331161b93390b11580f087253f59383f.png"
+    files:
+      - name: "https://static.gmasil.de/webproject-ng/media/videos/331161b93390b11580f087253f59383f.mp4"
+        quality: "1080p"
+    categories:
+      - Cliffs
+      - Ocean
+      - Waves
+
+  - title: "Ink"
+    length: "22.64"
+    thumbnail: "https://static.gmasil.de/webproject-ng/media/thumbnails/bbe1dc230a6a7fdd152b95eeb28eb733.png"
+    thumbnailPreview: "https://static.gmasil.de/webproject-ng/media/thumbnails/preview/bbe1dc230a6a7fdd152b95eeb28eb733.png"
+    files:
+      - name: "https://static.gmasil.de/webproject-ng/media/videos/bbe1dc230a6a7fdd152b95eeb28eb733.mp4"
+        quality: "1080p"
+    categories:
+      - Ink
+      - Pink
+
+  - title: "Cliffs in the Rough"
+    length: "7.25"
+    thumbnail: "https://static.gmasil.de/webproject-ng/media/thumbnails/d5bfbe9c6ca7eeae93931f3772a29c0a.png"
+    thumbnailPreview: "https://static.gmasil.de/webproject-ng/media/thumbnails/preview/d5bfbe9c6ca7eeae93931f3772a29c0a.png"
+    files:
+      - name: "https://static.gmasil.de/webproject-ng/media/videos/d5bfbe9c6ca7eeae93931f3772a29c0a.mp4"
+        quality: "1080p"
+    categories:
+      - Cliffs
+      - Ocean
+      - Drone
+
+  - title: "Legs in the Cornfield"
+    length: "14.60"
+    thumbnail: "https://static.gmasil.de/webproject-ng/media/thumbnails/d07a1d88f18c4601d38f8f53a784551a.png"
+    thumbnailPreview: "https://static.gmasil.de/webproject-ng/media/thumbnails/preview/d07a1d88f18c4601d38f8f53a784551a.png"
+    files:
+      - name: "https://static.gmasil.de/webproject-ng/media/videos/d07a1d88f18c4601d38f8f53a784551a.mp4"
+        quality: "1080p"
+    categories:
+      - Cornfield
+      - Legs
+      - Summer
+
+  - title: "The Development of Clouds"
+    length: "30.06"
+    thumbnail: "https://static.gmasil.de/webproject-ng/media/thumbnails/ea47a12e3276a84ffe6c204563be99f2.png"
+    thumbnailPreview: "https://static.gmasil.de/webproject-ng/media/thumbnails/preview/ea47a12e3276a84ffe6c204563be99f2.png"
+    files:
+      - name: "https://static.gmasil.de/webproject-ng/media/videos/ea47a12e3276a84ffe6c204563be99f2.mp4"
+        quality: "1080p"
+    categories:
+      - Clouds
+      - Timelapse
+
+  - title: "Rainy Day"
+    length: "23.42"
+    thumbnail: "https://static.gmasil.de/webproject-ng/media/thumbnails/ec24a1b4fdfd80223bc033c74a2d73e7.png"
+    thumbnailPreview: "https://static.gmasil.de/webproject-ng/media/thumbnails/preview/ec24a1b4fdfd80223bc033c74a2d73e7.png"
+    files:
+      - name: "https://static.gmasil.de/webproject-ng/media/videos/ec24a1b4fdfd80223bc033c74a2d73e7.mp4"
+        quality: "1080p"
+    categories:
+      - Ocean
+      - Water
+      - Rain
+
+  - title: "Busy City in the Night"
+    length: "15.77"
+    thumbnail: "https://static.gmasil.de/webproject-ng/media/thumbnails/fee187b4db829b53bbea9c9b15c5db0c.png"
+    thumbnailPreview: "https://static.gmasil.de/webproject-ng/media/thumbnails/preview/fee187b4db829b53bbea9c9b15c5db0c.png"
+    files:
+      - name: "https://static.gmasil.de/webproject-ng/media/videos/fee187b4db829b53bbea9c9b15c5db0c.mp4"
+        quality: "2160p"
+    categories:
+      - Night
+      - City
+      - Timelapse

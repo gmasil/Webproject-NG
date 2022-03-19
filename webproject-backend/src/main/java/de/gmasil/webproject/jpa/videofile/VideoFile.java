@@ -24,8 +24,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -37,7 +35,6 @@ import javax.persistence.UniqueConstraint;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import de.gmasil.webproject.jpa.Auditable;
-import de.gmasil.webproject.jpa.VideoQuality;
 import de.gmasil.webproject.jpa.video.Video;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -64,14 +61,13 @@ public class VideoFile extends Auditable {
     private String name;
 
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private VideoQuality quality;
+    private String quality;
 
     @ManyToMany(mappedBy = "files", cascade = { CascadeType.DETACH, CascadeType.PERSIST })
     private Set<Video> videos = new HashSet<>();
 
     @Builder
-    public VideoFile(String name, VideoQuality quality) {
+    public VideoFile(String name, String quality) {
         this.name = name;
         this.quality = quality;
     }

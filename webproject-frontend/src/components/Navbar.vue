@@ -38,7 +38,7 @@
     <hr class="border-theme-text my-1" />
     <p v-if="isAuthenticated()">
       Logged in as
-      {{ getUsername }}
+      <span id="navbar-username">{{ getUsername }}</span>
     </p>
     <hr v-if="isAuthenticated()" class="border-theme-text my-2" />
   </div>

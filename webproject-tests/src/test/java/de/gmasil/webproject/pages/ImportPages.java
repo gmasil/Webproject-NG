@@ -15,7 +15,7 @@
  * with Webproject NG. If not, see
  * https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt
  */
-package de.gmasil.webproject.utils;
+package de.gmasil.webproject.pages;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -24,20 +24,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.TestExecutionListeners.MergeMode;
-
-import de.gmasil.webproject.pages.ImportPages;
+import org.springframework.context.annotation.Import;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@SpringBootTest
-@ContextConfiguration(classes = { WebDriverConfiguration.class, ScreenshotDriver.class, UrlBuilder.class })
-@ImportPages
-@TestExecutionListeners(listeners = ScreenshotDriver.class, inheritListeners = true, mergeMode = MergeMode.MERGE_WITH_DEFAULTS)
-public @interface SetupIntegrationTestContext {
+@Import({ LoginPage.class, VideosPage.class })
+public @interface ImportPages {
 }

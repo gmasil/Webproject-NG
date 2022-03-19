@@ -32,7 +32,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import de.gmasil.gherkin.extension.Scenario;
 import de.gmasil.gherkin.extension.Story;
 import de.gmasil.webproject.jpa.GenericEntityTester;
-import de.gmasil.webproject.jpa.VideoQuality;
 import de.gmasil.webproject.jpa.artist.Artist;
 import de.gmasil.webproject.jpa.artist.ArtistRepository;
 import de.gmasil.webproject.jpa.category.Category;
@@ -82,7 +81,7 @@ class VideoTest {
 
         @Override
         public VideoFile createAttachedEntity() {
-            return VideoFile.builder().name("/file1").quality(VideoQuality.HD).build();
+            return VideoFile.builder().name("/file1").quality("HD").build();
         }
 
         @Override

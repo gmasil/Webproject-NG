@@ -21,17 +21,24 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
 
 import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Scope;
+import org.springframework.test.context.TestContext;
+import org.springframework.test.context.TestExecutionListener;
 
-@Scope("prototype")
-public class ScreenshotDriver {
+public class ScreenshotDriver implements TestExecutionListener {
 
     @Autowired
     private WebDriver driver;
@@ -46,6 +53,21 @@ public class ScreenshotDriver {
     private String defaultFilename;
 
     private int number = 1;
+
+    private TestContext testContext;
+
+    @PostConstruct
+    public void init() throws IOException {
+        if (screenshotFolder.exists()) {
+            FileUtils.deleteDirectory(screenshotFolder);
+        }
+    }
+
+    @Override
+    public void beforeTestMethod(TestContext testContext) {
+        ScreenshotDriver bean = testContext.getApplicationContext().getBean(ScreenshotDriver.class);
+        bean.testContext = testContext;
+    };
 
     /**
      * Take a screenshot of the current browser view, but wait <i>millis</i> ms
@@ -161,5 +183,21 @@ public class ScreenshotDriver {
      */
     public File takeInFolder(String foldername) {
         return take(foldername + "/" + defaultFilename);
+    }
+
+    public File takeInTestFolder() {
+        String clazz = testContext.getTestClass().getSimpleName();
+        String method = testContext.getTestMethod().getName();
+        return take(clazz + "/" + method + "/" + defaultFilename);
+    }
+
+    public void waitUntilImagesareLoaded() {
+        WebDriverWait driverWait = new WebDriverWait(driver, 30);
+        List<WebElement> images = driver.findElements(By.tagName("img"));
+        for (WebElement image : images) {
+            driverWait.until(driver -> {
+                return ((JavascriptExecutor) driver).executeScript("return arguments[0].complete", image);
+            });
+        }
     }
 }

@@ -22,11 +22,11 @@
     <h1 v-if="isAccessRestricted()">Restricted Access!</h1>
     <h1>Login</h1>
     <form method="post" action="/performlogin">
-      <input type="text" name="username" />
-      <input type="password" name="password" />
-      <input id="login-remember" type="checkbox" name="rememberme" />
-      <label for="login-remember">Stay logged in</label>
-      <input type="submit" value="Login" />
+      <input id="login-input-username" type="text" name="username" />
+      <input id="login-input-password" type="password" name="password" />
+      <input id="login-input-remember" type="checkbox" name="rememberme" />
+      <label for="login-input-remember">Stay logged in</label>
+      <input id="login-input-submit" type="submit" value="Login" />
     </form>
   </div>
 </template>

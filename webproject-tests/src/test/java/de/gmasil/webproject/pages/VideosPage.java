@@ -15,8 +15,23 @@
  * with Webproject NG. If not, see
  * https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt
  */
-package de.gmasil.webproject.jpa;
+package de.gmasil.webproject.pages;
 
-public enum VideoQuality {
-    SD, HD, UHD
+import org.openqa.selenium.By;
+
+public class VideosPage extends Page {
+
+    @Override
+    public String getUrl() {
+        return "/videos";
+    }
+
+    @Override
+    public By getPageLoadChecker() {
+        return By.cssSelector(".grid");
+    }
+
+    public int countVideos() {
+        return browser.findElements(By.cssSelector(".grid > div")).size();
+    }
 }

@@ -75,6 +75,8 @@ public class Video extends Auditable {
 
     private String thumbnail;
 
+    private String thumbnailPreview;
+
     @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.PERSIST })
     @JoinTable(name = "VIDEO_FILES", joinColumns = @JoinColumn(name = "VIDEO_ID"), inverseJoinColumns = @JoinColumn(name = "FILE_ID"))
     private Set<VideoFile> files = new HashSet<>();

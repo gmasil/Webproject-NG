@@ -36,6 +36,7 @@ public class VideoDto {
     private String description;
     private float length;
     private String thumbnail;
+    private String thumbnailPreview;
 
     public VideoDto(Video video) {
         this.id = video.getId();

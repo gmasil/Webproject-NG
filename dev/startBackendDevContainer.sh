@@ -30,6 +30,7 @@ SOURCE_FOLDER="$( cd "$( dirname "${BASH_SOURCE[0]}" )"/.. && pwd )"
 : "${VERBOSE:=false}"
 : "${NATIVE:=false}"
 : "${BUILD:=true}"
+: "${FRONTEND:=false}"
 
 if [ ${NATIVE} == "true" ]; then
     IMAGE_TAG="${IMAGE_TAG}-native"
@@ -44,6 +45,7 @@ echo "PUBLIC_ACCESS  = ${PUBLIC_ACCESS}"
 echo "VERBOSE        = ${VERBOSE}"
 echo "NATIVE         = ${NATIVE}"
 echo "BUILD          = ${BUILD}"
+echo "FRONTEND       = ${FRONTEND}"
 
 if [ ${BUILD} == "true" ]; then
     if [ ${NATIVE} == "true" ]; then
@@ -51,7 +53,11 @@ if [ ${BUILD} == "true" ]; then
     else
         PROFILE=jib
     fi
-    mvn -f ${SOURCE_FOLDER}/pom.xml clean package --no-transfer-progress -DskipTests -Dnpm.skip=true -Dtarget.image=${IMAGE_NAME} -Dtarget.tag=${IMAGE_TAG} -P ${PROFILE}
+    FRONTEND_ARGS="-Dnpm.skip=true"
+    if [ ${FRONTEND} == "true" ]; then
+        FRONTEND_ARGS=""
+    fi
+    mvn -f ${SOURCE_FOLDER}/pom.xml clean package --no-transfer-progress -DskipTests ${FRONTEND_ARGS} -Dtarget.image=${IMAGE_NAME} -Dtarget.tag=${IMAGE_TAG} -P ${PROFILE}
 fi
 
 # check if previous container is still running

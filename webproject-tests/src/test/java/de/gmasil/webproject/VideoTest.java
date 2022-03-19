@@ -17,29 +17,37 @@
  */
 package de.gmasil.webproject;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.WebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import de.gmasil.webproject.pages.LoginPage;
+import de.gmasil.webproject.pages.VideosPage;
 import de.gmasil.webproject.utils.ScreenshotDriver;
 import de.gmasil.webproject.utils.SetupIntegrationTestContext;
-import de.gmasil.webproject.utils.UrlBuilder;
 
 @SetupIntegrationTestContext
-class StartupTest {
-
-    @Autowired
-    private WebDriver browser;
+class VideoTest {
 
     @Autowired
     private ScreenshotDriver screenshot;
 
     @Autowired
-    private UrlBuilder url;
+    private LoginPage loginPage;
+
+    @Autowired
+    private VideosPage videosPage;
 
     @Test
-    void testApplicationStartup() {
-        browser.navigate().to(url.from("/"));
-        screenshot.take(100);
+    void testVideos() {
+        loginPage.open();
+        loginPage.performLogin("admin", "admin");
+        videosPage.open();
+        assertThat(videosPage.countVideos(), is(equalTo(10)));
+        screenshot.waitUntilImagesareLoaded();
+        screenshot.takeInTestFolder();
     }
 }

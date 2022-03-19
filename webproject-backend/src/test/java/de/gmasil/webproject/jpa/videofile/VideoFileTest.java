@@ -30,7 +30,6 @@ import de.gmasil.gherkin.extension.GherkinTest;
 import de.gmasil.gherkin.extension.Reference;
 import de.gmasil.gherkin.extension.Scenario;
 import de.gmasil.gherkin.extension.Story;
-import de.gmasil.webproject.jpa.VideoQuality;
 import de.gmasil.webproject.jpa.video.Video;
 import de.gmasil.webproject.jpa.video.VideoRepository;
 import de.gmasil.webproject.utils.SetupTestContext;
@@ -52,7 +51,7 @@ class VideoFileTest extends GherkinTest {
             video.set(videoRepo.save(Video.builder().title("Video 1").build()));
         });
         and("a file attached to the video exists", () -> {
-            videoFile.set(VideoFile.builder().name("File 1").quality(VideoQuality.HD).build());
+            videoFile.set(VideoFile.builder().name("File 1").quality("HD").build());
             videoFile.get().addVideo(video.get());
             videoFile.set(videoFileRepo.save(videoFile.get()));
         });

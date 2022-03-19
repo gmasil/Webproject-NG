@@ -62,10 +62,12 @@ pipeline {
               environment {
                 MODUS = "jib"
                 SUT_IMAGE_TAG = "${SUT_IMAGE_TAG_JIB}"
+                FROM_IMAGE = sh("cat /etc/hostname")
+                IMPORT_FILE = "${WORKSPACE}/webproject-tests/src/test/resources/test-data.yml"
               }
               steps {
                 script {
-                  sh("xvfb-run mvn -f webproject-tests clean verify --no-transfer-progress -Dtarget.image=${SUT_IMAGE_NAME} -Dtarget.tag=${SUT_IMAGE_TAG} -Dsut.network=${NETWORK_NAME} -Dsut.port= -Dsut.name=${SUT_IMAGE_TAG} -Dcontainer.name=${SUT_IMAGE_TAG} -Dwebdriver.screenshot.folder=target/selenium-screenshots/${MODUS}")
+                  sh("xvfb-run mvn -f webproject-tests clean verify --no-transfer-progress -P ci -Dtarget.image=${SUT_IMAGE_NAME} -Dtarget.tag=${SUT_IMAGE_TAG} -Dsut.volume=${FROM_IMAGE} -Dsut.importfile=${IMPORT_FILE} -Dsut.network=${NETWORK_NAME} -Dsut.name=${SUT_IMAGE_TAG} -Dcontainer.name=${SUT_IMAGE_TAG} -Dwebdriver.screenshot.folder=target/selenium-screenshots/${MODUS}")
                 }
               }
               post {
@@ -102,10 +104,12 @@ pipeline {
               environment {
                 MODUS = "native"
                 SUT_IMAGE_TAG = "${SUT_IMAGE_TAG_NATIVE}"
+                FROM_IMAGE = sh("cat /etc/hostname")
+                IMPORT_FILE = "${WORKSPACE}/webproject-tests/src/test/resources/test-data.yml"
               }
               steps {
                 script {
-                  sh("xvfb-run mvn -f webproject-tests clean verify --no-transfer-progress -Dtarget.image=${SUT_IMAGE_NAME} -Dtarget.tag=${SUT_IMAGE_TAG} -Dsut.network=${NETWORK_NAME} -Dsut.port= -Dsut.name=${SUT_IMAGE_TAG} -Dcontainer.name=${SUT_IMAGE_TAG} -Dwebdriver.screenshot.folder=target/selenium-screenshots/${MODUS}")
+                  sh("xvfb-run mvn -f webproject-tests clean verify --no-transfer-progress -P ci -Dtarget.image=${SUT_IMAGE_NAME} -Dtarget.tag=${SUT_IMAGE_TAG} -Dsut.volume=${FROM_IMAGE} -Dsut.importfile=${IMPORT_FILE} -Dsut.network=${NETWORK_NAME} -Dsut.name=${SUT_IMAGE_TAG} -Dcontainer.name=${SUT_IMAGE_TAG} -Dwebdriver.screenshot.folder=target/selenium-screenshots/${MODUS}")
                 }
               }
               post {

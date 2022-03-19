@@ -24,7 +24,6 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import de.gmasil.webproject.jpa.VideoQuality;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -95,7 +94,7 @@ public class ImportData {
         public static class ImportFile {
 
             private String name;
-            private VideoQuality quality;
+            private String quality;
         }
 
         @Getter

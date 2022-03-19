@@ -17,6 +17,8 @@
  */
 package de.gmasil.webproject.utils;
 
+import java.util.concurrent.TimeUnit;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -25,6 +27,7 @@ import org.openqa.selenium.remote.ProtocolHandshake;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -44,15 +47,19 @@ public class WebDriverConfiguration {
     private String browser;
 
     @Bean
+    @Scope("singleton")
     public WebDriver webdriver() {
+        WebDriver driver;
         ((Logger) LoggerFactory.getLogger(ProtocolHandshake.class)).setLevel(Level.WARN);
         if (browser.equalsIgnoreCase("chrome")) {
             System.setProperty("webdriver.chrome.driver", chromeDriver);
-            return new ChromeDriver();
+            driver = new ChromeDriver();
         } else {
             System.setProperty(GeckoDriverService.GECKO_DRIVER_EXE_PROPERTY, geckoDriver);
             System.setProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE, firefoxLogfile);
-            return new FirefoxDriver();
+            driver = new FirefoxDriver();
         }
+        driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+        return driver;
     }
 }

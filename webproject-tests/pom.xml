@@ -34,6 +34,9 @@
         <sut.name>webproject-sut</sut.name>
         <sut.network></sut.network>
         <sut.port>6900:6900</sut.port>
+        <sut.volume>${project.basedir}/src/test/resources/test-data.yml:/data.yml</sut.volume>
+        <sut.volume.from></sut.volume.from>
+        <sut.importfile>/data.yml</sut.importfile>
         <!-- hostname in test -->
         <container.name>localhost</container.name>
     </properties>
@@ -72,6 +75,34 @@
             <properties>
                 <skip.unit>false</skip.unit>
             </properties>
+        </profile>
+        <profile>
+            <id>ci</id>
+            <properties>
+                <sut.port></sut.port>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>${docker-plugin.version}</version>
+                        <configuration>
+                            <images>
+                                <image>
+                                    <run>
+                                        <volumes>
+                                            <from>
+                                                <image>${sut.volume.from}</image>
+                                            </from>
+                                        </volumes>
+                                    </run>
+                                </image>
+                            </images>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 
@@ -128,22 +159,20 @@
                             <run>
                                 <containerNamePattern>%a</containerNamePattern>
                                 <env>
-                                    <DATAIMPORT_ENABLED>false</DATAIMPORT_ENABLED>
-                                    <DATAIMPORT_FILE>/data.yml</DATAIMPORT_FILE>
+                                    <DATAIMPORT_ENABLED>true</DATAIMPORT_ENABLED>
+                                    <DATAIMPORT_FILE>${sut.importfile}</DATAIMPORT_FILE>
                                 </env>
                                 <ports>
                                     <port>${sut.port}</port>
                                 </ports>
-                                <!-- 
                                 <volumes>
                                     <bind>
-                                        <volume>${project.parent.basedir}/webproject-backend/webproject-data.yml:/data.yml</volume>
+                                        <volume>${sut.volume}</volume>
                                     </bind>
                                 </volumes>
-                                 -->
                                 <net>${sut.network}</net>
                                 <wait>
-                                    <log>Initialized application in</log>
+                                    <log>Data import finished in</log>
                                     <time>30000</time>
                                 </wait>
                             </run>

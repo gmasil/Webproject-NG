@@ -62,11 +62,11 @@ pipeline {
               environment {
                 MODUS = "jib"
                 SUT_IMAGE_TAG = "${SUT_IMAGE_TAG_JIB}"
-                FROM_IMAGE = sh("cat /etc/hostname")
                 IMPORT_FILE = "${WORKSPACE}/webproject-tests/src/test/resources/test-data.yml"
               }
               steps {
                 script {
+                  def FROM_IMAGE = sh(script: "cat /etc/hostname", returnStdout: true).trim()
                   sh("xvfb-run mvn -f webproject-tests clean verify --no-transfer-progress -P ci -Ddocker.showLogs -Dtarget.image=${SUT_IMAGE_NAME} -Dtarget.tag=${SUT_IMAGE_TAG} -Dsut.volume.from=${FROM_IMAGE} -Dsut.importfile=${IMPORT_FILE} -Dsut.network=${NETWORK_NAME} -Dsut.name=${SUT_IMAGE_TAG} -Dcontainer.name=${SUT_IMAGE_TAG} -Dwebdriver.screenshot.folder=target/selenium-screenshots/${MODUS}")
                 }
               }
@@ -104,11 +104,11 @@ pipeline {
               environment {
                 MODUS = "native"
                 SUT_IMAGE_TAG = "${SUT_IMAGE_TAG_NATIVE}"
-                FROM_IMAGE = sh("cat /etc/hostname")
                 IMPORT_FILE = "${WORKSPACE}/webproject-tests/src/test/resources/test-data.yml"
               }
               steps {
                 script {
+                  def FROM_IMAGE = sh(script: "cat /etc/hostname", returnStdout: true).trim()
                   sh("xvfb-run mvn -f webproject-tests clean verify --no-transfer-progress -P ci -Ddocker.showLogs -Dtarget.image=${SUT_IMAGE_NAME} -Dtarget.tag=${SUT_IMAGE_TAG} -Dsut.volume.from=${FROM_IMAGE} -Dsut.importfile=${IMPORT_FILE} -Dsut.network=${NETWORK_NAME} -Dsut.name=${SUT_IMAGE_TAG} -Dcontainer.name=${SUT_IMAGE_TAG} -Dwebdriver.screenshot.folder=target/selenium-screenshots/${MODUS}")
                 }
               }

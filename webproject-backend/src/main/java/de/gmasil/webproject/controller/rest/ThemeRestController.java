@@ -118,7 +118,7 @@ public class ThemeRestController {
         User user = userProvider.getCurrent();
         Optional<Theme> theme = themeRepo.findAvailableById(id, user);
         if (theme.isPresent()) {
-            return ResponseEntity.ok(new ThemeDto(theme.get()));
+            return ResponseEntity.ok(theme.get().toDto());
         } else {
             return createThemeNotFound(id);
         }
@@ -180,17 +180,17 @@ public class ThemeRestController {
     @GetMapping("/active")
     public ResponseEntity<Object> activeTheme() {
         User user = userProvider.getCurrent();
-        Optional<ThemeDto> themeDto;
+        Optional<Theme> theme;
         if (user != null) {
-            themeDto = themeRepo.findProjectionActiveByUser(user.getId());
-            if (!themeDto.isPresent()) {
-                themeDto = themeRepo.findDefaultProjection();
+            theme = themeRepo.findActiveByUser(user.getId());
+            if (!theme.isPresent()) {
+                theme = themeRepo.findDefault();
             }
         } else {
-            themeDto = themeRepo.findDefaultProjection();
+            theme = themeRepo.findDefault();
         }
-        if (themeDto.isPresent()) {
-            return ResponseEntity.ok(themeDto.get());
+        if (theme.isPresent()) {
+            return ResponseEntity.ok(theme.get().toDto());
         }
         LOG.warn("There is no default theme set");
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

@@ -223,7 +223,7 @@ class ThemeRestControllerTest extends GherkinTest {
     // ************************* Utils *************************
 
     private ThemeDto createTestThemeDto() {
-        return new ThemeDto(Theme.builder() //
+        return Theme.builder() //
                 .name("ThemePersistenceTest") //
                 .backgroundColor(Color.GRAY) //
                 .backgroundHighlightColor(Color.LIGHT_GRAY) //
@@ -231,6 +231,6 @@ class ThemeRestControllerTest extends GherkinTest {
                 .secondaryColor(Color.ORANGE) //
                 .textColor(Color.white) //
                 .preset(false) //
-                .build());
+                .build().toDto();
     }
 }

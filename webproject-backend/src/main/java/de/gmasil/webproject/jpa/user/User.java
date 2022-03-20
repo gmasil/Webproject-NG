@@ -20,6 +20,7 @@ package de.gmasil.webproject.jpa.user;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -42,6 +43,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import de.gmasil.webproject.dto.UserDto;
+import de.gmasil.webproject.dto.UserDto.UserDtoBuilder;
 import de.gmasil.webproject.jpa.Auditable;
 import de.gmasil.webproject.jpa.comment.Comment;
 import de.gmasil.webproject.jpa.role.Role;
@@ -100,6 +103,17 @@ public class User extends Auditable implements UserDetails {
     public User(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+
+    public UserDto toDto() {
+        UserDtoBuilder builder = UserDto.builder();
+        builder.id(getId());
+        builder.username(getUsername());
+        builder.roles(getRoles().stream().map(Role::toDto).collect(Collectors.toSet()));
+        if (getActiveTheme() != null) {
+            builder.activeTheme(getActiveTheme().toDto());
+        }
+        return builder.build();
     }
 
     public void addRole(Role role) {

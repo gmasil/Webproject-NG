@@ -91,6 +91,6 @@ public class UserRepositoryExtensionImpl implements UserRepositoryExtension {
         if (!optionalUser.isPresent()) {
             return Optional.empty();
         }
-        return Optional.of(new UserDto(optionalUser.get()));
+        return Optional.of(optionalUser.get().toDto());
     }
 }

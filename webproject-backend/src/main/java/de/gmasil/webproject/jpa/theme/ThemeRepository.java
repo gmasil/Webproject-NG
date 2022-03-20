@@ -33,12 +33,6 @@ public interface ThemeRepository extends JpaRepository<Theme, Long> {
     @Query("SELECT t FROM THEME t, PROPERTY p WHERE p.key = '" + Property.DEFAULT_THEME + "' AND t.id = p.value")
     public Optional<Theme> findDefault();
 
-    @Query("SELECT t FROM THEME t, PROPERTY p WHERE p.key = '" + Property.DEFAULT_THEME + "' AND t.id = p.value")
-    public Optional<ThemeDto> findDefaultProjection();
-
-    @Query("SELECT t FROM THEME t, USER u WHERE t = u.activeTheme AND u.id = :userId")
-    public Optional<ThemeDto> findProjectionActiveByUser(@Param("userId") Long userId);
-
     @Query("SELECT u.activeTheme FROM USER u WHERE u.id = :userId")
     public Optional<Theme> findActiveByUser(@Param("userId") Long userId);
 

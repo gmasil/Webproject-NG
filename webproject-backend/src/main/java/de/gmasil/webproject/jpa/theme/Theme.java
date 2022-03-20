@@ -38,6 +38,8 @@ import javax.persistence.UniqueConstraint;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import de.gmasil.webproject.dto.ThemeDto;
+import de.gmasil.webproject.dto.ThemeDto.ThemeDtoBuilder;
 import de.gmasil.webproject.jpa.Auditable;
 import de.gmasil.webproject.jpa.ColorConverter;
 import de.gmasil.webproject.jpa.user.User;
@@ -107,6 +109,19 @@ public class Theme extends Auditable {
         this.secondaryColor = secondaryColor;
         this.textColor = textColor;
         this.preset = preset;
+    }
+
+    public ThemeDto toDto() {
+        ThemeDtoBuilder builder = ThemeDto.builder();
+        builder.id(getId());
+        builder.name(getName());
+        builder.backgroundColor(getBackgroundColor());
+        builder.backgroundHighlightColor(getBackgroundHighlightColor());
+        builder.primaryColor(getPrimaryColor());
+        builder.secondaryColor(getSecondaryColor());
+        builder.textColor(getTextColor());
+        builder.preset(isPreset());
+        return builder.build();
     }
 
     public void setCreator(User creator) {

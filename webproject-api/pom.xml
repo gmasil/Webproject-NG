@@ -1,0 +1,67 @@
+<!--
+
+    Webproject NG
+    Copyright © 2021 - 2022 Gmasil
+
+    This file is part of Webproject NG.
+
+    Webproject NG is licensed under the Creative Commons
+    Attribution-NonCommercial-ShareAlike 4.0 International
+    Public License ("Public License").
+
+    Webproject NG is non-free software: you can redistribute
+    it and/or modify it under the terms of the Public License.
+
+    You should have received a copy of the Public License along
+    with Webproject NG. If not, see
+    https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>webproject-api</artifactId>
+    <name>API</name>
+
+    <parent>
+        <groupId>de.gmasil</groupId>
+        <artifactId>webproject-ng</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <dependencies>
+        <!-- preprocessor -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- override disabled installation of java artifact -->
+            <plugin>
+                <artifactId>maven-install-plugin</artifactId>
+                <configuration>
+                    <skip>false</skip>
+                </configuration>
+            </plugin>
+            <!-- override disabled deployment of java artifact -->
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>false</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

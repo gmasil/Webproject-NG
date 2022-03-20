@@ -37,6 +37,8 @@ import javax.persistence.Table;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import de.gmasil.webproject.dto.VideoDto;
+import de.gmasil.webproject.dto.VideoDto.VideoDtoBuilder;
 import de.gmasil.webproject.jpa.Auditable;
 import de.gmasil.webproject.jpa.artist.Artist;
 import de.gmasil.webproject.jpa.category.Category;
@@ -104,6 +106,16 @@ public class Video extends Auditable {
         this.description = description;
         this.length = length;
         this.thumbnail = thumbnail;
+    }
+
+    public VideoDto toDto() {
+        VideoDtoBuilder builder = VideoDto.builder();
+        builder.id(getId());
+        builder.title(getTitle());
+        builder.description(getDescription());
+        builder.length(getLength());
+        builder.thumbnail(getThumbnail());
+        return builder.build();
     }
 
     public void addFile(VideoFile file) {

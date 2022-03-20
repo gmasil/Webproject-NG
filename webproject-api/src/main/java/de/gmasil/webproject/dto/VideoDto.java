@@ -17,17 +17,16 @@
  */
 package de.gmasil.webproject.dto;
 
-import de.gmasil.webproject.jpa.video.Video;
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class VideoDto {
 
@@ -38,11 +37,8 @@ public class VideoDto {
     private String thumbnail;
     private String thumbnailPreview;
 
-    public VideoDto(Video video) {
-        this.id = video.getId();
-        this.title = video.getTitle();
-        this.description = video.getDescription();
-        this.length = video.getLength();
-        this.thumbnail = video.getThumbnail();
+    @JsonCreator
+    public static VideoDto create() {
+        return VideoDto.builder().build();
     }
 }

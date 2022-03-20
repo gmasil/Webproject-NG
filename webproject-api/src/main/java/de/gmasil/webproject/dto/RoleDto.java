@@ -17,24 +17,24 @@
  */
 package de.gmasil.webproject.dto;
 
-import javax.validation.constraints.NotEmpty;
+import com.fasterxml.jackson.annotation.JsonCreator;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class UserPasswordDto {
+public class RoleDto {
 
-    @NotEmpty
-    private String currentPassword;
+    private Long id;
+    private String name;
 
-    @NotEmpty
-    private String newPassword;
+    @JsonCreator
+    public static RoleDto create() {
+        return RoleDto.builder().build();
+    }
 }

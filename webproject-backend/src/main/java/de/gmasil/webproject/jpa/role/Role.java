@@ -34,6 +34,7 @@ import javax.persistence.Table;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 
+import de.gmasil.webproject.dto.RoleDto;
 import de.gmasil.webproject.jpa.Auditable;
 import de.gmasil.webproject.jpa.user.User;
 import lombok.AccessLevel;
@@ -71,6 +72,10 @@ public class Role extends Auditable implements GrantedAuthority {
     @Builder
     public Role(String name) {
         this.name = name;
+    }
+
+    public RoleDto toDto() {
+        return RoleDto.builder().id(getId()).name(getName()).build();
     }
 
     public void addUser(User user) {

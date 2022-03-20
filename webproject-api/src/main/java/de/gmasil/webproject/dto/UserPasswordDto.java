@@ -17,34 +17,29 @@
  */
 package de.gmasil.webproject.dto;
 
-import java.util.Set;
-import java.util.stream.Collectors;
+import javax.validation.constraints.NotEmpty;
 
-import de.gmasil.webproject.jpa.user.User;
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class UserDto {
+public class UserPasswordDto {
 
-    private Long id;
-    private String username;
-    private Set<RoleDto> roles;
-    private ThemeDto activeTheme;
+    @NotEmpty
+    private String currentPassword;
 
-    public UserDto(User user) {
-        this.id = user.getId();
-        this.username = user.getUsername();
-        this.roles = user.getRoles().stream().map(RoleDto::new).collect(Collectors.toSet());
-        if (user.getActiveTheme() != null) {
-            this.activeTheme = new ThemeDto(user.getActiveTheme());
-        }
+    @NotEmpty
+    private String newPassword;
+
+    @JsonCreator
+    public static UserPasswordDto create() {
+        return UserPasswordDto.builder().build();
     }
 }

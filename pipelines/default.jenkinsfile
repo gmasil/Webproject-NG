@@ -29,6 +29,13 @@ pipeline {
         }
       }
     }
+    stage("API") {
+      steps {
+        script {
+          sh("mvn -pl webproject-api clean deploy --no-transfer-progress")
+        }
+      }
+    }
     stage("Backend") {
       parallel {
         stage("Jib") {
@@ -36,7 +43,7 @@ pipeline {
             stage("Build") {
               steps {
                 script {
-                  sh("mvn -f webproject-backend clean package --no-transfer-progress -P jib -Dtarget.image=${SUT_IMAGE_NAME} -Dtarget.tag=${SUT_IMAGE_TAG_JIB}")
+                  sh("mvn -pl webproject-backend -am clean package --no-transfer-progress -P jib -Dtarget.image=${SUT_IMAGE_NAME} -Dtarget.tag=${SUT_IMAGE_TAG_JIB}")
                 }
               }
               post {
@@ -53,8 +60,8 @@ pipeline {
               steps {
                 script {
                   def safeBranch = env.GIT_BRANCH.replaceAll("[^a-zA-Z0-9_:{\\.-]+", "")
-                  sh("mvn -f webproject-backend  sonar:sonar --no-transfer-progress -Dsonar.host.url=https://sonar.gmasil.de -Dsonar.login=${env.SONAR_TOKEN} -Dsonar.projectKey=${env.MAVEN_ARTIFACT}:backend:${safeBranch} \"-Dsonar.projectName=${env.MAVEN_PROJECT_NAME} Backend (${env.GIT_BRANCH})\"")
-                  sh("mvn -f webproject-frontend sonar:sonar --no-transfer-progress -Dsonar.host.url=https://sonar.gmasil.de -Dsonar.login=${env.SONAR_TOKEN} -Dsonar.projectKey=${env.MAVEN_ARTIFACT}:frontend:${safeBranch} \"-Dsonar.projectName=${env.MAVEN_PROJECT_NAME} Frontend (${env.GIT_BRANCH})\"")
+                  sh("mvn -pl webproject-backend -am sonar:sonar --no-transfer-progress -Dsonar.host.url=https://sonar.gmasil.de -Dsonar.login=${env.SONAR_TOKEN} -Dsonar.projectKey=${env.MAVEN_ARTIFACT}:backend:${safeBranch} \"-Dsonar.projectName=${env.MAVEN_PROJECT_NAME} Backend (${env.GIT_BRANCH})\"")
+                  sh("mvn -pl webproject-frontend -am sonar:sonar --no-transfer-progress -Dsonar.host.url=https://sonar.gmasil.de -Dsonar.login=${env.SONAR_TOKEN} -Dsonar.projectKey=${env.MAVEN_ARTIFACT}:frontend:${safeBranch} \"-Dsonar.projectName=${env.MAVEN_PROJECT_NAME} Frontend (${env.GIT_BRANCH})\"")
                 }
               }
             }
@@ -96,7 +103,7 @@ pipeline {
             stage("Build") {
               steps {
                 script {
-                  sh("mvn -f webproject-backend clean package --no-transfer-progress -P native -Dtarget.image=${SUT_IMAGE_NAME} -Dtarget.tag=${SUT_IMAGE_TAG_NATIVE}")
+                  sh("mvn -pl webproject-backend -am clean package --no-transfer-progress -P native -Dtarget.image=${SUT_IMAGE_NAME} -Dtarget.tag=${SUT_IMAGE_TAG_NATIVE}")
                 }
               }
             }

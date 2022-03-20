@@ -40,6 +40,12 @@
     </properties>
 
     <dependencies>
+        <!-- webproject api -->
+        <dependency>
+            <groupId>de.gmasil</groupId>
+            <artifactId>webproject-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <!-- spring native -->
         <dependency>
             <groupId>org.springframework.experimental</groupId>

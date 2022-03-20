@@ -17,25 +17,28 @@
  */
 package de.gmasil.webproject.dto;
 
-import de.gmasil.webproject.jpa.role.Role;
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class RoleDto {
+public class UserDto {
 
     private Long id;
-    private String name;
+    private String username;
+    private Set<RoleDto> roles;
+    private ThemeDto activeTheme;
 
-    public RoleDto(Role role) {
-        this.id = role.getId();
-        this.name = role.getName();
+    @JsonCreator
+    public static UserDto create() {
+        return UserDto.builder().build();
     }
 }

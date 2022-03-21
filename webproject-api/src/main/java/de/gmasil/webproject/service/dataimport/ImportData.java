@@ -22,6 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -37,6 +38,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ImportData {
 
     private @Default List<ImportUser> users = new LinkedList<>();
@@ -64,6 +66,7 @@ public class ImportData {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonIgnoreProperties(ignoreUnknown = true)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class ImportUser {
 
         private String username;
@@ -79,6 +82,7 @@ public class ImportData {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonIgnoreProperties(ignoreUnknown = true)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class ImportTheme {
 
         private String name;
@@ -97,18 +101,22 @@ public class ImportData {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonIgnoreProperties(ignoreUnknown = true)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class ImportVideo {
 
         private String title;
         private String description;
+        private String origin;
         private float length;
         private String thumbnail;
+        private String studio;
         private @Default List<ImportFile> files = new LinkedList<>();
         private @Default List<String> artists = new LinkedList<>();
         private @Default List<String> categories = new LinkedList<>();
         private @Default List<ImportComment> comments = new LinkedList<>();
         private @Default List<String> favoriters = new LinkedList<>();
         private @Default List<ImportRating> ratings = new LinkedList<>();
+        private @Default List<ImportScene> scenes = new LinkedList<>();
 
         @Getter
         @Setter
@@ -116,6 +124,7 @@ public class ImportData {
         @NoArgsConstructor
         @AllArgsConstructor
         @JsonIgnoreProperties(ignoreUnknown = true)
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
         public static class ImportFile {
 
             private String name;
@@ -128,6 +137,7 @@ public class ImportData {
         @NoArgsConstructor
         @AllArgsConstructor
         @JsonIgnoreProperties(ignoreUnknown = true)
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
         public static class ImportComment {
 
             private String username;
@@ -140,10 +150,24 @@ public class ImportData {
         @NoArgsConstructor
         @AllArgsConstructor
         @JsonIgnoreProperties(ignoreUnknown = true)
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
         public static class ImportRating {
 
             private String username;
             private int rating;
+        }
+
+        @Getter
+        @Setter
+        @Builder
+        @NoArgsConstructor
+        @AllArgsConstructor
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
+        public static class ImportScene {
+
+            private String name;
+            private float time;
         }
     }
 }

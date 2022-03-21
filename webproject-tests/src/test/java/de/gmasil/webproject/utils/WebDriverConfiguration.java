@@ -17,7 +17,7 @@
  */
 package de.gmasil.webproject.utils;
 
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -59,7 +59,7 @@ public class WebDriverConfiguration {
             System.setProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE, firefoxLogfile);
             driver = new FirefoxDriver();
         }
-        driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
         return driver;
     }
 }

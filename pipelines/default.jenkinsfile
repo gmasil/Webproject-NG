@@ -32,7 +32,7 @@ pipeline {
     stage("API") {
       steps {
         script {
-          sh("mvn -pl webproject-api clean deploy --no-transfer-progress")
+          sh("mvn -pl :webproject-ng,webproject-api clean deploy")
         }
       }
     }

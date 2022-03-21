@@ -20,6 +20,7 @@ package de.gmasil.webproject.utils;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 
@@ -192,7 +193,7 @@ public class ScreenshotDriver implements TestExecutionListener {
     }
 
     public void waitUntilImagesareLoaded() {
-        WebDriverWait driverWait = new WebDriverWait(driver, 30);
+        WebDriverWait driverWait = new WebDriverWait(driver, Duration.ofSeconds(60));
         List<WebElement> images = driver.findElements(By.tagName("img"));
         for (WebElement image : images) {
             driverWait.until(driver -> {

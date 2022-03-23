@@ -1,0 +1,42 @@
+pipeline {
+  agent {
+    docker {
+      image "registry.gmasil.de/docker/maven-build-container"
+      args "-v /root/.ssh:/root/.ssh -v /maven:/maven -v /root/.docker/config.json:/root/.docker/config.json -e JAVA_TOOL_OPTIONS='-Duser.home=/maven' --network servicenet_default -v /usr/bin/docker:/usr/bin/docker"
+    }
+  }
+  stages {
+    stage('Cleanup') {
+      environment {
+        SONAR_TOKEN = credentials("SONAR_TOKEN")
+      }
+      steps {
+        script {
+          String[] tmpBranches = sh(script: "git ls-remote git@github.com:gmasil/Webproject-NG.git 'refs/heads/*' | grep -oP 'refs/heads/\\K.*'", returnStdout: true).split("\n");
+          for (int i = 0; i < tmpBranches.length; i++) {
+            tmpBranches[i] = tmpBranches[i].replaceAll("[^a-zA-Z0-9_:{\\.-]+", "-");
+          }
+
+          String[] projects = sh(script: "curl -s -u ${SONAR_TOKEN}: https://sonar.gmasil.de/api/projects/search?q=webproject-ng | jq -r '.components[].key'", returnStdout: true).split("\n");
+          
+          projects.each { project ->
+            boolean delete = false;
+            if (project =~ /^de\.gmasil:webproject-ng:[^:]+$/) {
+              String safeBranch = project.substring(project.lastIndexOf(':') + 1);
+              if (!branches.contains(safeBranch)) {
+                delete = true;
+                echo "$project does not have a branch anymore"
+              }
+            } else {
+              delete = true;
+              echo "$project does not match the pattern"
+            }
+            if (delete) {
+              sh("curl -s -X POST -u ${SONAR_TOKEN}: https://sonar.gmasil.de/api/projects/delete?project=$project")
+            }
+          }
+        }
+      }
+    }
+  }
+}

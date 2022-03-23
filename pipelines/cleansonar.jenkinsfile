@@ -16,9 +16,10 @@ pipeline {
           for (int i = 0; i < tmpBranches.length; i++) {
             tmpBranches[i] = tmpBranches[i].replaceAll("[^a-zA-Z0-9_:{\\.-]+", "-");
           }
+          List<String> branches = Arrays.asList(tmpBranches);
 
           String[] projects = sh(script: "curl -s -u ${SONAR_TOKEN}: https://sonar.gmasil.de/api/projects/search?q=webproject-ng | jq -r '.components[].key'", returnStdout: true).split("\n");
-          
+
           projects.each { project ->
             boolean delete = false;
             if (project =~ /^de\.gmasil:webproject-ng:[^:]+$/) {
@@ -33,6 +34,8 @@ pipeline {
             }
             if (delete) {
               sh("curl -s -X POST -u ${SONAR_TOKEN}: https://sonar.gmasil.de/api/projects/delete?project=$project")
+            } else {
+              echo "$project is valid"
             }
           }
         }

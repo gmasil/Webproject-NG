@@ -32,7 +32,7 @@ pipeline {
     stage("API") {
       steps {
         script {
-          sh("mvn -pl :webproject-ng,webproject-api clean deploy")
+          sh("mvn -pl webproject-api -am clean deploy")
         }
       }
     }
@@ -43,7 +43,7 @@ pipeline {
             stage("Build") {
               steps {
                 script {
-                  sh("mvn -pl webproject-backend -am clean package --no-transfer-progress -P jib -Dtarget.image=${SUT_IMAGE_NAME} -Dtarget.tag=${SUT_IMAGE_TAG_JIB}")
+                  sh("mvn -pl webproject-backend -am package --no-transfer-progress -P jib -Dnpm.build.skip=true -Dtarget.image=${SUT_IMAGE_NAME} -Dtarget.tag=${SUT_IMAGE_TAG_JIB}")
                 }
               }
               post {
@@ -96,6 +96,7 @@ pipeline {
             stage("Copy Frontend") {
               steps {
                 script {
+                  sh("mvn clean")
                   sh("cp -r ${MAIN_WORKSPACE}/webproject-frontend/dist/ webproject-frontend/")
                 }
               }
@@ -103,7 +104,7 @@ pipeline {
             stage("Build") {
               steps {
                 script {
-                  sh("mvn -pl webproject-backend -am clean package --no-transfer-progress -P native -Dtarget.image=${SUT_IMAGE_NAME} -Dtarget.tag=${SUT_IMAGE_TAG_NATIVE}")
+                  sh("mvn -pl webproject-backend -am package --no-transfer-progress -P native -Dnpm.build.skip=true -Dtarget.image=${SUT_IMAGE_NAME} -Dtarget.tag=${SUT_IMAGE_TAG_NATIVE}")
                 }
               }
             }

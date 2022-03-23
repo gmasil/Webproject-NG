@@ -30,8 +30,6 @@
     </parent>
 
     <properties>
-        <!-- frontend config -->
-        <npm.skip>false</npm.skip>
         <!-- skip test config -->
         <skipITs>true</skipITs>
         <skip.surefire.tests>${skipTests}</skip.surefire.tests>
@@ -44,6 +42,12 @@
         <dependency>
             <groupId>de.gmasil</groupId>
             <artifactId>webproject-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- webproject frontend -->
+        <dependency>
+            <groupId>de.gmasil</groupId>
+            <artifactId>webproject-frontend</artifactId>
             <version>${project.version}</version>
         </dependency>
         <!-- spring native -->
@@ -145,33 +149,6 @@
 
     <build>
         <plugins>
-            <!-- copy vue frontend -->
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>Copy Vue.js frontend assets</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <skip>${npm.skip}</skip>
-                            <outputDirectory>target/classes/public</outputDirectory>
-                            <overwrite>true</overwrite>
-                            <resources>
-                                <resource>
-                                    <directory>${project.parent.basedir}/webproject-frontend/dist</directory>
-                                    <includes>
-                                        <include>static/</include>
-                                        <include>index.html</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
             <!-- surefire -->
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>

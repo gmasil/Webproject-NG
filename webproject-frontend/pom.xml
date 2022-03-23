@@ -21,7 +21,6 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>webproject-frontend</artifactId>
-    <packaging>pom</packaging>
     <name>Frontend</name>
 
     <parent>
@@ -33,8 +32,9 @@
     <properties>
         <node.version>v17.7.1</node.version>
         <frontend-maven-plugin.version>1.12.0</frontend-maven-plugin.version>
-        <!-- skip npm -->
-        <npm.skip>false</npm.skip>
+        <!-- skip npm build -->
+        <npm.build.skip>false</npm.build.skip>
+        <npm.copy.skip>false</npm.copy.skip>
         <!-- sonarqube -->
         <sonar.sources>src/</sonar.sources>
         <sonar.eslint.reportPaths>eslint-report.json</sonar.eslint.reportPaths>
@@ -60,7 +60,7 @@
                 <artifactId>frontend-maven-plugin</artifactId>
                 <version>${frontend-maven-plugin.version}</version>
                 <configuration>
-                    <skip>${npm.skip}</skip>
+                    <skip>${npm.build.skip}</skip>
                 </configuration>
                 <executions>
                     <execution>
@@ -101,6 +101,76 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- copy dist folder to target -->
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>Copy Vue.js frontend assets</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <skip>${npm.copy.skip}</skip>
+                            <outputDirectory>${project.basedir}/target/classes/public</outputDirectory>
+                            <overwrite>true</overwrite>
+                            <resources>
+                                <resource>
+                                    <directory>${project.basedir}/dist</directory>
+                                    <includes>
+                                        <include>static/</include>
+                                        <include>index.html</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- override disabled installation of java artifact -->
+            <plugin>
+                <artifactId>maven-install-plugin</artifactId>
+                <configuration>
+                    <skip>false</skip>
+                </configuration>
+            </plugin>
+            <!-- override disabled deployment of java artifact -->
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>false</skip>
+                </configuration>
+            </plugin>
         </plugins>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>com.github.eirslett</groupId>
+                                        <artifactId>frontend-maven-plugin</artifactId>
+                                        <versionRange>[0.0.1,)</versionRange>
+                                        <goals>
+                                            <goal>npm</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore />
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 </project>

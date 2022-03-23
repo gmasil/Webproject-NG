@@ -53,7 +53,7 @@ if [ ${BUILD} == "true" ]; then
     else
         PROFILE=jib
     fi
-    FRONTEND_ARGS="-Dnpm.skip=true"
+    FRONTEND_ARGS="-Dnpm.build.skip=true -Dnpm.copy.skip=true"
     if [ ${FRONTEND} == "true" ]; then
         FRONTEND_ARGS=""
     fi

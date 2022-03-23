@@ -38,6 +38,7 @@
         <!-- sonarqube -->
         <sonar.sources>src/</sonar.sources>
         <sonar.eslint.reportPaths>eslint-report.json</sonar.eslint.reportPaths>
+        <sonar.coverage.exclusions>**/*</sonar.coverage.exclusions>
     </properties>
 
     <build>

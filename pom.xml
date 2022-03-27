@@ -54,6 +54,7 @@
         <module>webproject-frontend</module>
         <module>webproject-api</module>
         <module>webproject-backend</module>
+        <module>webproject-tests</module>
     </modules>
 
     <properties>

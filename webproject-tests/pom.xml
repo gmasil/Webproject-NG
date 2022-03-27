@@ -39,6 +39,8 @@
         <sut.importfile>/data.yml</sut.importfile>
         <!-- hostname in test -->
         <container.name>localhost</container.name>
+        <!-- skip tests by default -->
+        <skipITs>true</skipITs>
     </properties>
 
     <dependencies>
@@ -78,6 +80,9 @@
         </profile>
         <profile>
             <id>ci</id>
+            <properties>
+                <skipITs>false</skipITs>
+            </properties>
             <build>
                 <plugins>
                     <plugin>

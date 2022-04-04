@@ -17,6 +17,7 @@ node_modules/
 npm-debug.log*
 target/
 webproject-backend/application.yml
+webproject-backend/application-*.yml
 webproject-backend/webproject-data.yml
 yarn-debug.log*
 yarn-error.log*

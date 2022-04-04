@@ -41,6 +41,7 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ImportData {
 
+    private @Default ImportPaths paths = new ImportPaths();
     private @Default List<ImportUser> users = new LinkedList<>();
     private @Default List<ImportTheme> themes = new LinkedList<>();
     private @Default List<ImportVideo> videos = new LinkedList<>();
@@ -58,6 +59,31 @@ public class ImportData {
     public ImportData addVideo(ImportVideo video) {
         videos.add(video);
         return this;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    public static class ImportPaths {
+
+        private @Default ImportPrefix prefix = new ImportPrefix();
+
+        @Getter
+        @Setter
+        @Builder
+        @NoArgsConstructor
+        @AllArgsConstructor
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
+        public static class ImportPrefix {
+
+            private @Default String video = "";
+            private @Default String thumbnail = "";
+        }
     }
 
     @Getter

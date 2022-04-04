@@ -223,10 +223,11 @@ public class DataImportService {
                     .title(v.getTitle()) //
                     .description(v.getDescription()) //
                     .length(v.getLength()) //
-                    .thumbnail(v.getThumbnail()) //
+                    .thumbnail(data.getPaths().getPrefix().getThumbnail() + v.getThumbnail()) //
                     .build();
             for (ImportFile file : v.getFiles()) {
-                video.addFile(VideoFile.builder().name(file.getName()).quality(file.getQuality()).build());
+                video.addFile(VideoFile.builder().name(data.getPaths().getPrefix().getVideo() + file.getName())
+                        .quality(file.getQuality()).build());
             }
             for (String artist : v.getArtists()) {
                 video.addArtist(artistRepo.findByNameOrCreate(artist));

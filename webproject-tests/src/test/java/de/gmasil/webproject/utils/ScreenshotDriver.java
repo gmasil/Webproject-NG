@@ -68,7 +68,7 @@ public class ScreenshotDriver implements TestExecutionListener {
     public void beforeTestMethod(TestContext testContext) {
         ScreenshotDriver bean = testContext.getApplicationContext().getBean(ScreenshotDriver.class);
         bean.testContext = testContext;
-    };
+    }
 
     /**
      * Take a screenshot of the current browser view, but wait <i>millis</i> ms

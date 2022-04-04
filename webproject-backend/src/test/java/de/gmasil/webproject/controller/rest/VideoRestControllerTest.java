@@ -44,7 +44,7 @@ import de.gmasil.webproject.utils.serialization.PaginatedResponse;
 @Story("Test video REST endpoint")
 class VideoRestControllerTest extends GherkinTest {
 
-    private static final ParameterizedTypeReference<PaginatedResponse<Video>> PAGINATED_VIDEO = new ParameterizedTypeReference<PaginatedResponse<Video>>() {
+    private static final ParameterizedTypeReference<PaginatedResponse<Video>> PAGINATED_VIDEO = new ParameterizedTypeReference<>() {
     };
 
     @Autowired

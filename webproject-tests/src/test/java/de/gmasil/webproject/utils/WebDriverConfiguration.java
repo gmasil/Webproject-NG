@@ -19,6 +19,8 @@ package de.gmasil.webproject.utils;
 
 import java.time.Duration;
 
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -59,6 +61,8 @@ public class WebDriverConfiguration {
             System.setProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE, firefoxLogfile);
             driver = new FirefoxDriver();
         }
+        driver.manage().window().setPosition(new Point(0, 0));
+        driver.manage().window().setSize(new Dimension(1920, 1080));
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
         return driver;
     }

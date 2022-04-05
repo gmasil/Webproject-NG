@@ -61,6 +61,13 @@ public class ImportData {
         return this;
     }
 
+    public void removeEmpty() {
+        paths.removeEmpty();
+        if (paths.isEmpty()) {
+            paths = null;
+        }
+    }
+
     @Getter
     @Setter
     @Builder
@@ -71,6 +78,17 @@ public class ImportData {
     public static class ImportPaths {
 
         private @Default ImportPrefix prefix = new ImportPrefix();
+
+        public void removeEmpty() {
+            prefix.removeEmpty();
+            if (prefix.isEmpty()) {
+                prefix = null;
+            }
+        }
+
+        public boolean isEmpty() {
+            return prefix == null;
+        }
 
         @Getter
         @Setter
@@ -83,6 +101,23 @@ public class ImportData {
 
             private @Default String video = "";
             private @Default String thumbnail = "";
+
+            public void removeEmpty() {
+                if (isEmpty(video)) {
+                    video = null;
+                }
+                if (isEmpty(thumbnail)) {
+                    thumbnail = null;
+                }
+            }
+
+            public boolean isEmpty() {
+                return video == null && thumbnail == null;
+            }
+
+            private boolean isEmpty(String s) {
+                return s == null || s.trim().isEmpty();
+            }
         }
     }
 

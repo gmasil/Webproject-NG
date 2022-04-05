@@ -20,6 +20,7 @@ import Vue from "vue";
 import Router from "vue-router";
 import HelloWorld from "@/components/HelloWorld.vue";
 import VideoList from "@/components/VideoList.vue";
+import VideoDetails from "@/components/VideoDetails.vue";
 import Themes from "@/components/Themes.vue";
 import Login from "@/components/Login.vue";
 import ChangePassword from "@/components/account/ChangePassword.vue";
@@ -42,6 +43,11 @@ const router = new Router({
       path: "/videos",
       name: "VideoList",
       component: VideoList,
+    },
+    {
+      path: "/videos/:id",
+      name: "VideoDetails",
+      component: VideoDetails,
     },
     {
       path: "/themes",

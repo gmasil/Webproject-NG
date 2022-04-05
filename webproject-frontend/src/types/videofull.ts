@@ -16,15 +16,20 @@
 /// https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt
 ///
 
-export * from "@/types/appproperties";
-export * from "@/types/artist";
-export * from "@/types/callbackfunction";
-export * from "@/types/changepassworddata";
-export * from "@/types/comment";
-export * from "@/types/page";
-export * from "@/types/pageresponse";
-export * from "@/types/theme";
-export * from "@/types/user";
-export * from "@/types/video";
-export * from "@/types/videofile";
-export * from "@/types/videofull";
+import { VideoFile } from "@/types/videofile";
+import { Artist } from "@/types/artist";
+import { Comment } from "@/types/comment";
+
+export interface VideoFull {
+  id: number;
+  title: string;
+  description: string;
+  length: number;
+  thumbnail: string;
+  thumbnailPreview: string;
+  files: VideoFile[];
+  artists: Artist[];
+  categories: string[];
+  comments: Comment[];
+  rating: number;
+}

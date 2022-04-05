@@ -17,14 +17,19 @@
  */
 package de.gmasil.webproject.controller.rest;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import de.gmasil.webproject.controller.PermitAll;
+import de.gmasil.webproject.dto.VideoFullDto;
 import de.gmasil.webproject.jpa.video.VideoRepository;
 
 @RestController
@@ -38,5 +43,22 @@ public class VideoRestController {
     @GetMapping("")
     public ResponseEntity<Object> get(Pageable pageable) {
         return ResponseEntity.ok(videoRepo.findAllProjectionBy(pageable));
+    }
+
+    @PermitAll
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> get(@PathVariable Long id) {
+        Optional<VideoFullDto> video = videoRepo.findFullProjectionById(id);
+        if (video.isPresent()) {
+            return ResponseEntity.ok(video.get());
+        } else {
+            return createVideoNotFound(id);
+        }
+    }
+
+    // utils
+
+    private ResponseEntity<Object> createVideoNotFound(Long id) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Video with id " + id + " not found");
     }
 }

@@ -34,6 +34,8 @@ import javax.persistence.UniqueConstraint;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import de.gmasil.webproject.dto.VideoFileDto;
+import de.gmasil.webproject.dto.VideoFileDto.VideoFileDtoBuilder;
 import de.gmasil.webproject.jpa.Auditable;
 import de.gmasil.webproject.jpa.video.Video;
 import lombok.AccessLevel;
@@ -70,6 +72,14 @@ public class VideoFile extends Auditable {
     public VideoFile(String name, String quality) {
         this.name = name;
         this.quality = quality;
+    }
+
+    public VideoFileDto toDto() {
+        VideoFileDtoBuilder builder = VideoFileDto.builder();
+        builder.id(getId());
+        builder.name(getName());
+        builder.quality(getQuality());
+        return builder.build();
     }
 
     public void addVideo(Video video) {

@@ -33,6 +33,8 @@ import javax.persistence.Table;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import de.gmasil.webproject.dto.ArtistDto;
+import de.gmasil.webproject.dto.ArtistDto.ArtistDtoBuilder;
 import de.gmasil.webproject.jpa.Auditable;
 import de.gmasil.webproject.jpa.video.Video;
 import lombok.AccessLevel;
@@ -70,6 +72,14 @@ public class Artist extends Auditable {
         this.profilePictureFile = profilePictureFile;
     }
 
+    public ArtistDto toDto() {
+        ArtistDtoBuilder builder = ArtistDto.builder();
+        builder.id(getId());
+        builder.name(getName());
+        builder.profilePictureFile(getProfilePictureFile());
+        return builder.build();
+    }
+
     public void addVideo(Video video) {
         videos.add(video);
         video.getArtists().add(this);
@@ -91,5 +101,4 @@ public class Artist extends Auditable {
     public boolean equals(Object obj) {
         return super.equals(obj);
     }
-
 }

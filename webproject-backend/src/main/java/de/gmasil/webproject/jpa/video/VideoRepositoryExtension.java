@@ -17,13 +17,11 @@
  */
 package de.gmasil.webproject.jpa.video;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.Optional;
 
-import de.gmasil.webproject.dto.VideoDto;
+import de.gmasil.webproject.dto.VideoFullDto;
 
-public interface VideoRepository extends JpaRepository<Video, Long>, VideoRepositoryExtension {
+public interface VideoRepositoryExtension {
 
-    public Page<VideoDto> findAllProjectionBy(Pageable pageable);
+    public Optional<VideoFullDto> findFullProjectionById(Long id);
 }

@@ -18,50 +18,90 @@
 
 -->
 <template>
-  <div class="grid xl:grid-cols-5 lg:grid-cols-3 md:grid-cols-2 gap-5 p-5">
+  <div v-if="page != null">
+    <div class="text-center">
+      <a
+        class="bg-theme-background-highlight px-4 py-2 rounded-lg cursor-pointer"
+        @click="openPreviousPage()"
+        >Prev</a
+      >
+      <span class="mx-4">Page {{ page.number + 1 }}</span>
+      <a
+        class="bg-theme-background-highlight px-4 py-2 rounded-lg cursor-pointer"
+        @click="openNextPage()"
+        >Next</a
+      >
+    </div>
     <div
-      v-for="video in videos"
-      :key="video.id"
-      class="h-16 w-full flex bg-theme-background-highlight rounded-lg"
+      class="grid xl:grid-cols-5 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5 p-5"
     >
       <div
-        class="w-28 h-16 bg-cover bg-center rounded-lg flex-initial"
-        :style="'background-image: url(\'' + video.thumbnail + '\')'"
-      ></div>
-      <p class="self-center text-theme-text pl-4 px-0 mx-0 flex-1 test">
-        {{ video.title }}
-      </p>
+        v-for="video in page.content"
+        :key="video.id"
+        class="w-full flex rounded-lg bg-theme-background-highlight"
+      >
+        <router-link class="w-full" :to="`/videos/${video.id}`">
+          <img
+            class="w-full rounded-t-lg"
+            :src="video.thumbnail"
+            :alt="video.title"
+          />
+          <div class="w-full py-2">
+            <p class="text-center py-0 px-4 text-theme-text line-clamp-2">
+              {{ video.title }}
+            </p>
+          </div>
+        </router-link>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { mapActions } from "vuex";
-import { Video, Page } from "@/types";
+import { mapActions, mapGetters } from "vuex";
+import { Video, Page, PageResponse } from "@/types";
 
 declare interface BaseComponentData {
-  videos: Video[];
+  page: PageResponse<Video> | null;
 }
 
 const VideoList = Vue.extend({
   name: "VideoList",
   data(): BaseComponentData {
     return {
-      videos: [],
+      page: null,
     };
   },
   created(): void {
-    this.loadVideos({ size: 10, page: 0, sort: "id" } as Page)
-      .then((videos: Video[]) => {
-        this.videos = videos;
-      })
-      .catch((error: Error) => {
-        this.$toast.error("Error while loading videos: " + error.message);
-      });
+    if (this.getVideos() != null) {
+      this.openPage((this.getVideos() as PageResponse<Video>).number);
+    } else {
+      this.openPage(0);
+    }
   },
   methods: {
     ...mapActions(["loadVideos"]),
+    ...mapGetters(["getVideos"]),
+    openPage(pageNumber: number): void {
+      this.loadVideos({ size: 10, page: pageNumber, sort: "id" } as Page)
+        .then((page: PageResponse<Video>) => {
+          this.page = page;
+        })
+        .catch((error: Error) => {
+          this.$toast.error("Error while loading videos: " + error.message);
+        });
+    },
+    openPreviousPage(): void {
+      if (this.page != null && !this.page.first) {
+        this.openPage(this.page.number - 1);
+      }
+    },
+    openNextPage(): void {
+      if (this.page != null && !this.page.last) {
+        this.openPage(this.page.number + 1);
+      }
+    },
   },
 });
 

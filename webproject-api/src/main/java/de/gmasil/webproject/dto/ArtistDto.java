@@ -15,15 +15,27 @@
  * with Webproject NG. If not, see
  * https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt
  */
-package de.gmasil.webproject.jpa.video;
+package de.gmasil.webproject.dto;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.fasterxml.jackson.annotation.JsonCreator;
 
-import de.gmasil.webproject.dto.VideoDto;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
-public interface VideoRepository extends JpaRepository<Video, Long>, VideoRepositoryExtension {
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+public class ArtistDto {
 
-    public Page<VideoDto> findAllProjectionBy(Pageable pageable);
+    private Long id;
+    private String name;
+    private String profilePictureFile;
+
+    @JsonCreator
+    public static ArtistDto create() {
+        return ArtistDto.builder().build();
+    }
 }

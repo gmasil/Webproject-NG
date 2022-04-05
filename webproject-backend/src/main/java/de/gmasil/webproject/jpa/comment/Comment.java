@@ -31,6 +31,8 @@ import javax.persistence.Table;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import de.gmasil.webproject.dto.CommentDto;
+import de.gmasil.webproject.dto.CommentDto.CommentDtoBuilder;
 import de.gmasil.webproject.jpa.Auditable;
 import de.gmasil.webproject.jpa.user.User;
 import de.gmasil.webproject.jpa.video.Video;
@@ -69,6 +71,19 @@ public class Comment extends Auditable {
     @Builder
     public Comment(String text) {
         this.text = text;
+    }
+
+    public CommentDto toDto(boolean copyVideo, boolean copyUser) {
+        CommentDtoBuilder builder = CommentDto.builder();
+        builder.id(getId());
+        builder.text(getText());
+        if (copyVideo) {
+            builder.video(getVideo().toDto());
+        }
+        if (copyUser) {
+            builder.user(getUser().toDto());
+        }
+        return builder.build();
     }
 
     public void setVideo(Video video) {

@@ -26,6 +26,7 @@ import {
   Theme,
   User,
   Video,
+  VideoFull,
   ChangePasswordData,
 } from "@/types";
 
@@ -34,6 +35,7 @@ export class State {
   currentUser: User | null = null;
   appProperties: AppProperties | null = null;
   activeTheme: Theme | null = null;
+  videos: PageResponse<Video> | null = null;
 }
 
 Vue.use(Vuex);
@@ -65,6 +67,9 @@ export default new Vuex.Store({
     },
     isAuthenticated(state): boolean {
       return state.currentUser != null;
+    },
+    getVideos(state): PageResponse<Video> | null {
+      return state.videos;
     },
   },
   actions: {
@@ -188,16 +193,38 @@ export default new Vuex.Store({
           });
       });
     },
-    loadVideos({ commit }, page: Page): Promise<Video[]> {
-      return new Promise<Video[]>((resolve, reject) => {
+    loadVideos({ commit, state }, page: Page): Promise<PageResponse<Video>> {
+      return new Promise<PageResponse<Video>>((resolve, reject) => {
+        if (
+          state.videos != null &&
+          state.videos.number == page.page &&
+          state.videos.size == page.size
+        ) {
+          resolve(state.videos);
+        } else {
+          axios
+            .get(
+              `/api/videos?size=${page.size}&page=${page.page}&sort=${page.sort}`
+            )
+            .then((response) => {
+              const pageResponse: PageResponse<Video> =
+                response.data as PageResponse<Video>;
+              commit("setVideos", pageResponse);
+              resolve(pageResponse);
+            })
+            .catch((error) => {
+              commit("dummy");
+              reject(error);
+            });
+        }
+      });
+    },
+    loadVideo({ commit }, id: number): Promise<VideoFull> {
+      return new Promise<VideoFull>((resolve, reject) => {
         axios
-          .get(
-            `/api/videos?size=${page.size}&page=${page.page}&sort=${page.sort}`
-          )
+          .get(`/api/videos/${id}`)
           .then((response) => {
-            const pageResponse: PageResponse<Video> =
-              response.data as PageResponse<Video>;
-            resolve(pageResponse.content);
+            resolve(response.data as VideoFull);
           })
           .catch((error) => {
             commit("dummy");
@@ -219,6 +246,9 @@ export default new Vuex.Store({
       if (state.activeTheme != null) {
         state.activeTheme.applyTheme();
       }
+    },
+    setVideos(state, data: PageResponse<Video>): void {
+      Vue.set(state, "videos", data);
     },
     dummy(state): void {
       if (state != null) {

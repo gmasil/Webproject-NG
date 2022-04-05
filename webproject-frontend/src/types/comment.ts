@@ -16,15 +16,12 @@
 /// https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt
 ///
 
-export * from "@/types/appproperties";
-export * from "@/types/artist";
-export * from "@/types/callbackfunction";
-export * from "@/types/changepassworddata";
-export * from "@/types/comment";
-export * from "@/types/page";
-export * from "@/types/pageresponse";
-export * from "@/types/theme";
-export * from "@/types/user";
-export * from "@/types/video";
-export * from "@/types/videofile";
-export * from "@/types/videofull";
+import { Video } from "@/types/video";
+import { User } from "@/types/user";
+
+export interface Comment {
+  id: number;
+  text: string;
+  video: Video;
+  user: User;
+}

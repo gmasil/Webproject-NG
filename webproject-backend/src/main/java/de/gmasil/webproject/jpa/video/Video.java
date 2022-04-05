@@ -19,6 +19,7 @@ package de.gmasil.webproject.jpa.video;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -39,6 +40,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import de.gmasil.webproject.dto.VideoDto;
 import de.gmasil.webproject.dto.VideoDto.VideoDtoBuilder;
+import de.gmasil.webproject.dto.VideoFullDto;
+import de.gmasil.webproject.dto.VideoFullDto.VideoFullDtoBuilder;
 import de.gmasil.webproject.jpa.Auditable;
 import de.gmasil.webproject.jpa.artist.Artist;
 import de.gmasil.webproject.jpa.category.Category;
@@ -115,6 +118,29 @@ public class Video extends Auditable {
         builder.description(getDescription());
         builder.length(getLength());
         builder.thumbnail(getThumbnail());
+        builder.thumbnailPreview(getThumbnailPreview());
+        return builder.build();
+    }
+
+    public VideoFullDto toFullDto() {
+        VideoFullDtoBuilder builder = VideoFullDto.builder();
+        builder.id(getId());
+        builder.title(getTitle());
+        builder.description(getDescription());
+        builder.length(getLength());
+        builder.thumbnail(getThumbnail());
+        builder.thumbnailPreview(getThumbnailPreview());
+        builder.files(getFiles().stream().map(VideoFile::toDto).collect(Collectors.toSet()));
+        builder.artists(getArtists().stream().map(Artist::toDto).collect(Collectors.toSet()));
+        builder.categories(getCategories().stream().map(Category::getName).collect(Collectors.toSet()));
+        builder.comments(getComments().stream().map(c -> c.toDto(false, true)).collect(Collectors.toSet()));
+        // rating
+        float rating = 0;
+        if (!getRatings().isEmpty()) {
+            int ratingSum = getRatings().stream().map(VideoRating::getRating).reduce(Integer::sum).orElseGet(() -> 0);
+            rating = ratingSum / (float) getRatings().size();
+        }
+        builder.rating(rating);
         return builder.build();
     }
 

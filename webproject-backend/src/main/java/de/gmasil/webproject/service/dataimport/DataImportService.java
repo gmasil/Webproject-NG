@@ -32,6 +32,7 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEventPublisher;
@@ -78,6 +79,9 @@ public class DataImportService {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private static final String UNREFERENCED_USER = "User '%s' is referenced in video '%s', but was not declared in users section!";
+
+    @Value("${spring.jpa.properties.hibernate.dialect:}")
+    private String dialect;
 
     @Autowired
     private DataImportProperties properties;
@@ -144,9 +148,22 @@ public class DataImportService {
         List<JpaRepository<?, ?>> repositories = ctx.getBeansOfType(JpaRepository.class).values().stream()
                 .map(s -> (JpaRepository<?, ?>) s).collect(Collectors.toList());
         LOG.info("Cleaning {} repositories", repositories.size());
-        entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
+        boolean isPostgres = isPostgreSQL();
+        if (isPostgres) {
+            entityManager.createNativeQuery("SET session_replication_role = replica").executeUpdate();
+        } else {
+            entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
+        }
         repositories.forEach(JpaRepository::deleteAllInBatch);
-        entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
+        if (isPostgres) {
+            entityManager.createNativeQuery("SET session_replication_role = DEFAULT").executeUpdate();
+        } else {
+            entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
+        }
+    }
+
+    private boolean isPostgreSQL() {
+        return dialect.contains("PostgreSQL");
     }
 
     @Transactional

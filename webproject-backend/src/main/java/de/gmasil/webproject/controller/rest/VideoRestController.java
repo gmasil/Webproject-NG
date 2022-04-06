@@ -19,6 +19,8 @@ package de.gmasil.webproject.controller.rest;
 
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -40,6 +42,7 @@ public class VideoRestController {
     private VideoRepository videoRepo;
 
     @PermitAll
+    @Transactional
     @GetMapping("")
     public ResponseEntity<Object> get(Pageable pageable) {
         return ResponseEntity.ok(videoRepo.findAllProjectionBy(pageable));

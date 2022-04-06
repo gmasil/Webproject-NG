@@ -30,10 +30,11 @@ import de.gmasil.webproject.jpa.user.User;
 
 public interface ThemeRepository extends JpaRepository<Theme, Long> {
 
-    @Query("SELECT t FROM THEME t, PROPERTY p WHERE p.key = '" + Property.DEFAULT_THEME + "' AND t.id = p.value")
+    @Query("SELECT t FROM THEME t, PROPERTY p WHERE p.key = '" + Property.DEFAULT_THEME
+            + "' AND t.id = cast(p.value as int)")
     public Optional<Theme> findDefault();
 
-    @Query("SELECT u.activeTheme FROM USER u WHERE u.id = :userId")
+    @Query("SELECT u.activeTheme FROM W_USER u WHERE u.id = :userId")
     public Optional<Theme> findActiveByUser(@Param("userId") Long userId);
 
     @Query("SELECT t FROM THEME t WHERE t.id = :id AND t.creator = :user")

@@ -62,8 +62,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "USER")
-@Table(name = "USER")
+@Entity(name = "W_USER")
+@Table(name = "W_USER")
 @EntityListeners(AuditingEntityListener.class)
 public class User extends Auditable implements UserDetails {
 

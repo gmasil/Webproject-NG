@@ -51,6 +51,8 @@ import de.gmasil.webproject.jpa.comment.CommentRepository;
 import de.gmasil.webproject.jpa.globalproperty.Property;
 import de.gmasil.webproject.jpa.globalproperty.PropertyRepository;
 import de.gmasil.webproject.jpa.role.RoleRepository;
+import de.gmasil.webproject.jpa.scene.Scene;
+import de.gmasil.webproject.jpa.scene.SceneRepository;
 import de.gmasil.webproject.jpa.theme.Theme;
 import de.gmasil.webproject.jpa.theme.ThemeRepository;
 import de.gmasil.webproject.jpa.user.User;
@@ -68,6 +70,7 @@ import de.gmasil.webproject.service.dataimport.ImportData.ImportVideo;
 import de.gmasil.webproject.service.dataimport.ImportData.ImportVideo.ImportComment;
 import de.gmasil.webproject.service.dataimport.ImportData.ImportVideo.ImportFile;
 import de.gmasil.webproject.service.dataimport.ImportData.ImportVideo.ImportRating;
+import de.gmasil.webproject.service.dataimport.ImportData.ImportVideo.ImportScene;
 import de.gmasil.webproject.service.initialize.InitializeFinishedEvent;
 
 @Service
@@ -120,6 +123,9 @@ public class DataImportService {
 
     @Autowired
     private VideoRatingRepository ratingRepo;
+
+    @Autowired
+    private SceneRepository sceneRepo;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -239,7 +245,10 @@ public class DataImportService {
                 importVideoComment(video, comment);
             }
             video = videoRepo.save(video);
-            // VideoFavorite and VideoRating require the video to exist first
+            // Scene, VideoFavorite and VideoRating require the video to exist first
+            for (ImportScene scene : v.getScenes()) {
+                importScene(video, scene);
+            }
             for (String favoriter : v.getFavoriters()) {
                 importVideoFavorites(video, favoriter);
             }
@@ -263,6 +272,12 @@ public class DataImportService {
         favorite.setUser(user);
         favorite.setVideo(video);
         favoriteRepo.save(favorite);
+    }
+
+    private void importScene(Video video, ImportScene scene) {
+        Scene is = Scene.builder().name(scene.getName()).time(scene.getTime()).build();
+        is.setVideo(video);
+        sceneRepo.save(is);
     }
 
     private void importVideoRating(Video video, ImportRating importRating) {

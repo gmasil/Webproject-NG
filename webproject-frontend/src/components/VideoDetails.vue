@@ -25,6 +25,14 @@
     <video width="70%" :poster="video.thumbnail" controls>
       <source :src="video.files[0].name" type="video/mp4" />
     </video>
+    <div>
+      <table>
+        <tr v-for="scene in video.scenes" :key="scene.id">
+          <td class="pr-4">{{ scene.name }}</td>
+          <td>{{ formatSceneTime(scene.time) }}</td>
+        </tr>
+      </table>
+    </div>
   </div>
 </template>
 
@@ -57,6 +65,18 @@ const VideoDetails = Vue.extend({
   },
   methods: {
     ...mapActions(["loadVideo"]),
+    formatSceneTime(time: number): string {
+      let hrs = Math.floor(time / 3600);
+      let mins = Math.floor((time % 3600) / 60);
+      let secs = Math.floor(time % 60);
+      let ret = "";
+      if (hrs > 0) {
+        ret += `${hrs}:`;
+      }
+      ret += `${mins < 10 ? "0" : ""}${mins}:`;
+      ret += `${secs < 10 ? "0" : ""}${secs}`;
+      return ret;
+    },
   },
 });
 

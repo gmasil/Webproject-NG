@@ -17,14 +17,10 @@
  */
 package de.gmasil.webproject.dto;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -32,23 +28,14 @@ import lombok.Setter;
 @Setter
 @Builder
 @AllArgsConstructor
-public class VideoFullDto {
+public class SceneDto {
 
     private Long id;
-    private String title;
-    private String description;
-    private float length;
-    private String thumbnail;
-    private String thumbnailPreview;
-    private @Default Set<VideoFileDto> files = new HashSet<>();
-    private @Default Set<ArtistDto> artists = new HashSet<>();
-    private @Default Set<String> categories = new HashSet<>();
-    private @Default Set<CommentDto> comments = new HashSet<>();
-    private float rating;
-    private @Default Set<SceneDto> scenes = new HashSet<>();
+    private String name;
+    private float time;
 
     @JsonCreator
-    public static VideoFullDto create() {
-        return VideoFullDto.builder().build();
+    public static SceneDto create() {
+        return SceneDto.builder().build();
     }
 }

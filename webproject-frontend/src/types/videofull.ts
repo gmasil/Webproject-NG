@@ -16,20 +16,39 @@
 /// https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt
 ///
 
+import { AxiosResponse } from "axios";
+
 import { VideoFile } from "@/types/videofile";
 import { Artist } from "@/types/artist";
 import { Comment } from "@/types/comment";
+import { Scene } from "@/types/scene";
 
-export interface VideoFull {
-  id: number;
-  title: string;
-  description: string;
-  length: number;
-  thumbnail: string;
-  thumbnailPreview: string;
-  files: VideoFile[];
-  artists: Artist[];
-  categories: string[];
-  comments: Comment[];
-  rating: number;
+export class VideoFull {
+  id?: number;
+  title?: string;
+  description?: string;
+  length?: number;
+  thumbnail?: string;
+  thumbnailPreview?: string;
+  files?: VideoFile[];
+  artists?: Artist[];
+  categories?: string[];
+  comments?: Comment[];
+  rating?: number;
+  scenes?: Scene[];
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public static fromResponse(response: AxiosResponse<any, any>): VideoFull {
+    const video = Object.assign(new VideoFull(), response.data) as VideoFull;
+    video.scenes?.sort((a: Scene, b: Scene) => {
+      if (a.time < b.time) {
+        return -1;
+      }
+      if (a.time > b.time) {
+        return 1;
+      }
+      return 0;
+    });
+    return video;
+  }
 }

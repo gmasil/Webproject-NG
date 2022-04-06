@@ -224,7 +224,7 @@ export default new Vuex.Store({
         axios
           .get(`/api/videos/${id}`)
           .then((response) => {
-            resolve(response.data as VideoFull);
+            resolve(VideoFull.fromResponse(response));
           })
           .catch((error) => {
             commit("dummy");

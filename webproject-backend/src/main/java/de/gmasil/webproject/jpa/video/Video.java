@@ -46,6 +46,7 @@ import de.gmasil.webproject.jpa.Auditable;
 import de.gmasil.webproject.jpa.artist.Artist;
 import de.gmasil.webproject.jpa.category.Category;
 import de.gmasil.webproject.jpa.comment.Comment;
+import de.gmasil.webproject.jpa.scene.Scene;
 import de.gmasil.webproject.jpa.videofavorite.VideoFavorite;
 import de.gmasil.webproject.jpa.videofile.VideoFile;
 import de.gmasil.webproject.jpa.videorating.VideoRating;
@@ -103,6 +104,9 @@ public class Video extends Auditable {
     @OneToMany(mappedBy = "video", cascade = { CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REMOVE })
     private Set<VideoRating> ratings = new HashSet<>();
 
+    @OneToMany(mappedBy = "video", cascade = { CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REMOVE })
+    private Set<Scene> scenes = new HashSet<>();
+
     @Builder
     public Video(String title, String description, float length, String thumbnail) {
         this.title = title;
@@ -141,6 +145,7 @@ public class Video extends Auditable {
             rating = ratingSum / (float) getRatings().size();
         }
         builder.rating(rating);
+        builder.scenes(getScenes().stream().map(Scene::toDto).collect(Collectors.toSet()));
         return builder.build();
     }
 
@@ -174,6 +179,11 @@ public class Video extends Auditable {
         rating.setVideo(this);
     }
 
+    public void addScene(Scene scene) {
+        scenes.add(scene);
+        scene.setVideo(this);
+    }
+
     @PreRemove
     private void preRemove() {
         for (VideoFile file : files) {
@@ -188,7 +198,7 @@ public class Video extends Auditable {
         for (Comment comment : comments) {
             comment.setVideo(null);
         }
-        // do not detach favorites and ratings, delete them
+        // do not detach favorites and ratings: delete them
     }
 
     @Override

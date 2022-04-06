@@ -38,6 +38,8 @@ import de.gmasil.webproject.jpa.category.Category;
 import de.gmasil.webproject.jpa.category.CategoryRepository;
 import de.gmasil.webproject.jpa.comment.Comment;
 import de.gmasil.webproject.jpa.comment.CommentRepository;
+import de.gmasil.webproject.jpa.scene.Scene;
+import de.gmasil.webproject.jpa.scene.SceneRepository;
 import de.gmasil.webproject.jpa.user.User;
 import de.gmasil.webproject.jpa.user.UserRepository;
 import de.gmasil.webproject.jpa.videofavorite.VideoFavorite;
@@ -410,6 +412,64 @@ class VideoTest {
             assertThat(rating.getRating(), is(equalTo(3)));
             assertThat(rating.getUser().getUsername(), is(equalTo("User 1")));
             assertThat(rating.getVideo(), is(nullValue()));
+        }
+    }
+
+    @Nested
+    @SetupTestContext
+    @Story("Testing database operation behaviour")
+    class VideoSceneTest extends GenericEntityTester<Video, Scene> {
+
+        @Autowired
+        public VideoSceneTest(VideoRepository videoRepo, SceneRepository sceneRepo) {
+            super("video", "scene", videoRepo, sceneRepo);
+        }
+
+        @Transactional
+        @Scenario("Persisting a video will persist attached scenes")
+        void testPersistVideoAndAttachedComment() {
+            testPersistEntityAndAttachedEntities();
+        }
+
+        @Transactional
+        @Scenario("When deleting a video all attached scenes are deleted as well")
+        void testVideoDeletionDeletesScenes() {
+            testEntityDeletionRemovesAttachedEntities();
+        }
+
+        @Override
+        public Video createEntity() {
+            return Video.builder().title("Video 1").build();
+        }
+
+        @Override
+        public Scene createAttachedEntity() {
+            return Scene.builder().name("Intro").time(13.5f).build();
+        }
+
+        @Override
+        public void attachToEntity(Video video, Scene scene) {
+            video.addScene(scene);
+        }
+
+        @Override
+        public void assertEntityHasAttachedEntity(Video video) {
+            assertThat(video.getTitle(), is(equalTo("Video 1")));
+            assertThat(video.getScenes(), hasSize(1));
+            assertThat(video.getScenes().iterator().next().getName(), is(equalTo("Intro")));
+        }
+
+        @Override
+        public void assertAttachedEntityHasEntityAttached(Scene scene) {
+            assertThat(scene.getName(), is(equalTo("Intro")));
+            assertThat(scene.getVideo(), is(not(nullValue())));
+            assertThat(scene.getVideo().getTitle(), is(equalTo("Video 1")));
+        }
+
+        @Override
+        public void assertAttachedEntityHasNothingAttached(Scene scene) {
+            assertThat(scene.getName(), is(equalTo("Intro")));
+            assertThat(scene.getVideo(), is(nullValue()));
         }
     }
 }

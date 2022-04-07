@@ -17,6 +17,7 @@
  */
 package de.gmasil.webproject.nativehints;
 
+import java.awt.Color;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -33,6 +34,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import de.gmasil.webproject.jpa.Auditable;
 import de.gmasil.webproject.jpa.role.Role;
+import de.gmasil.webproject.jpa.theme.Theme;
 import de.gmasil.webproject.jpa.user.User;
 
 @Configuration
@@ -40,6 +42,7 @@ import de.gmasil.webproject.jpa.user.User;
         Auditable.class, //
         User.class, //
         Role.class, //
+        Theme.class, //
         Date.class, //
         Timestamp.class, //
         HashSet.class, //
@@ -49,7 +52,8 @@ import de.gmasil.webproject.jpa.user.User;
         GrantedAuthority.class, //
         Serializable.class, //
         AbstractPersistentCollection.class, //
-        PersistentSet.class //
+        PersistentSet.class, //
+        Color.class //
 })
 public class JpaHints {
 }

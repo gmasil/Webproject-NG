@@ -31,6 +31,7 @@ SOURCE_FOLDER="$( cd "$( dirname "${BASH_SOURCE[0]}" )"/.. && pwd )"
 : "${NATIVE:=false}"
 : "${BUILD:=true}"
 : "${FRONTEND:=false}"
+: "${POSTGRES:=false}"
 
 if [ ${NATIVE} == "true" ]; then
     IMAGE_TAG="${IMAGE_TAG}-native"
@@ -46,6 +47,7 @@ echo "VERBOSE        = ${VERBOSE}"
 echo "NATIVE         = ${NATIVE}"
 echo "BUILD          = ${BUILD}"
 echo "FRONTEND       = ${FRONTEND}"
+echo "POSTGRES       = ${POSTGRES}"
 
 if [ ${BUILD} == "true" ]; then
     if [ ${NATIVE} == "true" ]; then
@@ -70,7 +72,12 @@ fi
 IMPORT_ARGS=""
 if test -f "${SOURCE_FOLDER}/${DATA_FILE}"; then
     echo "Found ${DATA_FILE}, enabling data import..."
-    IMPORT_ARGS="-v ${SOURCE_FOLDER}/${DATA_FILE}:/import.yml:Z -e DATAIMPORT_ENABLED=true -e DATAIMPORT_FILE=/import.yml"
+    IMPORT_ARGS="-v ${SOURCE_FOLDER}/${DATA_FILE}:/import.yml:Z -e DATAIMPORT_ENABLED=true -e DATAIMPORT_CLEAN=true -e DATAIMPORT_FILE=/import.yml"
+fi
+
+DB_ARGS=[]
+if [ ${POSTGRES} == "true" ]; then
+    DB_ARGS=(--add-host=host.docker.internal:host-gateway -e "SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQL95Dialect" -e "SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/webproject" -e "SPRING_DATASOURCE_USERNAME=webproject" -e "SPRING_DATASOURCE_PASSWORD=webproject")
 fi
 
 MSYS_NO_PATHCONV=1 docker run -d --rm --name "${CONTAINER_NAME}" \
@@ -84,6 +91,7 @@ MSYS_NO_PATHCONV=1 docker run -d --rm --name "${CONTAINER_NAME}" \
     -e "INIT_THEME_SECONDARYCOLOR=#b253b8" \
     -e "INIT_THEME_TEXTCOLOR=#f2f2f2" \
     ${IMPORT_ARGS} \
+    "${DB_ARGS[@]}" \
     ${IMAGE_NAME}:${IMAGE_TAG}
 
 if [ ${VERBOSE} == "true" ]; then

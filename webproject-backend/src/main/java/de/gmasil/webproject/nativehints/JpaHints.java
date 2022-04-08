@@ -29,6 +29,7 @@ import org.hibernate.collection.internal.AbstractPersistentCollection;
 import org.hibernate.collection.internal.PersistentSet;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.nativex.hint.SerializationHint;
+import org.springframework.security.authentication.RememberMeAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -53,7 +54,8 @@ import de.gmasil.webproject.jpa.user.User;
         Serializable.class, //
         AbstractPersistentCollection.class, //
         PersistentSet.class, //
-        Color.class //
+        Color.class, //
+        RememberMeAuthenticationToken.class //
 })
 public class JpaHints {
 }

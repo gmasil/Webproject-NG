@@ -24,28 +24,56 @@
       class="bg-theme-background-highlight text-theme-text"
       :options="themes"
       label="name"
-      @input="onThemeSelectionChange"
     ></v-select>
+    <div class="mt-4">
+      <button
+        class="bg-theme-background-highlight rounded-lg mr-2 px-2"
+        @click="onActivateClick"
+      >
+        Activate
+      </button>
+      <button
+        class="bg-theme-background-highlight rounded-lg mr-2 px-2"
+        @click="onDuplicateClick"
+      >
+        Duplicate
+      </button>
+    </div>
 
-    <button @click="onActivateClick">Activate</button>
-    <button @click="onDuplicateClick">Duplicate</button>
-
-    <div v-if="selectedTheme && !selectedTheme.preset">
+    <div v-if="selectedTheme && !selectedTheme.preset" class="mt-4">
       <div class="grid grid-cols-fit gap-x-4 gap-y-1 justify-items-start">
+        <span class="inline-block">ID</span>
+        <input v-model="selectedThemeCopy.id" type="text" />
         <span class="inline-block">Name</span>
         <input v-model="selectedThemeCopy.name" type="text" />
         <span class="inline-block">Background color</span>
-        <input
+        <color-picker
           v-model="selectedThemeCopy.backgroundColor"
           @input="onBackgroundColorChange"
         />
         <span>Text color</span>
-        <input v-model="selectedThemeCopy.textColor" />
+        <color-picker v-model="selectedThemeCopy.textColor" />
       </div>
-
-      <button @click="onSaveActivateClick">Save and Activate</button>
-      <button @click="onSaveClick">Save</button>
-      <button @click="onResetClick">Reset</button>
+      <div class="mt-4">
+        <button
+          class="bg-theme-background-highlight rounded-lg mr-2 px-2"
+          @click="onSaveActivateClick"
+        >
+          Save and Activate
+        </button>
+        <button
+          class="bg-theme-background-highlight rounded-lg mr-2 px-2"
+          @click="onSaveClick"
+        >
+          Save
+        </button>
+        <button
+          class="bg-theme-background-highlight rounded-lg mr-2 px-2"
+          @click="onResetClick"
+        >
+          Reset
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -55,6 +83,7 @@ import { defineComponent } from "vue";
 import { mapActions, mapGetters } from "vuex";
 import { Theme } from "@/types";
 import { useToast } from "vue-toastification";
+import ColorPicker from "@/components/ColorPicker.vue";
 
 const toast = useToast();
 
@@ -66,12 +95,20 @@ declare interface BaseComponentData {
 
 export default defineComponent({
   name: "Themes",
+  components: {
+    ColorPicker,
+  },
   data(): BaseComponentData {
     return {
       themes: [],
       selectedTheme: null,
       selectedThemeCopy: null,
     };
+  },
+  watch: {
+    selectedTheme() {
+      this.onResetClick();
+    },
   },
   created(): void {
     this.loadAvailableThemes()
@@ -102,9 +139,6 @@ export default defineComponent({
       "activateTheme",
     ]),
     ...mapGetters(["getCurrentUser", "getActiveTheme"]),
-    onThemeSelectionChange(): void {
-      this.onResetClick();
-    },
     onSaveClick(): void {
       if (this.selectedThemeCopy != null && this.selectedTheme != null) {
         this.patchTheme(this.selectedThemeCopy, this.selectedTheme);

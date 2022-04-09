@@ -32,6 +32,7 @@
 import { defineComponent } from "vue";
 import { mapActions, mapGetters } from "vuex";
 import { useToast } from "vue-toastification";
+import Coloris from "@melloware/coloris";
 
 const toast = useToast();
 
@@ -48,6 +49,9 @@ export default defineComponent({
       toast.error("Error while loading active theme")
     );
   },
+  mounted(): void {
+    Coloris.init();
+  },
   methods: {
     ...mapActions(["loadAppProperties", "loadCurrentUser", "loadActiveTheme"]),
     ...mapGetters(["isInitialized", "isAccessRestricted"]),
@@ -57,5 +61,6 @@ export default defineComponent({
 
 <style lang="scss">
 @import "vue-select/src/scss/vue-select.scss";
+@import "@melloware/coloris/dist/coloris.css";
 @import "@/assets/styles/main.scss";
 </style>

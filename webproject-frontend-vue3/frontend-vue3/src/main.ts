@@ -27,6 +27,7 @@ import Navbar from "@/components/Navbar.vue";
 import "vue-toastification/dist/index.css";
 import "tailwindcss/tailwind.css";
 import "vue-select/dist/vue-select.css";
+import "@melloware/coloris/dist/coloris.css";
 
 const app = createApp(App).use(store, key).use(router);
 

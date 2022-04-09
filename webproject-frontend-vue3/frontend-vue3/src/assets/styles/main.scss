@@ -20,6 +20,10 @@ input {
   background-color: var(--theme-background-highlight);
 }
 
+input.colorisify {
+  color: var(--theme-text);
+}
+
 .vs--single {
   .vs__selected {
     color: var(--theme-text);

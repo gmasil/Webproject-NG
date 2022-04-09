@@ -9,6 +9,7 @@
     "lint": "eslint --ext .ts,.js,.jsx,.vue src/"
   },
   "dependencies": {
+    "@melloware/coloris": "^0.10.3",
     "axios": "^0.26.1",
     "core-js": "^3.21.1",
     "vue": "^3.2.31",

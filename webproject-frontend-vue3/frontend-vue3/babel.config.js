@@ -16,7 +16,5 @@
  * https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt
  */
 module.exports = {
-  presets: [
-    '@vue/cli-plugin-babel/preset'
-  ]
-}
+  presets: ["@vue/cli-plugin-babel/preset"],
+};

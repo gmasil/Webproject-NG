@@ -1,12 +1,13 @@
 {
-  "name": "frontend-vue3",
+  "name": "webproject-frontend",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint-vue": "vue-cli-service lint",
-    "lint": "eslint --ext .ts,.js,.jsx,.vue src/"
+    "lint": "eslint --ext .ts,.js,.jsx,.vue src/",
+    "fix": "eslint --fix --ext .ts,.js,.jsx,.vue src/",
+    "sonar": "eslint -o eslint-report.json -f json --ext .ts,.js,.jsx,.vue src/"
   },
   "dependencies": {
     "@melloware/coloris": "^0.10.3",

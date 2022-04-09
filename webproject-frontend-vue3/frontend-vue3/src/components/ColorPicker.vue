@@ -41,9 +41,30 @@ export default defineComponent({
     },
   },
   emits: ["update:modelValue"],
+  watch: {
+    modelValue() {
+      // manually set the correct color for little preview box
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      this.$el.parentElement.style.color = this.modelValue;
+    },
+  },
   mounted(): void {
     Coloris({
       el: ".colorisify",
+      alpha: false,
+      swatches: [
+        "#264653",
+        "#2a9d8f",
+        "#e9c46a",
+        "rgb(244,162,97)",
+        "#e76f51",
+        "#d62828",
+        "navy",
+        "#07b",
+        "#0096c7",
+        "#00b4d8",
+        "rgba(0,119,182)",
+      ],
     });
   },
 });

@@ -1,0 +1,46 @@
+//
+// Webproject NG
+// Copyright © 2021 - 2022 Gmasil
+//
+// This file is part of Webproject NG.
+//
+// Webproject NG is licensed under the Creative Commons
+// Attribution-NonCommercial-ShareAlike 4.0 International
+// Public License ("Public License").
+//
+// Webproject NG is non-free software: you can redistribute
+// it and/or modify it under the terms of the Public License.
+//
+// You should have received a copy of the Public License along
+// with Webproject NG. If not, see
+// https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt
+//
+
+input {
+  background-color: var(--theme-background-highlight);
+}
+
+.vs--single {
+  .vs__selected {
+    color: var(--theme-text);
+  }
+  &.vs--open .vs__selected {
+    opacity: 0.7;
+  }
+  .vs__dropdown-toggle,
+  .vs__dropdown-menu,
+  .vs__dropdown-option {
+    background-color: var(--theme-background-highlight);
+    color: var(--theme-text);
+  }
+  .vs__dropdown-option--highlight {
+    background-color: var(--theme-background);
+  }
+  .vs__open-indicator,
+  .vs__clear {
+    fill: var(--theme-text);
+  }
+  .vs__clear {
+    display: none;
+  }
+}

@@ -22,10 +22,11 @@ import { store, key } from "./store";
 import router from "./router";
 import Toast from "vue-toastification";
 import vSelect from "vue-select";
+import Navbar from "@/components/Navbar.vue";
+
 import "vue-toastification/dist/index.css";
 import "tailwindcss/tailwind.css";
 import "vue-select/dist/vue-select.css";
-import Navbar from "@/components/Navbar.vue";
 
 const app = createApp(App).use(store, key).use(router);
 

@@ -35,17 +35,12 @@
         <span class="inline-block">Name</span>
         <input v-model="selectedThemeCopy.name" type="text" />
         <span class="inline-block">Background color</span>
-        <color-picker
+        <input
           v-model="selectedThemeCopy.backgroundColor"
-          class="border border-theme-text"
-          disabled="true"
-          @change="onBackgroundColorChange"
-        ></color-picker>
+          @input="onBackgroundColorChange"
+        />
         <span>Text color</span>
-        <color-picker
-          v-model="selectedThemeCopy.textColor"
-          class="border border-theme-text"
-        ></color-picker>
+        <input v-model="selectedThemeCopy.textColor" />
       </div>
 
       <button @click="onSaveActivateClick">Save and Activate</button>
@@ -227,6 +222,9 @@ export default defineComponent({
       r = r < 255 ? r : 255;
       g = g < 255 ? g : 255;
       b = b < 255 ? b : 255;
+      r = r > 0 ? r : 0;
+      g = g > 0 ? g : 0;
+      b = b > 0 ? b : 0;
       var rr =
         r.toString(16).length == 1 ? "0" + r.toString(16) : r.toString(16);
       var gg =

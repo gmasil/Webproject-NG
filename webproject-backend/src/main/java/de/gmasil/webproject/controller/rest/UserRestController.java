@@ -19,8 +19,6 @@ package de.gmasil.webproject.controller.rest;
 
 import java.util.Optional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
@@ -55,9 +53,6 @@ public class UserRestController {
     @Autowired
     private UserService userService;
 
-    @PersistenceContext
-    private EntityManager entityManager;
-
     @PermitAll
     @GetMapping("/current")
     public ResponseEntity<Object> currentUser() {
@@ -75,8 +70,7 @@ public class UserRestController {
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/updatepassword")
     public ResponseEntity<String> updatePassword(@RequestBody @Valid UserPasswordDto userPassword) {
-        User user = userProvider.getCurrent();
-        user = entityManager.merge(user);
+        User user = userService.getCurrentUser();
         if (!userService.verifyPassword(userPassword.getCurrentPassword(), user)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Current password does not match");
         }

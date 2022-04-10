@@ -24,7 +24,9 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.awt.Color;
+import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
@@ -55,6 +57,46 @@ class ThemeRestControllerTest extends GherkinTest {
 
     @Autowired
     private ThemeRepository themeRepo;
+
+    @Autowired
+    private ModelMapper modelMapper;
+
+    @Scenario("A theme can be saved")
+    void testThemeActivationBug() {
+        AdvRestTemplate rest = factory.createRestTemplate();
+        given("a user is logged in", () -> {
+            rest.loginUser();
+        });
+        and("additional custom themes are created", () -> {
+            // get themes
+            List<ThemeDto> availableThemes = rest.themes().getAvailable();
+            // duplicate and save 1
+            ThemeDto theme = duplicate(availableThemes.get(0));
+            theme = rest.themes().post(theme);
+            rest.themes().activate(theme);
+            // get themes
+            availableThemes = rest.themes().getAvailable();
+            // duplicate and save 2
+            theme = duplicate(availableThemes.get(1));
+            theme = rest.themes().post(theme);
+            rest.themes().activate(theme);
+            // get themes
+            availableThemes = rest.themes().getAvailable();
+            // activate all themes
+            availableThemes.forEach(rest.themes()::activate);
+        });
+        when("the user logges in again", () -> {
+            rest.logout();
+            rest.loginUser();
+        });
+        then("all themes can be activated", () -> {
+            List<ThemeDto> availableThemes = rest.themes().getAvailable();
+            for (ThemeDto t : availableThemes) {
+                rest.themes().activate(t);
+                assertThat(t.getId(), is(equalTo(rest.themes().active().getId())));
+            }
+        });
+    }
 
     // ************************* POST *************************
 
@@ -232,5 +274,13 @@ class ThemeRestControllerTest extends GherkinTest {
                 .textColor(Color.white) //
                 .preset(false) //
                 .build().toDto();
+    }
+
+    public ThemeDto duplicate(ThemeDto theme) {
+        ThemeDto copy = modelMapper.map(theme, ThemeDto.class);
+        copy.setId(null);
+        copy.setName(copy.getName() + " Copy");
+        copy.setPreset(false);
+        return copy;
     }
 }

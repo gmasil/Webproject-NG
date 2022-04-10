@@ -53,4 +53,8 @@ public class AdvRestTemplate extends RestTemplate {
         String loadedName = user != null ? user.getUsername() : null;
         assertThat("Login failed", loadedName, is(equalTo(username)));
     }
+
+    public ThemeRestTemplate themes() {
+        return new ThemeRestTemplate(this);
+    }
 }

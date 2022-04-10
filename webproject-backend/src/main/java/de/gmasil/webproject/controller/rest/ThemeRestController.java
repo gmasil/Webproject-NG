@@ -21,8 +21,6 @@ import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Optional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
@@ -49,6 +47,7 @@ import de.gmasil.webproject.jpa.theme.Theme;
 import de.gmasil.webproject.jpa.theme.ThemeRepository;
 import de.gmasil.webproject.jpa.user.User;
 import de.gmasil.webproject.jpa.user.UserRepository;
+import de.gmasil.webproject.jpa.user.UserService;
 import de.gmasil.webproject.service.UserProvider;
 
 @RestController
@@ -64,6 +63,9 @@ public class ThemeRestController {
     private UserRepository userRepo;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private PropertyRepository propertyRepo;
 
     @Autowired
@@ -75,9 +77,6 @@ public class ThemeRestController {
     @Autowired
     private ColorConverter colorConverter;
 
-    @PersistenceContext
-    private EntityManager entityManager;
-
     @Transactional
     @PreAuthorize("isAuthenticated()")
     @PostMapping("")
@@ -88,8 +87,7 @@ public class ThemeRestController {
         if (themeDto.getId() != null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Posting specific ID is not allowed");
         }
-        User user = userProvider.getCurrent();
-        user = entityManager.merge(user);
+        User user = userService.getCurrentUser();
         Theme theme = mapper.map(themeDto, Theme.class);
         theme.setCreator(user);
         theme = themeRepo.save(theme);
@@ -128,8 +126,7 @@ public class ThemeRestController {
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/resetactive")
     public ResponseEntity<String> resetActiveTheme() {
-        User user = userProvider.getCurrent();
-        user = entityManager.merge(user);
+        User user = userService.getCurrentUser();
         user.setActiveTheme(null);
         userRepo.save(user);
         return ResponseEntity.ok().build();
@@ -139,12 +136,11 @@ public class ThemeRestController {
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/activate/{id}")
     public ResponseEntity<Object> setActiveTheme(@PathVariable Long id) {
-        User user = userProvider.getCurrent();
-        user = entityManager.merge(user);
+        User user = userService.getCurrentUser();
         Optional<Theme> theme = themeRepo.findAvailableById(id, user);
         if (theme.isPresent()) {
             user.setActiveTheme(theme.get());
-            themeRepo.save(theme.get());
+            userRepo.save(user);
             return ResponseEntity.ok().build();
         } else {
             return createThemeNotFound(id);

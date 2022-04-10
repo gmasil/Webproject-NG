@@ -27,6 +27,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import de.gmasil.webproject.service.UserProvider;
+
 @Service
 public class UserService implements UserDetailsService {
 
@@ -35,6 +37,9 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private UserProvider userProvider;
 
     @Override
     public UserDetails loadUserByUsername(String username) {
@@ -48,6 +53,11 @@ public class UserService implements UserDetailsService {
     public User encodePassword(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return user;
+    }
+
+    public User getCurrentUser() {
+        return userRepository.findById(userProvider.getCurrent().getId())
+                .orElseThrow(() -> new IllegalStateException("Current user not available"));
     }
 
     public boolean verifyPassword(String rawPassword, User user) {

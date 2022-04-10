@@ -19,46 +19,73 @@
 -->
 <template>
   <div>
-    <VSelect
+    <v-select
       v-model="selectedTheme"
       class="bg-theme-background-highlight text-theme-text"
       :options="themes"
       label="name"
-      @input="onThemeSelectionChange"
-    ></VSelect>
+    ></v-select>
+    <div class="mt-4">
+      <button
+        class="bg-theme-background-highlight rounded-lg mr-2 px-2"
+        @click="onActivateClick"
+      >
+        Activate
+      </button>
+      <button
+        class="bg-theme-background-highlight rounded-lg mr-2 px-2"
+        @click="onDuplicateClick"
+      >
+        Duplicate
+      </button>
+    </div>
 
-    <button @click="onActivateClick">Activate</button>
-    <button @click="onDuplicateClick">Duplicate</button>
-
-    <div v-if="selectedTheme && !selectedTheme.preset">
+    <div v-if="selectedTheme && !selectedTheme.preset" class="mt-4">
       <div class="grid grid-cols-fit gap-x-4 gap-y-1 justify-items-start">
+        <span class="inline-block">ID</span>
+        <input v-model="selectedThemeCopy.id" type="text" />
         <span class="inline-block">Name</span>
         <input v-model="selectedThemeCopy.name" type="text" />
         <span class="inline-block">Background color</span>
         <color-picker
           v-model="selectedThemeCopy.backgroundColor"
-          class="border border-theme-text"
-          disabled="true"
-          @change="onBackgroundColorChange"
-        ></color-picker>
+          @input="onBackgroundColorChange"
+        />
         <span>Text color</span>
-        <color-picker
-          v-model="selectedThemeCopy.textColor"
-          class="border border-theme-text"
-        ></color-picker>
+        <color-picker v-model="selectedThemeCopy.textColor" />
       </div>
-
-      <button @click="onSaveActivateClick">Save and Activate</button>
-      <button @click="onSaveClick">Save</button>
-      <button @click="onResetClick">Reset</button>
+      <div class="mt-4">
+        <button
+          class="bg-theme-background-highlight rounded-lg mr-2 px-2"
+          @click="onSaveActivateClick"
+        >
+          Save and Activate
+        </button>
+        <button
+          class="bg-theme-background-highlight rounded-lg mr-2 px-2"
+          @click="onSaveClick"
+        >
+          Save
+        </button>
+        <button
+          class="bg-theme-background-highlight rounded-lg mr-2 px-2"
+          @click="onResetClick"
+        >
+          Reset
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import { mapActions, mapGetters } from "vuex";
 import { Theme } from "@/types";
+import { useToast } from "vue-toastification";
+import ColorPicker from "@/components/ColorPicker.vue";
+
+const toast = useToast();
 
 declare interface BaseComponentData {
   themes: Theme[];
@@ -66,14 +93,22 @@ declare interface BaseComponentData {
   selectedThemeCopy: Theme | null;
 }
 
-const Themes = Vue.extend({
+export default defineComponent({
   name: "Themes",
+  components: {
+    ColorPicker,
+  },
   data(): BaseComponentData {
     return {
       themes: [],
       selectedTheme: null,
       selectedThemeCopy: null,
     };
+  },
+  watch: {
+    selectedTheme() {
+      this.onResetClick();
+    },
   },
   created(): void {
     this.loadAvailableThemes()
@@ -93,9 +128,7 @@ const Themes = Vue.extend({
         }
       })
       .catch((error: Error) => {
-        this.$toast.error(
-          "Error while loading available themes: " + error.message
-        );
+        toast.error("Error while loading available themes: " + error.message);
       });
   },
   methods: {
@@ -106,9 +139,6 @@ const Themes = Vue.extend({
       "activateTheme",
     ]),
     ...mapGetters(["getCurrentUser", "getActiveTheme"]),
-    onThemeSelectionChange(): void {
-      this.onResetClick();
-    },
     onSaveClick(): void {
       if (this.selectedThemeCopy != null && this.selectedTheme != null) {
         this.patchTheme(this.selectedThemeCopy, this.selectedTheme);
@@ -152,13 +182,13 @@ const Themes = Vue.extend({
         // update theme
         this.saveTheme(this.selectedTheme)
           .then(() => {
-            this.$toast.success("Theme saved successfully");
+            toast.success("Theme saved successfully");
             if (activate) {
               this.onActivateClick();
             }
           })
           .catch((error: Error) => {
-            this.$toast.error("Error while saving theme: " + error.message);
+            toast.error("Error while saving theme: " + error.message);
           });
       } else {
         // create new theme
@@ -166,9 +196,7 @@ const Themes = Vue.extend({
           .then((savedTheme: Theme) => {
             let index: number | null = this.findIndexOfSelectedTheme();
             if (index == null) {
-              this.$toast.error(
-                "Error while saving new theme, cannot find index"
-              );
+              toast.error("Error while saving new theme, cannot find index");
               return;
             }
             this.themes[index] = savedTheme;
@@ -176,13 +204,13 @@ const Themes = Vue.extend({
             this.selectedThemeCopy = JSON.parse(
               JSON.stringify(this.selectedTheme)
             ) as Theme;
-            this.$toast.success("Theme saved successfully");
+            toast.success("Theme saved successfully");
             if (activate) {
               this.onActivateClick();
             }
           })
           .catch((error: Error) => {
-            this.$toast.error("Error saving theme: " + error.message);
+            toast.error("Error saving theme: " + error.message);
           });
       }
     },
@@ -199,11 +227,11 @@ const Themes = Vue.extend({
         this.activateTheme(this.selectedTheme.id)
           .then(() => {
             this.loadActiveTheme().catch(() =>
-              this.$toast.error("Error while loading active theme")
+              toast.error("Error while loading active theme")
             );
           })
           .catch((error: Error) => {
-            this.$toast.error("Error while activating theme: " + error.message);
+            toast.error("Error while activating theme: " + error.message);
           });
       }
     },
@@ -228,6 +256,9 @@ const Themes = Vue.extend({
       r = r < 255 ? r : 255;
       g = g < 255 ? g : 255;
       b = b < 255 ? b : 255;
+      r = r > 0 ? r : 0;
+      g = g > 0 ? g : 0;
+      b = b > 0 ? b : 0;
       var rr =
         r.toString(16).length == 1 ? "0" + r.toString(16) : r.toString(16);
       var gg =
@@ -245,6 +276,4 @@ const Themes = Vue.extend({
     },
   },
 });
-
-export default Themes;
 </script>

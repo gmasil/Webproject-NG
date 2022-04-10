@@ -16,19 +16,26 @@
 /// https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt
 ///
 
-import Vue, { VNode } from "vue";
-import App from "@/App.vue";
-import router from "@/router";
-import store from "@/store";
+import { createApp } from "vue";
+import App from "./App.vue";
+import { store, key } from "./store";
+import router from "./router";
 import Toast from "vue-toastification";
 import vSelect from "vue-select";
-import { ColorPicker, ColorPanel } from "one-colorpicker";
-import "tailwindcss/tailwind.css";
+import Navbar from "@/components/Navbar.vue";
+
 import "vue-toastification/dist/index.css";
+import "tailwindcss/tailwind.css";
+import "vue-select/dist/vue-select.css";
+import "@melloware/coloris/dist/coloris.css";
 
-Vue.config.productionTip = false;
+const app = createApp(App).use(store, key).use(router);
 
-Vue.use(Toast, {
+// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+app.component("VSelect", vSelect);
+app.component("Navbar", Navbar);
+
+app.use(Toast, {
   transition: "Vue-Toastification__bounce",
   maxToasts: 20,
   newestOnTop: true,
@@ -46,14 +53,4 @@ Vue.use(Toast, {
   rtl: false,
 });
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-Vue.use(ColorPanel);
-// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-Vue.use(ColorPicker);
-Vue.component("VSelect", vSelect);
-
-new Vue({
-  router,
-  store,
-  render: (h): VNode => h(App),
-}).$mount("#app");
+app.mount("#app");

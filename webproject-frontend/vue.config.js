@@ -15,29 +15,12 @@
  * with Webproject NG. If not, see
  * https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt
  */
-const path = require("path");
-
-module.exports = {
-  outputDir: path.resolve(__dirname, "dist"),
-  assetsDir: "static",
+const { defineConfig } = require("@vue/cli-service");
+module.exports = defineConfig({
+  transpileDependencies: true,
   devServer: {
     proxy: {
       "^/api": {
-        target: "http://localhost:6900",
-        changeOrigin: true,
-        headers: { Connection: "keep-alive" },
-      },
-      "^/swagger-ui": {
-        target: "http://localhost:6900",
-        changeOrigin: true,
-        headers: { Connection: "keep-alive" },
-      },
-      "^/v3/api-docs": {
-        target: "http://localhost:6900",
-        changeOrigin: true,
-        headers: { Connection: "keep-alive" },
-      },
-      "^/swagger-resources": {
         target: "http://localhost:6900",
         changeOrigin: true,
         headers: { Connection: "keep-alive" },
@@ -59,4 +42,4 @@ module.exports = {
       },
     },
   },
-};
+});

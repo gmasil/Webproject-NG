@@ -16,8 +16,8 @@
 /// https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt
 ///
 
-import Vue from "vue";
-import Vuex from "vuex";
+import { InjectionKey } from "vue";
+import { useStore as baseUseStore, createStore, Store } from "vuex";
 import axios from "axios";
 import {
   AppProperties,
@@ -38,9 +38,9 @@ export class State {
   videos: PageResponse<Video> | null = null;
 }
 
-Vue.use(Vuex);
+export const key: InjectionKey<Store<State>> = Symbol();
 
-export default new Vuex.Store({
+export const store = createStore<State>({
   state: new State(),
   getters: {
     isInitialized(state): boolean {
@@ -70,6 +70,30 @@ export default new Vuex.Store({
     },
     getVideos(state): PageResponse<Video> | null {
       return state.videos;
+    },
+  },
+  mutations: {
+    setAppProperties(state, data: AppProperties): void {
+      state.appProperties = data;
+    },
+    setCurrentUser(state, data: User): void {
+      state.currentUser = data;
+      state.initializedUser = true;
+    },
+    setActiveTheme(state, data: Theme): void {
+      state.activeTheme = data;
+      if (state.activeTheme != null) {
+        state.activeTheme.applyTheme();
+      }
+    },
+    setVideos(state, data: PageResponse<Video>): void {
+      state.videos = data;
+    },
+    dummy(state): void {
+      if (state != null) {
+        // workaround for: 'commit' is defined but never used
+        // if commit is not defined the function is not assignable to type 'Action<State, State>'.
+      }
     },
   },
   actions: {
@@ -233,28 +257,9 @@ export default new Vuex.Store({
       });
     },
   },
-  mutations: {
-    setAppProperties(state, data): void {
-      Vue.set(state, "appProperties", data);
-    },
-    setCurrentUser(state, data): void {
-      Vue.set(state, "currentUser", data);
-      Vue.set(state, "initializedUser", true);
-    },
-    setActiveTheme(state, data: Theme): void {
-      Vue.set(state, "activeTheme", data);
-      if (state.activeTheme != null) {
-        state.activeTheme.applyTheme();
-      }
-    },
-    setVideos(state, data: PageResponse<Video>): void {
-      Vue.set(state, "videos", data);
-    },
-    dummy(state): void {
-      if (state != null) {
-        // workaround for: 'commit' is defined but never used
-        // if commit is not defined the function is not assignable to type 'Action<State, State>'.
-      }
-    },
-  },
+  modules: {},
 });
+
+export function useStore(): Store<State> {
+  return baseUseStore(key);
+}

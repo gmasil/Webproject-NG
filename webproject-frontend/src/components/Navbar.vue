@@ -19,37 +19,33 @@
 -->
 <template>
   <div>
-    <ul>
-      <li><router-link to="/">Home</router-link></li>
-      <li><router-link to="/videos">Videos</router-link></li>
-      <li v-if="isAuthenticated()">
-        <router-link to="/themes">Themes</router-link>
-      </li>
-      <li v-if="!isAuthenticated()">
-        <router-link to="/login">Login</router-link>
-      </li>
-      <li v-if="isAuthenticated()">
-        <router-link to="/changepassword">Change Password</router-link>
-      </li>
-      <li v-if="isAuthenticated()">
-        <a href="/logout">Logout</a>
-      </li>
-    </ul>
-    <hr class="border-theme-text my-1" />
-    <p v-if="isAuthenticated()">
-      Logged in as
-      <span id="navbar-username">{{ getUsername }}</span>
-    </p>
+    <div class="text-center">
+      <router-link to="/">Home</router-link>
+      |
+      <router-link to="/videos">Videos</router-link>
+      |
+      <router-link v-if="isAuthenticated()" class="inline-block" to="/themes"
+        >Themes</router-link
+      >
+      |
+      <router-link v-if="!isAuthenticated()" to="/login">Login</router-link>
+      <span v-if="!isAuthenticated()"> |</span>
+      <router-link v-if="isAuthenticated()" to="/changepassword"
+        >Account: {{ getUsername }}</router-link
+      >
+      |
+      <a v-if="isAuthenticated()" href="/logout">Logout</a>
+    </div>
     <hr v-if="isAuthenticated()" class="border-theme-text my-2" />
   </div>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import { mapGetters } from "vuex";
 import { User } from "@/types";
 
-const Navbar = Vue.extend({
+export default defineComponent({
   name: "Navbar",
   computed: {
     getUsername: function (): string {
@@ -60,6 +56,4 @@ const Navbar = Vue.extend({
     ...mapGetters(["isAuthenticated", "getCurrentUser"]),
   },
 });
-
-export default Navbar;
 </script>

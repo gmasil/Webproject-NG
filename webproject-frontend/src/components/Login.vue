@@ -32,15 +32,14 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import { mapGetters } from "vuex";
 
-const Login = Vue.extend({
+export default defineComponent({
+  // eslint-disable-next-line vue/multi-word-component-names
   name: "Login",
   methods: {
     ...mapGetters(["isAccessRestricted"]),
   },
 });
-
-export default Login;
 </script>

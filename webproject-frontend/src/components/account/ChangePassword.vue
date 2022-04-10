@@ -50,11 +50,14 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import { mapActions } from "vuex";
 import { ChangePasswordData } from "@/types";
+import { useToast } from "vue-toastification";
 
-const ChangePassword = Vue.extend({
+const toast = useToast();
+
+export default defineComponent({
   name: "ChangePassword",
   data() {
     return {
@@ -67,11 +70,11 @@ const ChangePassword = Vue.extend({
     ...mapActions(["changePassword"]),
     onChangeClick() {
       if (this.newPassword != this.repeatPassword) {
-        this.$toast.error("Passwords mismatch");
+        toast.error("Passwords mismatch");
         return;
       }
       if (this.newPassword.length < 8) {
-        this.$toast.error("Passwords must have at least 8 characters");
+        toast.error("Passwords must have at least 8 characters");
         return;
       }
       this.changePassword({
@@ -79,14 +82,12 @@ const ChangePassword = Vue.extend({
         newPassword: this.newPassword,
       } as ChangePasswordData)
         .then(() => {
-          this.$toast.success("Password changed successsfully");
+          toast.success("Password changed successsfully");
         })
         .catch((error: Error) => {
-          this.$toast.error("Error changing password: " + error.message);
+          toast.error("Error changing password: " + error.message);
         });
     },
   },
 });
-
-export default ChangePassword;
 </script>

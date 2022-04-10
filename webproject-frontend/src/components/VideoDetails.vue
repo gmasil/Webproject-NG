@@ -22,7 +22,7 @@
     <h1 class="text-theme-text">
       {{ video.title }}
     </h1>
-    <video width="70%" :poster="video.thumbnail" controls>
+    <video class="w-6/12" :poster="video.thumbnail" controls>
       <source :src="video.files[0].name" type="video/mp4" />
     </video>
     <div>
@@ -37,20 +37,23 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import { mapActions } from "vuex";
 import { VideoFull } from "@/types";
+import { useToast } from "vue-toastification";
+
+const toast = useToast();
 
 declare interface BaseComponentData {
   id: string;
   video: VideoFull | null;
 }
 
-const VideoDetails = Vue.extend({
+export default defineComponent({
   name: "VideoDetails",
   data(): BaseComponentData {
     return {
-      id: this.$route.params.id,
+      id: this.$route.params.id as string,
       video: null,
     };
   },
@@ -60,7 +63,7 @@ const VideoDetails = Vue.extend({
         this.video = video;
       })
       .catch((error: Error) => {
-        this.$toast.error("Error while loading video: " + error.message);
+        toast.error("Error while loading video: " + error.message);
       });
   },
   methods: {
@@ -79,6 +82,4 @@ const VideoDetails = Vue.extend({
     },
   },
 });
-
-export default VideoDetails;
 </script>

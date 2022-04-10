@@ -29,36 +29,38 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import { mapActions, mapGetters } from "vuex";
-import Navbar from "@/components/Navbar.vue";
+import { useToast } from "vue-toastification";
+import Coloris from "@melloware/coloris";
 
-const App = Vue.extend({
+const toast = useToast();
+
+export default defineComponent({
   name: "App",
-  components: {
-    Navbar,
-  },
   created(): void {
     this.loadAppProperties().catch(() =>
-      this.$toast.error("Error while loading application properties")
+      toast.error("Error while loading application properties")
     );
     this.loadCurrentUser().catch(() =>
-      this.$toast.error("Error while loading current user")
+      toast.error("Error while loading current user")
     );
     this.loadActiveTheme().catch(() =>
-      this.$toast.error("Error while loading active theme")
+      toast.error("Error while loading active theme")
     );
+  },
+  mounted(): void {
+    Coloris.init();
   },
   methods: {
     ...mapActions(["loadAppProperties", "loadCurrentUser", "loadActiveTheme"]),
     ...mapGetters(["isInitialized", "isAccessRestricted"]),
   },
 });
-
-export default App;
 </script>
 
 <style lang="scss">
 @import "vue-select/src/scss/vue-select.scss";
+@import "@melloware/coloris/dist/coloris.css";
 @import "@/assets/styles/main.scss";
 </style>

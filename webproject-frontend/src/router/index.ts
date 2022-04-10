@@ -16,61 +16,68 @@
 /// https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt
 ///
 
-import Vue from "vue";
-import Router from "vue-router";
+import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
+import { AppProperties, User, CallbackFunction } from "@/types";
+import { store } from "@/store";
 import HelloWorld from "@/components/HelloWorld.vue";
 import VideoList from "@/components/VideoList.vue";
 import VideoDetails from "@/components/VideoDetails.vue";
 import Themes from "@/components/Themes.vue";
-import Login from "@/components/Login.vue";
 import ChangePassword from "@/components/account/ChangePassword.vue";
-import Error from "@/components/Error.vue";
-import { AppProperties, CallbackFunction, User } from "@/types";
+import Login from "@/components/Login.vue";
 
-Vue.use(Router);
+const routes: Array<RouteRecordRaw> = [
+  {
+    path: "/",
+    name: "HelloWorld",
+    component: HelloWorld,
+  },
+  {
+    path: "/videos",
+    name: "VideoList",
+    component: VideoList,
+  },
+  {
+    path: "/videos/:id",
+    name: "VideoDetails",
+    component: VideoDetails,
+  },
+  {
+    path: "/themes",
+    name: "Themes",
+    component: Themes,
+    meta: { authorize: [] },
+  },
+  {
+    path: "/changepassword",
+    name: "ChangePassword",
+    component: ChangePassword,
+    meta: { authorize: [] },
+  },
+  {
+    path: "/login",
+    name: "Login",
+    component: Login,
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    component: Error,
+  },
+  //{
+  // path: "/about",
+  // name: "about",
+  // route level code-splitting
+  // this generates a separate chunk (about.[hash].js) for this route
+  // which is lazy-loaded when the route is visited.
+  //  component: () =>
+  //    import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
+  //},
+];
 
-import store from "@/store";
-
-const router = new Router({
-  mode: "history",
-  routes: [
-    {
-      path: "/",
-      name: "HelloWorld",
-      component: HelloWorld,
-    },
-    {
-      path: "/videos",
-      name: "VideoList",
-      component: VideoList,
-    },
-    {
-      path: "/videos/:id",
-      name: "VideoDetails",
-      component: VideoDetails,
-    },
-    {
-      path: "/themes",
-      name: "Themes",
-      component: Themes,
-      meta: { authorize: [] },
-    },
-    {
-      path: "/changepassword",
-      name: "ChangePassword",
-      component: ChangePassword,
-      meta: { authorize: [] },
-    },
-    {
-      path: "/login",
-      name: "Login",
-      component: Login,
-    },
-    {
-      path: "*",
-      component: Error,
-    },
-  ],
+const router = createRouter({
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  history: createWebHistory(process.env.BASE_URL as string),
+  routes,
 });
 
 function isInitialized(): boolean {

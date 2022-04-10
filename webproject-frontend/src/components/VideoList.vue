@@ -19,7 +19,7 @@
 -->
 <template>
   <div v-if="page != null">
-    <div class="text-center">
+    <div class="text-center select-none">
       <a
         class="bg-theme-background-highlight px-4 py-2 rounded-lg cursor-pointer"
         @click="openPreviousPage()"
@@ -54,19 +54,35 @@
         </router-link>
       </div>
     </div>
+    <div class="text-center select-none">
+      <a
+        class="bg-theme-background-highlight px-4 py-2 rounded-lg cursor-pointer"
+        @click="openPreviousPage()"
+        >Prev</a
+      >
+      <span class="mx-4">Page {{ page.number + 1 }}</span>
+      <a
+        class="bg-theme-background-highlight px-4 py-2 rounded-lg cursor-pointer"
+        @click="openNextPage()"
+        >Next</a
+      >
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import { mapActions, mapGetters } from "vuex";
 import { Video, Page, PageResponse } from "@/types";
+import { useToast } from "vue-toastification";
+
+const toast = useToast();
 
 declare interface BaseComponentData {
   page: PageResponse<Video> | null;
 }
 
-const VideoList = Vue.extend({
+export default defineComponent({
   name: "VideoList",
   data(): BaseComponentData {
     return {
@@ -89,7 +105,7 @@ const VideoList = Vue.extend({
           this.page = page;
         })
         .catch((error: Error) => {
-          this.$toast.error("Error while loading videos: " + error.message);
+          toast.error("Error while loading videos: " + error.message);
         });
     },
     openPreviousPage(): void {
@@ -104,6 +120,4 @@ const VideoList = Vue.extend({
     },
   },
 });
-
-export default VideoList;
 </script>

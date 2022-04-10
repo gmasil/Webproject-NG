@@ -16,4 +16,4 @@
 /// https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt
 ///
 
-declare module "one-colorpicker";
+declare module "vue-select";

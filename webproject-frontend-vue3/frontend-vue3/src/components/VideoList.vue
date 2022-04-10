@@ -19,7 +19,7 @@
 -->
 <template>
   <div v-if="page != null">
-    <div class="text-center">
+    <div class="text-center select-none">
       <a
         class="bg-theme-background-highlight px-4 py-2 rounded-lg cursor-pointer"
         @click="openPreviousPage()"
@@ -53,6 +53,19 @@
           </div>
         </router-link>
       </div>
+    </div>
+    <div class="text-center select-none">
+      <a
+        class="bg-theme-background-highlight px-4 py-2 rounded-lg cursor-pointer"
+        @click="openPreviousPage()"
+        >Prev</a
+      >
+      <span class="mx-4">Page {{ page.number + 1 }}</span>
+      <a
+        class="bg-theme-background-highlight px-4 py-2 rounded-lg cursor-pointer"
+        @click="openNextPage()"
+        >Next</a
+      >
     </div>
   </div>
 </template>

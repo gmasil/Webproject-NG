@@ -186,6 +186,15 @@ public class ScreenshotDriver implements TestExecutionListener {
         return take(foldername + "/" + defaultFilename);
     }
 
+    public File takeInTestFolder(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        return takeInTestFolder();
+    }
+
     public File takeInTestFolder() {
         String clazz = testContext.getTestClass().getSimpleName();
         String method = testContext.getTestMethod().getName();

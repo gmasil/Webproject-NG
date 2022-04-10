@@ -56,6 +56,6 @@ public class LoginPage extends Page {
         enterUsername(username);
         enterPassword(password);
         browser.findElement(inputSubmit).click();
-        assertThat(browser.findElement(spanUsername).getText(), is(equalTo(username)));
+        assertThat(browser.findElement(spanUsername).getText(), is(equalTo("Account: " + username)));
     }
 }

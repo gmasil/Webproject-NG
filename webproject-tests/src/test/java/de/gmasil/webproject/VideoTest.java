@@ -48,6 +48,6 @@ class VideoTest {
         videosPage.open();
         assertThat(videosPage.countVideos(), is(equalTo(10)));
         screenshot.waitUntilImagesareLoaded();
-        screenshot.takeInTestFolder();
+        screenshot.takeInTestFolder(1000);
     }
 }

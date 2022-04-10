@@ -30,7 +30,10 @@
       |
       <router-link v-if="!isAuthenticated()" to="/login">Login</router-link>
       <span v-if="!isAuthenticated()"> |</span>
-      <router-link v-if="isAuthenticated()" to="/changepassword"
+      <router-link
+        v-if="isAuthenticated()"
+        id="navbar-username"
+        to="/changepassword"
         >Account: {{ getUsername }}</router-link
       >
       |

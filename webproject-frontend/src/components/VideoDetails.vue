@@ -38,9 +38,9 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { mapActions } from "vuex";
 import { VideoFull } from "@/types";
 import { useToast } from "vue-toastification";
+import { loadVideo } from "@/service/video";
 
 const toast = useToast();
 
@@ -58,7 +58,7 @@ export default defineComponent({
     };
   },
   created(): void {
-    this.loadVideo(this.id)
+    loadVideo(this.id)
       .then((video: VideoFull) => {
         this.video = video;
       })
@@ -67,7 +67,6 @@ export default defineComponent({
       });
   },
   methods: {
-    ...mapActions(["loadVideo"]),
     formatSceneTime(time: number): string {
       let hrs = Math.floor(time / 3600);
       let mins = Math.floor((time % 3600) / 60);

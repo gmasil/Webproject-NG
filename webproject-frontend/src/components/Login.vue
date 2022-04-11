@@ -36,7 +36,6 @@ import { defineComponent } from "vue";
 import { mapGetters } from "vuex";
 
 export default defineComponent({
-  // eslint-disable-next-line vue/multi-word-component-names
   name: "Login",
   methods: {
     ...mapGetters(["isAccessRestricted"]),

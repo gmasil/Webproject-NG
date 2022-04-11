@@ -51,7 +51,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { mapActions } from "vuex";
+import { mapUserFunctions } from "@/service/user";
 import { ChangePasswordData } from "@/types";
 import { useToast } from "vue-toastification";
 
@@ -67,7 +67,7 @@ export default defineComponent({
     };
   },
   methods: {
-    ...mapActions(["changePassword"]),
+    ...mapUserFunctions(),
     onChangeClick() {
       if (this.newPassword != this.repeatPassword) {
         toast.error("Passwords mismatch");

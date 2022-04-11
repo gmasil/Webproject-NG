@@ -80,10 +80,11 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { mapActions, mapGetters } from "vuex";
+import { mapGetters } from "vuex";
 import { Theme } from "@/types";
 import { useToast } from "vue-toastification";
 import ColorPicker from "@/components/ColorPicker.vue";
+import { mapThemeFunctions } from "@/service/theme";
 
 const toast = useToast();
 
@@ -132,12 +133,7 @@ export default defineComponent({
       });
   },
   methods: {
-    ...mapActions([
-      "loadActiveTheme",
-      "loadAvailableThemes",
-      "saveTheme",
-      "activateTheme",
-    ]),
+    ...mapThemeFunctions(),
     ...mapGetters(["getCurrentUser", "getActiveTheme"]),
     onSaveClick(): void {
       if (this.selectedThemeCopy != null && this.selectedTheme != null) {
@@ -190,7 +186,7 @@ export default defineComponent({
           .catch((error: Error) => {
             toast.error("Error while saving theme: " + error.message);
           });
-      } else {
+      } else if (this.selectedTheme != null) {
         // create new theme
         this.saveTheme(this.selectedTheme)
           .then((savedTheme: Theme) => {
@@ -212,6 +208,8 @@ export default defineComponent({
           .catch((error: Error) => {
             toast.error("Error saving theme: " + error.message);
           });
+      } else {
+        toast.error("No theme selected");
       }
     },
     findIndexOfSelectedTheme(): number | null {

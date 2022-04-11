@@ -17,7 +17,7 @@
 ///
 
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import { AppProperties, User, CallbackFunction } from "@/types";
+import { User, CallbackFunction } from "@/types";
 import { store } from "@/store";
 import HelloWorld from "@/components/HelloWorld.vue";
 import VideoList from "@/components/VideoList.vue";
@@ -86,14 +86,14 @@ function isInitialized(): boolean {
 }
 
 function isPublicAccess(): boolean {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-  const props: AppProperties = store.getters["getAppProperties"];
-  return props.publicAccess;
+  if (store.state.appProperties != null) {
+    return store.state.appProperties.publicAccess;
+  }
+  return false;
 }
 
 function getCurrentUser(): User | null {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-  return store.getters["getCurrentUser"] as User | null;
+  return store.state.currentUser;
 }
 
 function waitForInit(callback: CallbackFunction): void {
@@ -106,7 +106,7 @@ function waitForInit(callback: CallbackFunction): void {
   }
 }
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
   if (to.path == "/login" || to.path == "/logout" || to.path == "/error") {
     next();
   }

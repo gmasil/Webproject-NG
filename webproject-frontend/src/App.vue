@@ -30,22 +30,25 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { mapActions, mapGetters } from "vuex";
+import { mapGetters } from "vuex";
 import { useToast } from "vue-toastification";
 import Coloris from "@melloware/coloris";
+import { loadActiveTheme } from "@/service/theme";
+import { loadAppProperties } from "@/service/app";
+import { loadCurrentUser } from "@/service/user";
 
 const toast = useToast();
 
 export default defineComponent({
   name: "App",
   created(): void {
-    this.loadAppProperties().catch(() =>
+    loadAppProperties().catch(() =>
       toast.error("Error while loading application properties")
     );
-    this.loadCurrentUser().catch(() =>
+    loadCurrentUser().catch(() =>
       toast.error("Error while loading current user")
     );
-    this.loadActiveTheme().catch(() =>
+    loadActiveTheme().catch(() =>
       toast.error("Error while loading active theme")
     );
   },
@@ -53,7 +56,6 @@ export default defineComponent({
     Coloris.init();
   },
   methods: {
-    ...mapActions(["loadAppProperties", "loadCurrentUser", "loadActiveTheme"]),
     ...mapGetters(["isInitialized", "isAccessRestricted"]),
   },
 });

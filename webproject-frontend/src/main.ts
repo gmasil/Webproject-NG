@@ -17,9 +17,9 @@
 ///
 
 import { createApp } from "vue";
-import App from "./App.vue";
-import { store, key } from "./store";
-import router from "./router";
+import App from "@/App.vue";
+import { store, key } from "@/store";
+import router from "@/router";
 import Toast from "vue-toastification";
 import vSelect from "vue-select";
 import Navbar from "@/components/Navbar.vue";

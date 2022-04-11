@@ -72,9 +72,9 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { mapActions, mapGetters } from "vuex";
 import { Video, Page, PageResponse } from "@/types";
 import { useToast } from "vue-toastification";
+import { mapVideoFunctions } from "@/service/video";
 
 const toast = useToast();
 
@@ -90,15 +90,10 @@ export default defineComponent({
     };
   },
   created(): void {
-    if (this.getVideos() != null) {
-      this.openPage((this.getVideos() as PageResponse<Video>).number);
-    } else {
-      this.openPage(0);
-    }
+    this.openPage(0);
   },
   methods: {
-    ...mapActions(["loadVideos"]),
-    ...mapGetters(["getVideos"]),
+    ...mapVideoFunctions(),
     openPage(pageNumber: number): void {
       this.loadVideos({ size: 10, page: pageNumber, sort: "id" } as Page)
         .then((page: PageResponse<Video>) => {

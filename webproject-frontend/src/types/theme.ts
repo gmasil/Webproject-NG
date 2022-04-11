@@ -28,9 +28,27 @@ export class Theme {
   textColor?: string;
   preset?: boolean;
 
+  public static copy(theme: Theme): Theme {
+    return Object.assign(new Theme(), theme);
+  }
+
+  public static copyList(themes: Theme[]): Theme[] {
+    for (let index = 0; index < themes.length; index++) {
+      themes[index] = Theme.copy(themes[index]);
+    }
+    return themes;
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public static fromResponse(response: AxiosResponse<any, any>): Theme {
-    return Object.assign(new Theme(), response.data) as Theme;
+  public static fromResponse(response: AxiosResponse<Theme, any>): Theme {
+    return Theme.copy(response.data);
+  }
+
+  public static fromResponseList(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    response: AxiosResponse<Theme[], any>
+  ): Theme[] {
+    return Theme.copyList(response.data);
   }
 
   public applyTheme(): void {

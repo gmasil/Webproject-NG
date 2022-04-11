@@ -16,7 +16,7 @@
 /// https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt
 ///
 
-import { store } from "@/store";
+import { useStore } from "@/store/pinia";
 import axios from "axios";
 import { User, ChangePasswordData } from "@/types";
 
@@ -25,13 +25,15 @@ export const loadCurrentUser = (): Promise<User | null> => {
     axios
       .get("/api/users/current")
       .then((response) => {
+        const store = useStore();
         if (response.data !== "") {
           const user: User = response.data as User;
-          store.commit("setCurrentUser", user);
-          store.commit("setCurrentUser", user);
+          store.currentUser = user;
+          store.initializedUser = true;
           resolve(user);
         } else {
-          store.commit("setCurrentUser", null);
+          store.currentUser = null;
+          store.initializedUser = true;
           resolve(null);
         }
       })

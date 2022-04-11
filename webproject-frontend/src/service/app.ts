@@ -16,7 +16,7 @@
 /// https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt
 ///
 
-import { store } from "@/store";
+import { useStore } from "@/store/pinia";
 import axios from "axios";
 import { AppProperties } from "@/types";
 
@@ -26,7 +26,8 @@ export const loadAppProperties = (): Promise<AppProperties> => {
       .get("/api/app/config")
       .then((response) => {
         const props: AppProperties = response.data as AppProperties;
-        store.commit("setAppProperties", props);
+        const store = useStore();
+        store.appProperties = props;
         resolve(props);
       })
       .catch((error: Error) => {

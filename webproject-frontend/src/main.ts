@@ -17,8 +17,8 @@
 ///
 
 import { createApp } from "vue";
+import { createPinia } from "pinia";
 import App from "@/App.vue";
-import { store, key } from "@/store";
 import router from "@/router";
 import Toast from "vue-toastification";
 import vSelect from "vue-select";
@@ -29,7 +29,9 @@ import "tailwindcss/tailwind.css";
 import "vue-select/dist/vue-select.css";
 import "@melloware/coloris/dist/coloris.css";
 
-const app = createApp(App).use(store, key).use(router);
+const pinia = createPinia();
+
+const app = createApp(App).use(pinia).use(router);
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 app.component("VSelect", vSelect);

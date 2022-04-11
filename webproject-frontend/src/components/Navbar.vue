@@ -24,39 +24,34 @@
       |
       <router-link to="/videos">Videos</router-link>
       |
-      <router-link v-if="isAuthenticated()" class="inline-block" to="/themes"
+      <router-link v-if="isAuthenticated" class="inline-block" to="/themes"
         >Themes</router-link
       >
       |
-      <router-link v-if="!isAuthenticated()" to="/login">Login</router-link>
-      <span v-if="!isAuthenticated()"> |</span>
+      <router-link v-if="!isAuthenticated" to="/login">Login</router-link>
+      <span v-if="!isAuthenticated"> |</span>
       <router-link
-        v-if="isAuthenticated()"
+        v-if="isAuthenticated"
         id="navbar-username"
         to="/changepassword"
         >Account: {{ getUsername }}</router-link
       >
       |
-      <a v-if="isAuthenticated()" href="/logout">Logout</a>
+      <a v-if="isAuthenticated" href="/logout">Logout</a>
     </div>
-    <hr v-if="isAuthenticated()" class="border-theme-text my-2" />
+    <hr v-if="isAuthenticated" class="border-theme-text my-2" />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { mapGetters } from "vuex";
-import { User } from "@/types";
+import { mapState } from "pinia";
+import { useStore } from "@/store/pinia";
 
 export default defineComponent({
   name: "Navbar",
   computed: {
-    getUsername: function (): string {
-      return (this.getCurrentUser() as User).username;
-    },
-  },
-  methods: {
-    ...mapGetters(["isAuthenticated", "getCurrentUser"]),
+    ...mapState(useStore, ["isAuthenticated", "getUsername"]),
   },
 });
 </script>

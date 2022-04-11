@@ -16,8 +16,7 @@
 /// https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt
 ///
 
-import { InjectionKey } from "vue";
-import { useStore as baseUseStore, createStore, Store } from "vuex";
+import { defineStore } from "pinia";
 import { AppProperties, Theme, User } from "@/types";
 
 export class State {
@@ -27,15 +26,15 @@ export class State {
   activeTheme: Theme | null = null;
 }
 
-export const key: InjectionKey<Store<State>> = Symbol();
-
-export const store = createStore<State>({
-  state: new State(),
+export const useStore = defineStore("main", {
+  state: () => {
+    return new State();
+  },
   getters: {
-    isInitialized(state): boolean {
+    isInitialized: (state) => {
       return state.initializedUser && state.appProperties != null;
     },
-    isAccessRestricted(state): boolean {
+    isAccessRestricted: (state) => {
       if (state.appProperties == null) {
         return true;
       }
@@ -45,36 +44,14 @@ export const store = createStore<State>({
         return state.currentUser == null;
       }
     },
-    getCurrentUser(state): User | null {
-      return state.currentUser;
-    },
-    getAppProperties(state): AppProperties | null {
-      return state.appProperties;
-    },
-    getActiveTheme(state): Theme | null {
-      return state.activeTheme;
-    },
     isAuthenticated(state): boolean {
       return state.currentUser != null;
     },
-  },
-  mutations: {
-    setCurrentUser(state, data: User): void {
-      state.currentUser = data;
-      state.initializedUser = true;
-    },
-    setAppProperties(state, data: AppProperties): void {
-      state.appProperties = data;
-    },
-    setActiveTheme(state, data: Theme): void {
-      state.activeTheme = data;
-      if (state.activeTheme != null) {
-        state.activeTheme.applyTheme();
+    getUsername(state): string {
+      if (state.currentUser != null) {
+        return state.currentUser.username;
       }
+      return "Unauthorized";
     },
   },
 });
-
-export function useStore(): Store<State> {
-  return baseUseStore(key);
-}

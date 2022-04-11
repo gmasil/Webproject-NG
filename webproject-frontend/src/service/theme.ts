@@ -16,7 +16,7 @@
 /// https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt
 ///
 
-import { store } from "@/store";
+import { useStore } from "@/store/pinia";
 import axios from "axios";
 import { Theme } from "@/types";
 
@@ -26,7 +26,11 @@ export const loadActiveTheme = (): Promise<Theme> => {
       .get<Theme>("/api/themes/active")
       .then((response) => {
         const theme: Theme = Theme.fromResponse(response);
-        store.commit("setActiveTheme", theme);
+        const store = useStore();
+        store.activeTheme = theme;
+        if (theme != null) {
+          theme.applyTheme();
+        }
         resolve(theme);
       })
       .catch((error: Error) => {

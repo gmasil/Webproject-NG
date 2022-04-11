@@ -17,8 +17,8 @@
 ///
 
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import { User, CallbackFunction } from "@/types";
-import { store } from "@/store";
+import { CallbackFunction } from "@/types";
+import { useStore } from "@/store/pinia";
 import HelloWorld from "@/components/HelloWorld.vue";
 import VideoList from "@/components/VideoList.vue";
 import VideoDetails from "@/components/VideoDetails.vue";
@@ -80,24 +80,8 @@ const router = createRouter({
   routes,
 });
 
-function isInitialized(): boolean {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
-  return store.getters["isInitialized"];
-}
-
-function isPublicAccess(): boolean {
-  if (store.state.appProperties != null) {
-    return store.state.appProperties.publicAccess;
-  }
-  return false;
-}
-
-function getCurrentUser(): User | null {
-  return store.state.currentUser;
-}
-
 function waitForInit(callback: CallbackFunction): void {
-  if (!isInitialized()) {
+  if (!useStore().isInitialized) {
     setTimeout(function () {
       waitForInit(callback);
     }, 50);
@@ -110,13 +94,14 @@ router.beforeEach((to, _from, next) => {
   if (to.path == "/login" || to.path == "/logout" || to.path == "/error") {
     next();
   }
+  const store = useStore();
   waitForInit(() => {
-    if (!isPublicAccess() && getCurrentUser() == null) {
+    if (store.isAccessRestricted) {
       return next({ path: "/login" });
     }
     const authorize: boolean = to.meta?.authorize as boolean;
     if (authorize) {
-      if (getCurrentUser() == null) {
+      if (!store.isAuthenticated) {
         return next({ path: "/error" });
       } else {
         next();

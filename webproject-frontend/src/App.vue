@@ -19,18 +19,19 @@
 -->
 <template>
   <div
-    v-if="isInitialized()"
+    v-if="isInitialized"
     id="app"
     class="bg-theme-background min-h-screen text-theme-text"
   >
-    <navbar v-if="!isAccessRestricted()" />
+    <navbar v-if="!isAccessRestricted" />
     <router-view />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { mapGetters } from "vuex";
+import { mapState, mapStores } from "pinia";
+import { useStore } from "@/store/pinia";
 import { useToast } from "vue-toastification";
 import Coloris from "@melloware/coloris";
 import { loadActiveTheme } from "@/service/theme";
@@ -41,6 +42,10 @@ const toast = useToast();
 
 export default defineComponent({
   name: "App",
+  computed: {
+    ...mapStores(useStore),
+    ...mapState(useStore, ["isInitialized", "isAccessRestricted"]),
+  },
   created(): void {
     loadAppProperties().catch(() =>
       toast.error("Error while loading application properties")
@@ -54,9 +59,6 @@ export default defineComponent({
   },
   mounted(): void {
     Coloris.init();
-  },
-  methods: {
-    ...mapGetters(["isInitialized", "isAccessRestricted"]),
   },
 });
 </script>

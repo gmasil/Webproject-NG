@@ -19,7 +19,7 @@
 -->
 <template>
   <div>
-    <h1 v-if="isAccessRestricted()">Restricted Access!</h1>
+    <h1 v-if="isAccessRestricted">Restricted Access!</h1>
     <h1>Login</h1>
     <form method="post" action="/performlogin">
       <input id="login-input-username" type="text" name="username" />
@@ -33,12 +33,13 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { mapGetters } from "vuex";
+import { mapState } from "pinia";
+import { useStore } from "@/store/pinia";
 
 export default defineComponent({
   name: "Login",
-  methods: {
-    ...mapGetters(["isAccessRestricted"]),
+  computed: {
+    ...mapState(useStore, ["isAccessRestricted"]),
   },
 });
 </script>

@@ -80,7 +80,8 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { mapGetters } from "vuex";
+import { mapStores } from "pinia";
+import { useStore } from "@/store/pinia";
 import { Theme } from "@/types";
 import { useToast } from "vue-toastification";
 import ColorPicker from "@/components/ColorPicker.vue";
@@ -106,6 +107,9 @@ export default defineComponent({
       selectedThemeCopy: null,
     };
   },
+  computed: {
+    ...mapStores(useStore),
+  },
   watch: {
     selectedTheme() {
       this.onResetClick();
@@ -115,7 +119,7 @@ export default defineComponent({
     this.loadAvailableThemes()
       .then((themes: Theme[]) => {
         this.themes = themes;
-        const activeTheme: Theme = this.getActiveTheme() as Theme;
+        const activeTheme: Theme = this.mainStore.activeTheme as Theme;
         if (this.themes.length > 0) {
           for (let theme of themes) {
             if (theme.id == activeTheme.id) {
@@ -134,7 +138,6 @@ export default defineComponent({
   },
   methods: {
     ...mapThemeFunctions(),
-    ...mapGetters(["getCurrentUser", "getActiveTheme"]),
     onSaveClick(): void {
       if (this.selectedThemeCopy != null && this.selectedTheme != null) {
         this.patchTheme(this.selectedThemeCopy, this.selectedTheme);

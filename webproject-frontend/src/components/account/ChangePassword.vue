@@ -51,7 +51,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { mapUserFunctions } from "@/service/user";
+import { userService } from "@/service/user";
 import { ChangePasswordData } from "@/types";
 import { useToast } from "vue-toastification";
 import { AxiosError } from "axios";
@@ -68,7 +68,6 @@ export default defineComponent({
     };
   },
   methods: {
-    ...mapUserFunctions(),
     onChangeClick() {
       if (this.newPassword != this.repeatPassword) {
         toast.error("Passwords mismatch");
@@ -78,10 +77,11 @@ export default defineComponent({
         toast.error("Passwords must have at least 8 characters");
         return;
       }
-      this.changePassword({
-        currentPassword: this.currentPassword,
-        newPassword: this.newPassword,
-      } as ChangePasswordData)
+      userService
+        .changePassword({
+          currentPassword: this.currentPassword,
+          newPassword: this.newPassword,
+        } as ChangePasswordData)
         .then(() => {
           toast.success("Password changed successsfully");
         })

@@ -47,9 +47,9 @@ export const loadVideos = (page: Page): Promise<PageResponse<Video>> => {
   });
 };
 
-export const mapVideoFunctions = () => {
-  return {
-    loadVideo,
-    loadVideos,
-  };
+export const videoService = {
+  loadVideo,
+  loadVideos,
 };
+
+export default videoService;

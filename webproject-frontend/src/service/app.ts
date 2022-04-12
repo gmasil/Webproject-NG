@@ -36,8 +36,8 @@ export const loadAppProperties = (): Promise<AppProperties> => {
   });
 };
 
-export const mapAppFunctions = () => {
-  return {
-    loadAppProperties,
-  };
+export const appService = {
+  loadAppProperties,
 };
+
+export default appService;

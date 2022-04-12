@@ -92,11 +92,11 @@ export const activateTheme = (themeId: number): Promise<void> => {
   });
 };
 
-export const mapThemeFunctions = () => {
-  return {
-    loadActiveTheme,
-    loadAvailableThemes,
-    saveTheme,
-    activateTheme,
-  };
+export const themeService = {
+  loadActiveTheme,
+  loadAvailableThemes,
+  saveTheme,
+  activateTheme,
 };
+
+export default themeService;

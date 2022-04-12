@@ -75,7 +75,7 @@ if test -f "${SOURCE_FOLDER}/${DATA_FILE}"; then
     IMPORT_ARGS="-v ${SOURCE_FOLDER}/${DATA_FILE}:/import.yml:Z -e DATAIMPORT_ENABLED=true -e DATAIMPORT_CLEAN=true -e DATAIMPORT_FILE=/import.yml"
 fi
 
-DB_ARGS=[]
+DB_ARGS=""
 if [ ${POSTGRES} == "true" ]; then
     DB_ARGS=(--add-host=host.docker.internal:host-gateway -e "SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQL95Dialect" -e "SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/webproject" -e "SPRING_DATASOURCE_USERNAME=webproject" -e "SPRING_DATASOURCE_PASSWORD=webproject")
 fi

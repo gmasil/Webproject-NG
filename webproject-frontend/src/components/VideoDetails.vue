@@ -58,7 +58,7 @@ import { reactive, ref, Ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { VideoFull } from "@/types";
 import { useToast } from "vue-toastification";
-import { loadVideo } from "@/service/video";
+import { videoService } from "@/service/video";
 import { AxiosError } from "axios";
 
 const toast = useToast();
@@ -78,7 +78,8 @@ const data = reactive({
 }) as BaseComponentData;
 
 onMounted(() => {
-  loadVideo(data.id)
+  videoService
+    .loadVideo(data.id)
     .then((video: VideoFull) => {
       data.video = video;
     })

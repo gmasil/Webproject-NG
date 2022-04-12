@@ -34,9 +34,9 @@ import { mapState, mapStores } from "pinia";
 import { useStore } from "@/store/pinia";
 import { useToast } from "vue-toastification";
 import Coloris from "@melloware/coloris";
-import { loadActiveTheme } from "@/service/theme";
-import { loadAppProperties } from "@/service/app";
-import { loadCurrentUser } from "@/service/user";
+import { themeService } from "@/service/theme";
+import { appService } from "@/service/app";
+import { userService } from "@/service/user";
 
 const toast = useToast();
 
@@ -47,15 +47,15 @@ export default defineComponent({
     ...mapState(useStore, ["isInitialized", "isAccessRestricted"]),
   },
   created(): void {
-    loadAppProperties().catch(() =>
-      toast.error("Error while loading application properties")
-    );
-    loadCurrentUser().catch(() =>
-      toast.error("Error while loading current user")
-    );
-    loadActiveTheme().catch(() =>
-      toast.error("Error while loading active theme")
-    );
+    appService
+      .loadAppProperties()
+      .catch(() => toast.error("Error while loading application properties"));
+    userService
+      .loadCurrentUser()
+      .catch(() => toast.error("Error while loading current user"));
+    themeService
+      .loadActiveTheme()
+      .catch(() => toast.error("Error while loading active theme"));
   },
   mounted(): void {
     Coloris.init();

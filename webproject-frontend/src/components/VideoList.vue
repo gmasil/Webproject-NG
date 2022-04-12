@@ -74,7 +74,7 @@
 import { defineComponent } from "vue";
 import { Video, Page, PageResponse } from "@/types";
 import { useToast } from "vue-toastification";
-import { mapVideoFunctions } from "@/service/video";
+import { videoService } from "@/service/video";
 import { AxiosError } from "axios";
 
 const toast = useToast();
@@ -94,9 +94,9 @@ export default defineComponent({
     this.openPage(0);
   },
   methods: {
-    ...mapVideoFunctions(),
     openPage(pageNumber: number): void {
-      this.loadVideos({ size: 10, page: pageNumber, sort: "id" } as Page)
+      videoService
+        .loadVideos({ size: 10, page: pageNumber, sort: "id" } as Page)
         .then((page: PageResponse<Video>) => {
           this.page = page;
         })

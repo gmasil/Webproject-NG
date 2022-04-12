@@ -57,9 +57,9 @@ export const changePassword = (data: ChangePasswordData): Promise<void> => {
   });
 };
 
-export const mapUserFunctions = () => {
-  return {
-    loadCurrentUser,
-    changePassword,
-  };
+export const userService = {
+  loadCurrentUser,
+  changePassword,
 };
+
+export default userService;

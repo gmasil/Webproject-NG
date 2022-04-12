@@ -85,7 +85,7 @@ import { useStore } from "@/store/pinia";
 import { Theme } from "@/types";
 import { useToast } from "vue-toastification";
 import ColorPicker from "@/components/ColorPicker.vue";
-import { mapThemeFunctions } from "@/service/theme";
+import { themeService } from "@/service/theme";
 import { AxiosError } from "axios";
 
 const toast = useToast();
@@ -117,7 +117,8 @@ export default defineComponent({
     },
   },
   created(): void {
-    this.loadAvailableThemes()
+    themeService
+      .loadAvailableThemes()
       .then((themes: Theme[]) => {
         this.themes = themes;
         const activeTheme: Theme = this.mainStore.activeTheme as Theme;
@@ -138,7 +139,6 @@ export default defineComponent({
       });
   },
   methods: {
-    ...mapThemeFunctions(),
     onSaveClick(): void {
       if (this.selectedThemeCopy != null && this.selectedTheme != null) {
         this.patchTheme(this.selectedThemeCopy, this.selectedTheme);
@@ -180,7 +180,8 @@ export default defineComponent({
     persistSelectedTheme(activate: boolean): void {
       if (this.selectedTheme?.id != null) {
         // update theme
-        this.saveTheme(this.selectedTheme)
+        themeService
+          .saveTheme(this.selectedTheme)
           .then(() => {
             toast.success("Theme saved successfully");
             if (activate) {
@@ -192,7 +193,8 @@ export default defineComponent({
           });
       } else if (this.selectedTheme != null) {
         // create new theme
-        this.saveTheme(this.selectedTheme)
+        themeService
+          .saveTheme(this.selectedTheme)
           .then((savedTheme: Theme) => {
             let index: number | null = this.findIndexOfSelectedTheme();
             if (index == null) {
@@ -226,11 +228,12 @@ export default defineComponent({
     },
     onActivateClick(): void {
       if (this.selectedTheme?.id != null) {
-        this.activateTheme(this.selectedTheme.id)
+        themeService
+          .activateTheme(this.selectedTheme.id)
           .then(() => {
-            this.loadActiveTheme().catch(() =>
-              toast.error("Error while loading active theme")
-            );
+            themeService
+              .loadActiveTheme()
+              .catch(() => toast.error("Error while loading active theme"));
           })
           .catch((error: AxiosError) => {
             toast.error("Error while activating theme: " + error.message);

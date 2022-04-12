@@ -34,4 +34,5 @@ public class DataImportProperties {
     private boolean enabled;
     private String file;
     private boolean clean;
+    private boolean importOnly;
 }

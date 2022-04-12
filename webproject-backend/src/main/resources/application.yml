@@ -48,8 +48,9 @@ app:
 
 dataimport:
   enabled: false
-  file: data.yml
+  file: /data.yml
   clean: false
+  import-only: false
 
 init:
   skip: false

@@ -56,6 +56,12 @@
     "sourceType": "de.gmasil.webproject.service.dataimport.DataImportProperties"
   },
   {
+    "name": "dataimport.import-only",
+    "type": "java.lang.Boolean",
+    "description": "Import data only and shutdown application afterwards",
+    "sourceType": "de.gmasil.webproject.service.dataimport.DataImportProperties"
+  },
+  {
     "name": "init.skip",
     "type": "java.lang.Boolean",
     "description": "Skip initialization",

@@ -33,11 +33,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.event.EventListener;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
@@ -73,7 +70,6 @@ import de.gmasil.webproject.service.dataimport.ImportData.ImportVideo.ImportComm
 import de.gmasil.webproject.service.dataimport.ImportData.ImportVideo.ImportFile;
 import de.gmasil.webproject.service.dataimport.ImportData.ImportVideo.ImportRating;
 import de.gmasil.webproject.service.dataimport.ImportData.ImportVideo.ImportScene;
-import de.gmasil.webproject.service.initialize.InitializeFinishedEvent;
 
 @Service
 public class DataImportService {
@@ -136,8 +132,7 @@ public class DataImportService {
     private EntityManager entityManager;
 
     @Transactional
-    @EventListener(ApplicationReadyEvent.class)
-    public void clean() {
+    public void cleanIfRequested() {
         if (properties.isEnabled() && properties.isClean()) {
             performClean();
         }
@@ -146,8 +141,7 @@ public class DataImportService {
 
     @Transactional
     public void performClean() {
-        List<JpaRepository<?, ?>> repositories = ctx.getBeansOfType(JpaRepository.class).values().stream()
-                .map(s -> (JpaRepository<?, ?>) s).collect(Collectors.toList());
+        List<JpaRepository<?, ?>> repositories = getRepositories();
         LOG.info("Cleaning {} repositories", repositories.size());
         boolean isPostgres = isPostgreSQL();
         if (isPostgres) {
@@ -168,20 +162,11 @@ public class DataImportService {
     }
 
     @Transactional
-    @EventListener(InitializeFinishedEvent.class)
-    public void importData() throws IOException {
+    public void importDataIfRequested() throws IOException {
         if (properties.isEnabled()) {
             performDataImport();
         }
         eventPublisher.publishEvent(new DataImportFinishedEvent(this));
-    }
-
-    @EventListener(DataImportFinishedEvent.class)
-    public void afterimportData() {
-        if (properties.isImportOnly()) {
-            LOG.info("Dataimport only, shutting down...");
-            SpringApplication.exit(ctx, () -> 0);
-        }
     }
 
     @Transactional
@@ -320,5 +305,10 @@ public class DataImportService {
             throw new IllegalStateException(String.format(UNREFERENCED_USER, username, video.getTitle()));
         }
         return optionalUser.get();
+    }
+
+    private List<JpaRepository<?, ?>> getRepositories() {
+        return ctx.getBeansOfType(JpaRepository.class).values().stream().map(s -> (JpaRepository<?, ?>) s)
+                .collect(Collectors.toList());
     }
 }

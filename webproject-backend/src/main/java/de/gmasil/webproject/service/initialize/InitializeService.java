@@ -23,11 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
-
-import de.gmasil.webproject.service.dataimport.CleanFinishedEvent;
 
 @Service
 public class InitializeService {
@@ -46,8 +43,7 @@ public class InitializeService {
     @Autowired
     private ApplicationEventPublisher eventPublisher;
 
-    @EventListener(CleanFinishedEvent.class)
-    public void initialization() {
+    public void initialize() {
         if (!properties.isSkip()) {
             StopWatch watch = new StopWatch();
             watch.start();

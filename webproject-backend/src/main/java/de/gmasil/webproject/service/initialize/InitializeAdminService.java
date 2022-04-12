@@ -19,6 +19,8 @@ package de.gmasil.webproject.service.initialize;
 
 import java.lang.invoke.MethodHandles;
 
+import javax.transaction.Transactional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +52,7 @@ public class InitializeAdminService {
     @Autowired
     private RoleRepository roleRepo;
 
+    @Transactional
     public void initAdminUser() {
         if (!userService.hasUsers()) {
             AdminProperties admin = properties.getAdmin();

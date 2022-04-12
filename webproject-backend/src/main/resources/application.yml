@@ -23,6 +23,7 @@ management:
 
 server:
   port: 6900
+  shutdown: graceful
   tomcat:
     remoteip:
       protocol-header: X-Forwarded-Proto

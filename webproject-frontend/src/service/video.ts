@@ -16,17 +16,17 @@
 /// https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt
 ///
 
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { Page, PageResponse, Video, VideoFull } from "@/types";
 
 export const loadVideo = (id: string): Promise<VideoFull> => {
   return new Promise<VideoFull>((resolve, reject) => {
     axios
-      .get(`/api/videos/${id}`)
+      .get<VideoFull>(`/api/videos/${id}`)
       .then((response) => {
         resolve(VideoFull.fromResponse(response));
       })
-      .catch((error: Error) => {
+      .catch((error: AxiosError) => {
         reject(error);
       });
   });
@@ -41,7 +41,7 @@ export const loadVideos = (page: Page): Promise<PageResponse<Video>> => {
           response.data as PageResponse<Video>;
         resolve(pageResponse);
       })
-      .catch((error: Error) => {
+      .catch((error: AxiosError) => {
         reject(error);
       });
   });

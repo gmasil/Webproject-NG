@@ -75,6 +75,7 @@ import { defineComponent } from "vue";
 import { Video, Page, PageResponse } from "@/types";
 import { useToast } from "vue-toastification";
 import { mapVideoFunctions } from "@/service/video";
+import { AxiosError } from "axios";
 
 const toast = useToast();
 
@@ -99,7 +100,7 @@ export default defineComponent({
         .then((page: PageResponse<Video>) => {
           this.page = page;
         })
-        .catch((error: Error) => {
+        .catch((error: AxiosError) => {
           toast.error("Error while loading videos: " + error.message);
         });
     },

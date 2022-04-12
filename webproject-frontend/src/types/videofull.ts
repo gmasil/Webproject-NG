@@ -37,9 +37,11 @@ export class VideoFull {
   rating?: number;
   scenes?: Scene[];
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public static fromResponse(response: AxiosResponse<any, any>): VideoFull {
-    const video = Object.assign(new VideoFull(), response.data) as VideoFull;
+  public static fromResponse(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    response: AxiosResponse<VideoFull, any>
+  ): VideoFull {
+    const video = Object.assign(new VideoFull(), response.data);
     video.scenes?.sort((a: Scene, b: Scene) => {
       if (a.time < b.time) {
         return -1;

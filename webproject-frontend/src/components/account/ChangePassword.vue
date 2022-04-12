@@ -54,6 +54,7 @@ import { defineComponent } from "vue";
 import { mapUserFunctions } from "@/service/user";
 import { ChangePasswordData } from "@/types";
 import { useToast } from "vue-toastification";
+import { AxiosError } from "axios";
 
 const toast = useToast();
 
@@ -84,7 +85,7 @@ export default defineComponent({
         .then(() => {
           toast.success("Password changed successsfully");
         })
-        .catch((error: Error) => {
+        .catch((error: AxiosError) => {
           toast.error("Error changing password: " + error.message);
         });
     },

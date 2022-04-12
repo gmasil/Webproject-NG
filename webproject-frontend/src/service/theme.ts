@@ -17,7 +17,7 @@
 ///
 
 import { useStore } from "@/store/pinia";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { Theme } from "@/types";
 
 export const loadActiveTheme = (): Promise<Theme> => {
@@ -33,7 +33,7 @@ export const loadActiveTheme = (): Promise<Theme> => {
         }
         resolve(theme);
       })
-      .catch((error: Error) => {
+      .catch((error: AxiosError) => {
         reject(error);
       });
   });
@@ -46,7 +46,7 @@ export const loadAvailableThemes = (): Promise<Theme[]> => {
       .then((response) => {
         resolve(Theme.fromResponseList(response));
       })
-      .catch((error: Error) => {
+      .catch((error: AxiosError) => {
         reject(error);
       });
   });
@@ -62,7 +62,7 @@ export const saveTheme = (theme: Theme): Promise<Theme> => {
         .then((response) => {
           resolve(Theme.fromResponse(response));
         })
-        .catch((error: Error) => {
+        .catch((error: AxiosError) => {
           reject(error);
         });
     } else {
@@ -72,7 +72,7 @@ export const saveTheme = (theme: Theme): Promise<Theme> => {
         .then((response) => {
           resolve(Theme.fromResponse(response));
         })
-        .catch((error: Error) => {
+        .catch((error: AxiosError) => {
           reject(error);
         });
     }
@@ -86,7 +86,7 @@ export const activateTheme = (themeId: number): Promise<void> => {
       .then(() => {
         resolve();
       })
-      .catch((error: Error) => {
+      .catch((error: AxiosError) => {
         reject(error);
       });
   });

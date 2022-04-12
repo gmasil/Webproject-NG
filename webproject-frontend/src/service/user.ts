@@ -17,7 +17,7 @@
 ///
 
 import { useStore } from "@/store/pinia";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { User, ChangePasswordData } from "@/types";
 
 export const loadCurrentUser = (): Promise<User | null> => {
@@ -37,7 +37,7 @@ export const loadCurrentUser = (): Promise<User | null> => {
           resolve(null);
         }
       })
-      .catch((error: Error) => {
+      .catch((error: AxiosError) => {
         reject(error);
       });
   });
@@ -51,7 +51,7 @@ export const changePassword = (data: ChangePasswordData): Promise<void> => {
       .then(() => {
         resolve();
       })
-      .catch((error: Error) => {
+      .catch((error: AxiosError) => {
         reject(error);
       });
   });

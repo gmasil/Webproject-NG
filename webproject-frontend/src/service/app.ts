@@ -17,7 +17,7 @@
 ///
 
 import { useStore } from "@/store/pinia";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { AppProperties } from "@/types";
 
 export const loadAppProperties = (): Promise<AppProperties> => {
@@ -30,7 +30,7 @@ export const loadAppProperties = (): Promise<AppProperties> => {
         store.appProperties = props;
         resolve(props);
       })
-      .catch((error: Error) => {
+      .catch((error: AxiosError) => {
         reject(error);
       });
   });

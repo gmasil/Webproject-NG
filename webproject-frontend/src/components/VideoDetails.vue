@@ -18,67 +18,103 @@
 
 -->
 <template>
-  <div v-if="video != null">
-    <h1 class="text-theme-text">
-      {{ video.title }}
-    </h1>
-    <video class="w-6/12" :poster="video.thumbnail" controls>
-      <source :src="video.files[0].name" type="video/mp4" />
-    </video>
-    <div>
-      <table>
-        <tr v-for="scene in video.scenes" :key="scene.id">
-          <td class="pr-4">{{ scene.name }}</td>
-          <td>{{ formatSceneTime(scene.time) }}</td>
-        </tr>
-      </table>
+  <div>
+    <div v-if="data.video != null">
+      <video
+        ref="videoElement"
+        class="md:w-6/12 w-full mx-auto"
+        :poster="data.video.thumbnail"
+        controls
+      >
+        <source :src="data.video.files[0].name" type="video/mp4" />
+      </video>
+      <h1 class="text-center text-2xl">
+        {{ data.video.title }}
+      </h1>
+      <div>
+        <table>
+          <tr v-for="scene in data.video.scenes" :key="scene.id">
+            <td class="pr-4">{{ scene.name }}</td>
+            <td>
+              <a @click="jumpVideoTo(scene.time)">
+                {{ formatSceneTime(scene.time) }}
+              </a>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div v-if="data.loadingError != null">
+      <h1 class="text-center text-2xl">{{ data.loadingError }}</h1>
+    </div>
+    <div v-if="data.video == null && data.loadingError == null">
+      <h1 class="text-center text-2xl">Loading...</h1>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script lang="ts" setup>
+import { reactive, ref, Ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
 import { VideoFull } from "@/types";
 import { useToast } from "vue-toastification";
 import { loadVideo } from "@/service/video";
+import { AxiosError } from "axios";
 
 const toast = useToast();
+const route = useRoute();
+const videoElement: Ref<HTMLVideoElement | undefined> = ref();
 
 declare interface BaseComponentData {
   id: string;
   video: VideoFull | null;
+  loadingError: string | null;
 }
 
-export default defineComponent({
-  name: "VideoDetails",
-  data(): BaseComponentData {
-    return {
-      id: this.$route.params.id as string,
-      video: null,
-    };
-  },
-  created(): void {
-    loadVideo(this.id)
-      .then((video: VideoFull) => {
-        this.video = video;
-      })
-      .catch((error: Error) => {
+const data = reactive({
+  id: route.params.id as string,
+  video: null,
+  loadingError: null,
+}) as BaseComponentData;
+
+onMounted(() => {
+  loadVideo(data.id)
+    .then((video: VideoFull) => {
+      data.video = video;
+    })
+    .catch((error: AxiosError) => {
+      if (error.response?.status === 404) {
+        toast.error("Video does not exist");
+        data.loadingError = "Video not found";
+      } else {
         toast.error("Error while loading video: " + error.message);
-      });
-  },
-  methods: {
-    formatSceneTime(time: number): string {
-      let hrs = Math.floor(time / 3600);
-      let mins = Math.floor((time % 3600) / 60);
-      let secs = Math.floor(time % 60);
-      let ret = "";
-      if (hrs > 0) {
-        ret += `${hrs}:`;
+        data.loadingError = "Error while loading video";
       }
-      ret += `${mins < 10 ? "0" : ""}${mins}:`;
-      ret += `${secs < 10 ? "0" : ""}${secs}`;
-      return ret;
-    },
-  },
+    });
 });
+
+defineExpose({
+  formatSceneTime,
+  jumpVideoTo,
+  videoElement,
+});
+
+function jumpVideoTo(time: number) {
+  if (videoElement.value) {
+    videoElement.value.currentTime = time;
+  }
+}
+
+function formatSceneTime(time: number): string {
+  let hrs = Math.floor(time / 3600);
+  let mins = Math.floor((time % 3600) / 60);
+  let secs = Math.floor(time % 60);
+  let ret = "";
+  if (hrs > 0) {
+    ret += `${hrs}:`;
+  }
+  ret += `${mins < 10 ? "0" : ""}${mins}:`;
+  ret += `${secs < 10 ? "0" : ""}${secs}`;
+  return ret;
+}
 </script>

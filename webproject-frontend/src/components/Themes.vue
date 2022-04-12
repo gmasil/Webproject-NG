@@ -86,6 +86,7 @@ import { Theme } from "@/types";
 import { useToast } from "vue-toastification";
 import ColorPicker from "@/components/ColorPicker.vue";
 import { mapThemeFunctions } from "@/service/theme";
+import { AxiosError } from "axios";
 
 const toast = useToast();
 
@@ -132,7 +133,7 @@ export default defineComponent({
           }
         }
       })
-      .catch((error: Error) => {
+      .catch((error: AxiosError) => {
         toast.error("Error while loading available themes: " + error.message);
       });
   },
@@ -186,7 +187,7 @@ export default defineComponent({
               this.onActivateClick();
             }
           })
-          .catch((error: Error) => {
+          .catch((error: AxiosError) => {
             toast.error("Error while saving theme: " + error.message);
           });
       } else if (this.selectedTheme != null) {
@@ -208,7 +209,7 @@ export default defineComponent({
               this.onActivateClick();
             }
           })
-          .catch((error: Error) => {
+          .catch((error: AxiosError) => {
             toast.error("Error saving theme: " + error.message);
           });
       } else {
@@ -231,7 +232,7 @@ export default defineComponent({
               toast.error("Error while loading active theme")
             );
           })
-          .catch((error: Error) => {
+          .catch((error: AxiosError) => {
             toast.error("Error while activating theme: " + error.message);
           });
       }

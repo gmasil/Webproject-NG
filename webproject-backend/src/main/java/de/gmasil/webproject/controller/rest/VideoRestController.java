@@ -62,6 +62,6 @@ public class VideoRestController {
     // utils
 
     private ResponseEntity<Object> createVideoNotFound(Long id) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Video with id " + id + " not found");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Video with id " + id + " not found");
     }
 }

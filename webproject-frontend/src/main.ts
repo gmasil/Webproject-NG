@@ -23,6 +23,8 @@ import router from "@/router";
 import Toast from "vue-toastification";
 import vSelect from "vue-select";
 import Navbar from "@/components/Navbar.vue";
+import ColorPicker from "@/components/ColorPicker.vue";
+import WebprojectVideo from "@/components/WebprojectVideo.vue";
 
 import "vue-toastification/dist/index.css";
 import "tailwindcss/tailwind.css";
@@ -36,6 +38,8 @@ const app = createApp(App).use(pinia).use(router);
 // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 app.component("VSelect", vSelect);
 app.component("Navbar", Navbar);
+app.component("ColorPicker", ColorPicker);
+app.component("WebprojectVideo", WebprojectVideo);
 
 app.use(Toast, {
   transition: "Vue-Toastification__bounce",

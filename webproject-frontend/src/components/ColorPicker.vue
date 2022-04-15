@@ -19,6 +19,7 @@
 -->
 <template>
   <input
+    ref="colorInput"
     type="text"
     class="colorisify"
     :value="modelValue"
@@ -27,45 +28,51 @@
   />
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script lang="ts" setup>
+import { ref, watch, onMounted } from "vue";
+import type { Ref } from "vue";
 import Coloris from "@melloware/coloris";
 
-export default defineComponent({
-  name: "Themes",
-  props: {
-    modelValue: {
-      type: String,
-      default: "",
-      required: true,
-    },
-  },
-  emits: ["update:modelValue"],
-  watch: {
-    modelValue() {
-      // manually set the correct color for little preview box
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      this.$el.parentElement.style.color = this.modelValue;
-    },
-  },
-  mounted(): void {
-    Coloris({
-      el: ".colorisify",
-      alpha: false,
-      swatches: [
-        "#264653",
-        "#2a9d8f",
-        "#e9c46a",
-        "rgb(244,162,97)",
-        "#e76f51",
-        "#d62828",
-        "navy",
-        "#07b",
-        "#0096c7",
-        "#00b4d8",
-        "rgba(0,119,182)",
-      ],
-    });
-  },
+const colorInput: Ref<HTMLElement | undefined> = ref();
+
+interface Props {
+  modelValue: string;
+}
+
+const props = defineProps<Props>();
+
+const emit = defineEmits<{
+  (e: "update:modelValue", value: string): void;
+}>();
+
+watch(props, (newProps: Props) => {
+  // manually set the correct color for little preview box
+  if (colorInput.value && colorInput.value.parentElement) {
+    colorInput.value.parentElement.style.color = newProps.modelValue;
+  }
+});
+
+onMounted(() => {
+  Coloris({
+    el: ".colorisify",
+    alpha: false,
+    swatches: [
+      "#264653",
+      "#2a9d8f",
+      "#e9c46a",
+      "rgb(244,162,97)",
+      "#e76f51",
+      "#d62828",
+      "navy",
+      "#07b",
+      "#0096c7",
+      "#00b4d8",
+      "rgba(0,119,182)",
+    ],
+  });
+});
+
+defineExpose({
+  emit,
 });
 </script>

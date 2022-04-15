@@ -84,7 +84,6 @@ import { mapStores } from "pinia";
 import { useStore } from "@/store/pinia";
 import { Theme } from "@/types";
 import { useToast } from "vue-toastification";
-import ColorPicker from "@/components/ColorPicker.vue";
 import { themeService } from "@/service/theme";
 import { AxiosError } from "axios";
 
@@ -98,9 +97,6 @@ declare interface BaseComponentData {
 
 export default defineComponent({
   name: "Themes",
-  components: {
-    ColorPicker,
-  },
   data(): BaseComponentData {
     return {
       themes: [],

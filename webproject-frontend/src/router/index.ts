@@ -19,12 +19,12 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import { CallbackFunction } from "@/types";
 import { useStore } from "@/store/pinia";
-import HelloWorld from "@/components/HelloWorld.vue";
-import VideoList from "@/components/VideoList.vue";
-import VideoDetails from "@/components/VideoDetails.vue";
-import Themes from "@/components/Themes.vue";
-import ChangePassword from "@/components/account/ChangePassword.vue";
-import Login from "@/components/Login.vue";
+import HelloWorld from "@/views/HelloWorld.vue";
+import VideoList from "@/views/VideoList.vue";
+import VideoDetails from "@/views/VideoDetails.vue";
+import Themes from "@/views/Themes.vue";
+import ChangePassword from "@/views/account/ChangePassword.vue";
+import Login from "@/views/Login.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {

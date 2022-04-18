@@ -34,6 +34,7 @@
       @canplay="updatePaused"
       @playing="updatePaused"
       @pause="updatePaused"
+      @timeupdate="updateTime"
     >
       <source :src="data.video.files[0].name" type="video/mp4" />
     </video>
@@ -56,6 +57,10 @@
           :src="videoPreviewImage"
           alt="scrollpreview"
         />
+        <div
+          ref="videoTime"
+          class="absolute left-0 h-2 z-30 bg-theme-text border-y border-theme-background-highlight"
+        ></div>
       </div>
       <vue-feather
         v-if="data.paused"
@@ -100,6 +105,7 @@ const videoElement: Ref<HTMLVideoElement | undefined> = ref();
 const videoScroller: Ref<HTMLElement | undefined> = ref();
 const videoScrollPreview: Ref<HTMLImageElement | undefined> = ref();
 const videoControls: Ref<HTMLElement | undefined> = ref();
+const videoTime: Ref<HTMLElement | undefined> = ref();
 
 interface Props {
   modelValue: VideoFull;
@@ -124,7 +130,7 @@ const data: BaseComponentData = reactive({
 watch(props, updateData);
 onMounted(() => {
   updateData();
-  document.addEventListener("fullscreenchange", updateFullscreen);
+  document.addEventListener("fullscreenchange", updateFullscreenEvent);
 });
 
 function updateData() {
@@ -149,7 +155,23 @@ defineExpose({
   onScrollClick,
   togglePlay,
   toggleFullscreen,
+  updatePaused,
+  updateTime,
 });
+
+function updateTime() {
+  if (
+    videoTime.value &&
+    videoElement.value &&
+    data.video &&
+    data.video.length &&
+    videoScroller.value
+  ) {
+    const width: number =
+      (videoElement.value.currentTime * 100) / data.video.length;
+    videoTime.value.style.width = `${width}%`;
+  }
+}
 
 function togglePlay() {
   if (videoElement.value) {
@@ -175,7 +197,6 @@ function toggleFullscreen() {
       // request fullscreen
       videoContainer.value
         .requestFullscreen()
-        .then(updateFullscreen)
         .catch((error: Error) => {
           toast.error(error.message);
         });
@@ -183,11 +204,33 @@ function toggleFullscreen() {
       // exit fullscreen
       document
         .exitFullscreen()
-        .then(updateFullscreen)
         .catch((error: Error) => {
           toast.error(error.message);
         });
     }
+  }
+}
+
+function updateFullscreenEvent(event: Event) {
+  if (
+    videoElement.value &&
+    event &&
+    event.target &&
+    event.target == videoElement.value &&
+    document.fullscreenElement
+  ) {
+    // native fullscreen called:
+    // exit fullscreen and open correct fullscreen mode
+    document
+      .exitFullscreen()
+      .then(() => {
+        toggleFullscreen();
+      })
+      .catch((error: Error) => {
+        toast.error(error.message);
+      });
+  } else {
+    updateFullscreen();
   }
 }
 
@@ -216,7 +259,7 @@ function onScroll(event: MouseEvent): void {
     const previewWidth = 192;
     const previewHeigth = 108;
     const previewFrames = 600;
-    let rect: DOMRect = videoScroller.value.getBoundingClientRect();
+    const rect: DOMRect = videoScroller.value.getBoundingClientRect();
     const x: number = event.clientX - rect.left;
     const img = Math.floor((x / rect.width) * previewFrames);
     videoScrollPreview.value.style.clip = `rect(${
@@ -242,7 +285,7 @@ function onScrollClick(event: MouseEvent): void {
     data.video.length
   ) {
     const previewFrames = 600;
-    let rect: DOMRect = videoScroller.value.getBoundingClientRect();
+    const rect: DOMRect = videoScroller.value.getBoundingClientRect();
     const x: number = event.clientX - rect.left;
     const img = Math.floor((x / rect.width) * previewFrames);
     const time = (img / previewFrames) * data.video.length;
@@ -252,7 +295,7 @@ function onScrollClick(event: MouseEvent): void {
 
 function getVideoThumbnailImage() {
   if (data.video && data.video.thumbnail) {
-    let base: string = data.video.thumbnail.substring(
+    const base: string = data.video.thumbnail.substring(
       0,
       data.video.thumbnail.lastIndexOf("/")
     );

@@ -16,8 +16,8 @@
 /// https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt
 ///
 
-import { createApp } from "vue";
-import { createPinia } from "pinia";
+import { App as AppType, createApp } from "vue";
+import { createPinia, Pinia } from "pinia";
 import App from "@/App.vue";
 import router from "@/router";
 import Toast from "vue-toastification";
@@ -32,11 +32,10 @@ import "tailwindcss/tailwind.css";
 import "vue-select/dist/vue-select.css";
 import "@melloware/coloris/dist/coloris.css";
 
-const pinia = createPinia();
+const pinia: Pinia = createPinia();
 
-const app = createApp(App).use(pinia).use(router);
+const app: AppType<Element> = createApp(App).use(pinia).use(router);
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 app.component("VSelect", vSelect);
 app.component("Navbar", Navbar);
 app.component("ColorPicker", ColorPicker);

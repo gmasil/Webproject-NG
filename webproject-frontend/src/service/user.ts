@@ -16,36 +16,39 @@
 /// https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt
 ///
 
-import { useStore } from "@/store/pinia";
+import { Store, useStore } from "@/store/pinia";
 import axios, { AxiosError } from "axios";
-import { User, ChangePasswordData } from "@/types";
+import { User, ChangePasswordData, Response, Resolve, Reject } from "@/types";
 
 export const loadCurrentUser = (): Promise<User | null> => {
-  return new Promise<User | null>((resolve, reject) => {
-    axios
-      .get("/api/users/current")
-      .then((response) => {
-        const store = useStore();
-        if (response.data !== "") {
-          const user: User = response.data as User;
-          store.currentUser = user;
-          store.initializedUser = true;
-          resolve(user);
-        } else {
-          store.currentUser = null;
-          store.initializedUser = true;
-          resolve(null);
-        }
-      })
-      .catch((error: AxiosError) => {
-        reject(error);
-      });
-  });
+  return new Promise<User | null>(
+    (resolve: Resolve<User | null>, reject: Reject) => {
+      axios
+        .get("/api/users/current")
+        .then((response: Response<User | string>) => {
+          const store: Store = useStore();
+          if (response.data !== "") {
+            const user: User = response.data as User;
+            store.currentUser = user;
+            store.initializedUser = true;
+            resolve(user);
+          } else {
+            store.currentUser = null;
+            store.initializedUser = true;
+            resolve(null);
+          }
+        })
+        .catch((error: AxiosError) => {
+          reject(error);
+        });
+    }
+  );
 };
 
 export const changePassword = (data: ChangePasswordData): Promise<void> => {
+  // eslint-disable-next-line @typescript-eslint/typedef
   const config = { headers: { "Content-Type": "application/json" } };
-  return new Promise<void>((resolve, reject) => {
+  return new Promise<void>((resolve: Resolve<void>, reject: Reject) => {
     axios
       .put("/api/users/updatepassword", data, config)
       .then(() => {
@@ -57,6 +60,7 @@ export const changePassword = (data: ChangePasswordData): Promise<void> => {
   });
 };
 
+// eslint-disable-next-line @typescript-eslint/typedef
 export const userService = {
   loadCurrentUser,
   changePassword,

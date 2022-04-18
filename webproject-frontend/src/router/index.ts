@@ -16,9 +16,16 @@
 /// https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt
 ///
 
-import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
+import {
+  createRouter,
+  createWebHistory,
+  RouteRecordRaw,
+  RouteLocationNormalized,
+  NavigationGuardNext,
+  Router,
+} from "vue-router";
 import { CallbackFunction } from "@/types";
-import { useStore } from "@/store/pinia";
+import { Store, useStore } from "@/store/pinia";
 import HelloWorld from "@/views/HelloWorld.vue";
 import VideoList from "@/views/VideoList.vue";
 import VideoDetails from "@/views/VideoDetails.vue";
@@ -74,7 +81,7 @@ const routes: Array<RouteRecordRaw> = [
   //},
 ];
 
-const router = createRouter({
+const router: Router = createRouter({
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   history: createWebHistory(process.env.BASE_URL as string),
   routes,
@@ -90,26 +97,32 @@ function waitForInit(callback: CallbackFunction): void {
   }
 }
 
-router.beforeEach((to, _from, next) => {
-  if (to.path == "/login" || to.path == "/logout" || to.path == "/error") {
-    next();
-  }
-  const store = useStore();
-  waitForInit(() => {
-    if (store.isAccessRestricted) {
-      return next({ path: "/login" });
+router.beforeEach(
+  (
+    to: RouteLocationNormalized,
+    _from: RouteLocationNormalized,
+    next: NavigationGuardNext
+  ) => {
+    if (to.path == "/login" || to.path == "/logout" || to.path == "/error") {
+      next();
     }
-    const authorize: boolean = to.meta?.authorize as boolean;
-    if (authorize) {
-      if (!store.isAuthenticated) {
-        return next({ path: "/error" });
+    const store: Store = useStore();
+    waitForInit(() => {
+      if (store.isAccessRestricted) {
+        return next({ path: "/login" });
+      }
+      const authorize: boolean = to.meta?.authorize as boolean;
+      if (authorize) {
+        if (!store.isAuthenticated) {
+          return next({ path: "/error" });
+        } else {
+          next();
+        }
       } else {
         next();
       }
-    } else {
-      next();
-    }
-  });
-});
+    });
+  }
+);
 
 export default router;

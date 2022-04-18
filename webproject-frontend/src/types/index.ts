@@ -24,6 +24,7 @@ export * from "@/types/comment";
 export * from "@/types/domevent";
 export * from "@/types/page";
 export * from "@/types/pageresponse";
+export * from "@/types/promise";
 export * from "@/types/scene";
 export * from "@/types/theme";
 export * from "@/types/user";

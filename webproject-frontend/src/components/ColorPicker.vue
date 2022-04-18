@@ -39,8 +39,9 @@ interface Props {
   modelValue: string;
 }
 
-const props = defineProps<Props>();
+const props: Readonly<Props> = defineProps<Props>();
 
+// eslint-disable-next-line @typescript-eslint/typedef
 const emit = defineEmits<{
   (e: "update:modelValue", value: string): void;
 }>();

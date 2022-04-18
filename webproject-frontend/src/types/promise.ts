@@ -16,12 +16,10 @@
 /// https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt
 ///
 
-/* eslint-disable */
-import { ComponentCustomProperties } from "vue";
-import { Store, State } from "@/store";
+import { AxiosResponse } from "axios";
 
-declare module "@vue/runtime-core" {
-  interface ComponentCustomProperties {
-    $store: Store<State>;
-  }
-}
+export type Response<T> = AxiosResponse<T, unknown>;
+
+export type Resolve<T> = (value: T) => void;
+
+export type Reject = (reason: unknown) => void;

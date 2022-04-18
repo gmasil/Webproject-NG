@@ -53,14 +53,14 @@
 
 <script lang="ts" setup>
 import { reactive, onMounted } from "vue";
-import { useRoute } from "vue-router";
+import { RouteLocationNormalizedLoaded, useRoute } from "vue-router";
 import { VideoFull } from "@/types";
-import { useToast } from "vue-toastification";
+import { ToastInterface, useToast } from "vue-toastification";
 import { videoService } from "@/service/video";
 import { AxiosError } from "axios";
 
-const toast = useToast();
-const route = useRoute();
+const toast: ToastInterface = useToast();
+const route: RouteLocationNormalizedLoaded = useRoute();
 
 declare interface BaseComponentData {
   id: string;
@@ -69,12 +69,12 @@ declare interface BaseComponentData {
   loadingError: string | null;
 }
 
-const data = reactive({
+const data: BaseComponentData = reactive({
   id: route.params.id as string,
   video: null,
   loading: true,
   loadingError: null,
-}) as BaseComponentData;
+});
 
 onMounted(() => {
   videoService
@@ -100,10 +100,10 @@ defineExpose({
 });
 
 function formatSceneTime(time: number): string {
-  let hrs = Math.floor(time / 3600);
-  let mins = Math.floor((time % 3600) / 60);
-  let secs = Math.floor(time % 60);
-  let ret = "";
+  const hrs: number = Math.floor(time / 3600);
+  const mins: number = Math.floor((time % 3600) / 60);
+  const secs: number = Math.floor(time % 60);
+  let ret: string = "";
   if (hrs > 0) {
     ret += `${hrs}:`;
   }

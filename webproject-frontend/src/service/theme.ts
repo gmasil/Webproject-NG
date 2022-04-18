@@ -16,17 +16,17 @@
 /// https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt
 ///
 
-import { useStore } from "@/store/pinia";
+import { Store, useStore } from "@/store/pinia";
 import axios, { AxiosError } from "axios";
-import { Theme } from "@/types";
+import { Theme, Response, Resolve, Reject } from "@/types";
 
 export const loadActiveTheme = (): Promise<Theme> => {
-  return new Promise<Theme>((resolve, reject) => {
+  return new Promise<Theme>((resolve: Resolve<Theme>, reject: Reject) => {
     axios
       .get<Theme>("/api/themes/active")
-      .then((response) => {
+      .then((response: Response<Theme>) => {
         const theme: Theme = Theme.fromResponse(response);
-        const store = useStore();
+        const store: Store = useStore();
         store.activeTheme = theme;
         if (theme != null) {
           theme.applyTheme();
@@ -40,10 +40,10 @@ export const loadActiveTheme = (): Promise<Theme> => {
 };
 
 export const loadAvailableThemes = (): Promise<Theme[]> => {
-  return new Promise<Theme[]>((resolve, reject) => {
+  return new Promise<Theme[]>((resolve: Resolve<Theme[]>, reject: Reject) => {
     axios
       .get<Theme[]>("/api/themes/available")
-      .then((response) => {
+      .then((response: Response<Theme[]>) => {
         resolve(Theme.fromResponseList(response));
       })
       .catch((error: AxiosError) => {
@@ -53,13 +53,14 @@ export const loadAvailableThemes = (): Promise<Theme[]> => {
 };
 
 export const saveTheme = (theme: Theme): Promise<Theme> => {
+  // eslint-disable-next-line @typescript-eslint/typedef
   const config = { headers: { "Content-Type": "application/json" } };
-  return new Promise<Theme>((resolve, reject) => {
+  return new Promise<Theme>((resolve: Resolve<Theme>, reject: Reject) => {
     if (theme.id != null) {
       // update theme
       axios
         .put<Theme>(`/api/themes/${theme.id}`, theme, config)
-        .then((response) => {
+        .then((response: Response<Theme>) => {
           resolve(Theme.fromResponse(response));
         })
         .catch((error: AxiosError) => {
@@ -69,7 +70,7 @@ export const saveTheme = (theme: Theme): Promise<Theme> => {
       // save new theme
       axios
         .post<Theme>("/api/themes", theme, config)
-        .then((response) => {
+        .then((response: Response<Theme>) => {
           resolve(Theme.fromResponse(response));
         })
         .catch((error: AxiosError) => {
@@ -80,7 +81,7 @@ export const saveTheme = (theme: Theme): Promise<Theme> => {
 };
 
 export const activateTheme = (themeId: number): Promise<void> => {
-  return new Promise<void>((resolve, reject) => {
+  return new Promise<void>((resolve: Resolve<void>, reject: Reject) => {
     axios
       .put(`/api/themes/activate/${themeId}`)
       .then(() => {
@@ -92,6 +93,7 @@ export const activateTheme = (themeId: number): Promise<void> => {
   });
 };
 
+// eslint-disable-next-line @typescript-eslint/typedef
 export const themeService = {
   loadActiveTheme,
   loadAvailableThemes,

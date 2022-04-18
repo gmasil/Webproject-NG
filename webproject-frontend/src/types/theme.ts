@@ -33,20 +33,18 @@ export class Theme {
   }
 
   public static copyList(themes: Theme[]): Theme[] {
-    for (let index = 0; index < themes.length; index++) {
+    for (let index: number = 0; index < themes.length; index++) {
       themes[index] = Theme.copy(themes[index]);
     }
     return themes;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public static fromResponse(response: AxiosResponse<Theme, any>): Theme {
+  public static fromResponse(response: AxiosResponse<Theme, unknown>): Theme {
     return Theme.copy(response.data);
   }
 
   public static fromResponseList(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    response: AxiosResponse<Theme[], any>
+    response: AxiosResponse<Theme[], unknown>
   ): Theme[] {
     return Theme.copyList(response.data);
   }

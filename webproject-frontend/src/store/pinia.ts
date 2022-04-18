@@ -16,25 +16,37 @@
 /// https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt
 ///
 
-import { defineStore } from "pinia";
+import { defineStore, Store as PiniaStore } from "pinia";
 import { AppProperties, Theme, User } from "@/types";
 
 export class State {
-  initializedUser = false;
+  initializedUser: boolean = false;
   currentUser: User | null = null;
   appProperties: AppProperties | null = null;
   activeTheme: Theme | null = null;
 }
 
+export type Store = PiniaStore<
+  "main",
+  State,
+  {
+    isInitialized: (state: State) => boolean;
+    isAccessRestricted: (state: State) => boolean;
+    isAuthenticated(state: State): boolean;
+    getUsername(state: State): string;
+  }
+>;
+
+// eslint-disable-next-line @typescript-eslint/typedef
 export const useStore = defineStore("main", {
   state: () => {
     return new State();
   },
   getters: {
-    isInitialized: (state) => {
+    isInitialized: (state: State) => {
       return state.initializedUser && state.appProperties != null;
     },
-    isAccessRestricted: (state) => {
+    isAccessRestricted: (state: State) => {
       if (state.appProperties == null) {
         return true;
       }
@@ -44,10 +56,10 @@ export const useStore = defineStore("main", {
         return state.currentUser == null;
       }
     },
-    isAuthenticated(state): boolean {
+    isAuthenticated(state: State): boolean {
       return state.currentUser != null;
     },
-    getUsername(state): string {
+    getUsername(state: State): string {
       if (state.currentUser != null) {
         return state.currentUser.username;
       }

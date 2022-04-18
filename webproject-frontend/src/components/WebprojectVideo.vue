@@ -93,12 +93,12 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, computed, watch, onMounted } from "vue";
+import { reactive, ref, computed, watch, onMounted, ComputedRef } from "vue";
 import type { Ref } from "vue";
 import { VideoFull, DOMEvent } from "@/types";
-import { useToast } from "vue-toastification";
+import { ToastInterface, useToast } from "vue-toastification";
 
-const toast = useToast();
+const toast: ToastInterface = useToast();
 
 const videoContainer: Ref<HTMLElement | undefined> = ref();
 const videoElement: Ref<HTMLVideoElement | undefined> = ref();
@@ -111,7 +111,7 @@ interface Props {
   modelValue: VideoFull;
 }
 
-const props = defineProps<Props>();
+const props: Readonly<Props> = defineProps<Props>();
 
 declare interface BaseComponentData {
   video: VideoFull | null;
@@ -143,7 +143,9 @@ function updatePaused(event: DOMEvent<HTMLVideoElement>) {
   }
 }
 
-const videoPreviewImage = computed(getVideoThumbnailImage);
+const videoPreviewImage: ComputedRef<string | undefined> = computed(
+  getVideoThumbnailImage
+);
 
 defineExpose({
   props,
@@ -252,12 +254,12 @@ function updateFullscreen() {
 
 function onScroll(event: MouseEvent): void {
   if (videoScrollPreview.value && videoScroller.value && videoContainer.value) {
-    const previewWidth = 192;
-    const previewHeigth = 108;
-    const previewFrames = 600;
+    const previewWidth: number = 192;
+    const previewHeigth: number = 108;
+    const previewFrames: number = 600;
     const rect: DOMRect = videoScroller.value.getBoundingClientRect();
     const x: number = event.clientX - rect.left;
-    const img = Math.floor((x / rect.width) * previewFrames);
+    const img: number = Math.floor((x / rect.width) * previewFrames);
     videoScrollPreview.value.style.clip = `rect(${
       img * previewHeigth
     }px, ${previewWidth}px, ${img * previewHeigth + previewHeigth}px, 0)`;
@@ -280,11 +282,11 @@ function onScrollClick(event: MouseEvent): void {
     data.video &&
     data.video.length
   ) {
-    const previewFrames = 600;
+    const previewFrames: number = 600;
     const rect: DOMRect = videoScroller.value.getBoundingClientRect();
     const x: number = event.clientX - rect.left;
-    const img = Math.floor((x / rect.width) * previewFrames);
-    const time = (img / previewFrames) * data.video.length;
+    const img: number = Math.floor((x / rect.width) * previewFrames);
+    const time: number = (img / previewFrames) * data.video.length;
     jumpVideoTo(time);
   }
 }
@@ -306,10 +308,10 @@ function jumpVideoTo(time: number) {
 }
 
 function formatTime(time: number): string {
-  let hrs = Math.floor(time / 3600);
-  let mins = Math.floor((time % 3600) / 60);
-  let secs = Math.floor(time % 60);
-  let ret = "";
+  const hrs: number = Math.floor(time / 3600);
+  const mins: number = Math.floor((time % 3600) / 60);
+  const secs: number = Math.floor(time % 60);
+  let ret: string = "";
   if (hrs > 0) {
     ret += `${hrs}:`;
   }

@@ -73,11 +73,11 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { Video, Page, PageResponse } from "@/types";
-import { useToast } from "vue-toastification";
+import { ToastInterface, useToast } from "vue-toastification";
 import { videoService } from "@/service/video";
 import { AxiosError } from "axios";
 
-const toast = useToast();
+const toast: ToastInterface = useToast();
 
 declare interface BaseComponentData {
   page: PageResponse<Video> | null;

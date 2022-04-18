@@ -17,36 +17,49 @@
 ///
 
 import axios, { AxiosError } from "axios";
-import { Page, PageResponse, Video, VideoFull } from "@/types";
+import {
+  Page,
+  PageResponse,
+  Video,
+  VideoFull,
+  Response,
+  Resolve,
+  Reject,
+} from "@/types";
 
 export const loadVideo = (id: string): Promise<VideoFull> => {
-  return new Promise<VideoFull>((resolve, reject) => {
-    axios
-      .get<VideoFull>(`/api/videos/${id}`)
-      .then((response) => {
-        resolve(VideoFull.fromResponse(response));
-      })
-      .catch((error: AxiosError) => {
-        reject(error);
-      });
-  });
+  return new Promise<VideoFull>(
+    (resolve: Resolve<VideoFull>, reject: Reject) => {
+      axios
+        .get<VideoFull>(`/api/videos/${id}`)
+        .then((response: Response<VideoFull>) => {
+          resolve(VideoFull.fromResponse(response));
+        })
+        .catch((error: AxiosError) => {
+          reject(error);
+        });
+    }
+  );
 };
 
 export const loadVideos = (page: Page): Promise<PageResponse<Video>> => {
-  return new Promise<PageResponse<Video>>((resolve, reject) => {
-    axios
-      .get(`/api/videos?size=${page.size}&page=${page.page}&sort=${page.sort}`)
-      .then((response) => {
-        const pageResponse: PageResponse<Video> =
-          response.data as PageResponse<Video>;
-        resolve(pageResponse);
-      })
-      .catch((error: AxiosError) => {
-        reject(error);
-      });
-  });
+  return new Promise<PageResponse<Video>>(
+    (resolve: Resolve<PageResponse<Video>>, reject: Reject) => {
+      axios
+        .get(
+          `/api/videos?size=${page.size}&page=${page.page}&sort=${page.sort}`
+        )
+        .then((response: Response<PageResponse<Video>>) => {
+          resolve(response.data);
+        })
+        .catch((error: AxiosError) => {
+          reject(error);
+        });
+    }
+  );
 };
 
+// eslint-disable-next-line @typescript-eslint/typedef
 export const videoService = {
   loadVideo,
   loadVideos,

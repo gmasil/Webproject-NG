@@ -80,14 +80,14 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { mapStores } from "pinia";
 import { useStore } from "@/store/pinia";
 import { Theme } from "@/types";
-import { useToast } from "vue-toastification";
+import { ToastInterface, useToast } from "vue-toastification";
 import { themeService } from "@/service/theme";
 import { AxiosError } from "axios";
+import { mapStores } from "pinia";
 
-const toast = useToast();
+const toast: ToastInterface = useToast();
 
 declare interface BaseComponentData {
   themes: Theme[];
@@ -215,7 +215,7 @@ export default defineComponent({
       }
     },
     findIndexOfSelectedTheme(): number | null {
-      for (let index = 0; index < this.themes.length; ++index) {
+      for (let index: number = 0; index < this.themes.length; ++index) {
         if (this.themes[index] == this.selectedTheme) {
           return index;
         }
@@ -260,19 +260,19 @@ export default defineComponent({
       r = r > 0 ? r : 0;
       g = g > 0 ? g : 0;
       b = b > 0 ? b : 0;
-      var rr =
+      const rr: string =
         r.toString(16).length == 1 ? "0" + r.toString(16) : r.toString(16);
-      var gg =
+      const gg: string =
         g.toString(16).length == 1 ? "0" + g.toString(16) : g.toString(16);
-      var bb =
+      const bb: string =
         b.toString(16).length == 1 ? "0" + b.toString(16) : b.toString(16);
       return "#" + rr + gg + bb;
     },
     isLightColor(color: string): boolean {
-      var r = parseInt(color.substring(1, 3), 16);
-      var g = parseInt(color.substring(3, 5), 16);
-      var b = parseInt(color.substring(5, 7), 16);
-      var x = (r + g + b) / 3;
+      const r: number = parseInt(color.substring(1, 3), 16);
+      const g: number = parseInt(color.substring(3, 5), 16);
+      const b: number = parseInt(color.substring(5, 7), 16);
+      const x: number = (r + g + b) / 3;
       return x > 128;
     },
   },

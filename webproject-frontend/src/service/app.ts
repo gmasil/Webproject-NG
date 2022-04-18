@@ -16,26 +16,28 @@
 /// https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt
 ///
 
-import { useStore } from "@/store/pinia";
+import { Store, useStore } from "@/store/pinia";
 import axios, { AxiosError } from "axios";
-import { AppProperties } from "@/types";
+import { AppProperties, Response, Resolve, Reject } from "@/types";
 
 export const loadAppProperties = (): Promise<AppProperties> => {
-  return new Promise<AppProperties>((resolve, reject) => {
-    axios
-      .get("/api/app/config")
-      .then((response) => {
-        const props: AppProperties = response.data as AppProperties;
-        const store = useStore();
-        store.appProperties = props;
-        resolve(props);
-      })
-      .catch((error: AxiosError) => {
-        reject(error);
-      });
-  });
+  return new Promise<AppProperties>(
+    (resolve: Resolve<AppProperties>, reject: Reject) => {
+      axios
+        .get("/api/app/config")
+        .then((response: Response<AppProperties>) => {
+          const store: Store = useStore();
+          store.appProperties = response.data;
+          resolve(response.data);
+        })
+        .catch((error: AxiosError) => {
+          reject(error);
+        });
+    }
+  );
 };
 
+// eslint-disable-next-line @typescript-eslint/typedef
 export const appService = {
   loadAppProperties,
 };

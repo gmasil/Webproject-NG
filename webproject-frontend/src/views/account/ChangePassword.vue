@@ -53,10 +53,10 @@
 import { defineComponent } from "vue";
 import { userService } from "@/service/user";
 import { ChangePasswordData } from "@/types";
-import { useToast } from "vue-toastification";
+import { ToastInterface, useToast } from "vue-toastification";
 import { AxiosError } from "axios";
 
-const toast = useToast();
+const toast: ToastInterface = useToast();
 
 export default defineComponent({
   name: "ChangePassword",

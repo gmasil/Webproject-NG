@@ -31,7 +31,7 @@ module.exports = {
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    //"plugin:@typescript-eslint/recommended-requiring-type-checking",
     "plugin:sonarjs/recommended",
   ],
   parser: "vue-eslint-parser",
@@ -47,5 +47,19 @@ module.exports = {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     "no-debugger": process.env.NODE_ENV === "production" ? "error" : "warn",
     "vue/multi-word-component-names": "off",
+    "@typescript-eslint/typedef": [
+      "error",
+      {
+        arrayDestructuring: true,
+        arrowParameter: true,
+        memberVariableDeclaration: true,
+        objectDestructuring: true,
+        parameter: true,
+        propertyDeclaration: true,
+        variableDeclaration: true,
+        variableDeclarationIgnoreFunction: true,
+      },
+    ],
+    "@typescript-eslint/no-inferrable-types": "off",
   },
 };

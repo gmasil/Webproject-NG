@@ -30,20 +30,19 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { mapState, mapStores } from "pinia";
+import { mapState } from "pinia";
 import { useStore } from "@/store/pinia";
-import { useToast } from "vue-toastification";
+import { ToastInterface, useToast } from "vue-toastification";
 import Coloris from "@melloware/coloris";
 import { themeService } from "@/service/theme";
 import { appService } from "@/service/app";
 import { userService } from "@/service/user";
 
-const toast = useToast();
+const toast: ToastInterface = useToast();
 
 export default defineComponent({
   name: "App",
   computed: {
-    ...mapStores(useStore),
     ...mapState(useStore, ["isInitialized", "isAccessRestricted"]),
   },
   created(): void {

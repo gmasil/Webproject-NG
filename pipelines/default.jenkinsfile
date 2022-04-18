@@ -130,15 +130,13 @@ pipeline {
       }
     }
     stage("Push") {
-      when {
-        branch 'master'
-      }
       steps {
         script {
-          sh("docker tag \$(docker image ls -q ${SUT_IMAGE_NAME}:${SUT_IMAGE_TAG_JIB}) ${SUT_IMAGE_NAME}:latest")
-          sh("docker push ${SUT_IMAGE_NAME}:latest")
-          sh("docker tag \$(docker image ls -q ${SUT_IMAGE_NAME}:${SUT_IMAGE_TAG_NATIVE}) ${SUT_IMAGE_NAME}:latest-native")
-          sh("docker push ${SUT_IMAGE_NAME}:latest-native")
+          def safeBranch = env.GIT_BRANCH.replaceAll("[^a-zA-Z0-9_:{\\.-]+", "-")
+          sh("docker tag \$(docker image ls -q ${SUT_IMAGE_NAME}:${SUT_IMAGE_TAG_JIB}) ${SUT_IMAGE_NAME}:${safeBranch}")
+          sh("docker push ${SUT_IMAGE_NAME}:${safeBranch}")
+          sh("docker tag \$(docker image ls -q ${SUT_IMAGE_NAME}:${SUT_IMAGE_TAG_NATIVE}) ${SUT_IMAGE_NAME}:${safeBranch}-native")
+          sh("docker push ${SUT_IMAGE_NAME}:${safeBranch}-native")
         }
       }
     }

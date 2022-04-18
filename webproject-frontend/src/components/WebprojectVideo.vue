@@ -195,18 +195,14 @@ function toggleFullscreen() {
   if (videoContainer.value) {
     if (!document.fullscreenElement) {
       // request fullscreen
-      videoContainer.value
-        .requestFullscreen()
-        .catch((error: Error) => {
-          toast.error(error.message);
-        });
+      videoContainer.value.requestFullscreen().catch((error: Error) => {
+        toast.error(error.message);
+      });
     } else {
       // exit fullscreen
-      document
-        .exitFullscreen()
-        .catch((error: Error) => {
-          toast.error(error.message);
-        });
+      document.exitFullscreen().catch((error: Error) => {
+        toast.error(error.message);
+      });
     }
   }
 }

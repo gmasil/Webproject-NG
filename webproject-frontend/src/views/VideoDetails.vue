@@ -25,10 +25,9 @@
       </div>
       <div v-else>
         <!--normal video page-->
-        <webproject-video
-          v-model="data.video"
-          class="w-7/12 mx-auto"
-        ></webproject-video>
+        <div class="w-7/12 mx-auto">
+          <webproject-video v-model="data.video"></webproject-video>
+        </div>
         <h1 class="text-center text-2xl">
           {{ data.video.title }}
         </h1>

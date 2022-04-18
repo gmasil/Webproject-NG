@@ -25,6 +25,7 @@ import vSelect from "vue-select";
 import Navbar from "@/components/Navbar.vue";
 import ColorPicker from "@/components/ColorPicker.vue";
 import WebprojectVideo from "@/components/WebprojectVideo.vue";
+import VueFeather from "vue-feather";
 
 import "vue-toastification/dist/index.css";
 import "tailwindcss/tailwind.css";
@@ -40,6 +41,7 @@ app.component("VSelect", vSelect);
 app.component("Navbar", Navbar);
 app.component("ColorPicker", ColorPicker);
 app.component("WebprojectVideo", WebprojectVideo);
+app.component("VueFeather", VueFeather);
 
 app.use(Toast, {
   transition: "Vue-Toastification__bounce",

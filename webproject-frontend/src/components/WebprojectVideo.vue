@@ -18,31 +18,71 @@
 
 -->
 <template>
-  <div v-if="data.video" ref="videoContainer" class="relative overflow-hidden">
+  <!-- overflow-hidden -->
+  <div
+    v-if="data.video"
+    id="videoContainer"
+    ref="videoContainer"
+    class="relative"
+  >
     <video
       ref="videoElement"
+      class="-z-20"
       :poster="data.video.thumbnail"
-      @click="onVideoClick"
-      controls
+      @click="togglePlay"
+      @dblclick="toggleFullscreen"
+      @canplay="updatePaused"
+      @playing="updatePaused"
+      @pause="updatePaused"
     >
       <source :src="data.video.files[0].name" type="video/mp4" />
     </video>
-    <div ref="videoControls">
+    <div ref="videoControls" class="absolute bottom-0 left-0 right-0">
+      <div
+        class="absolute top-0 bottom-0 left-0 right-0 bg-theme-background-highlight opacity-80"
+      ></div>
       <div
         ref="videoScroller"
-        class="w-100 h-4 bg-theme-background-highlight"
+        class="relative w-full h-2 z-30 bg-theme-background-highlight"
         @mouseover="data.scrolling = true"
         @mouseleave="data.scrolling = false"
         @mousemove="onScroll"
         @click="onScrollClick"
-      ></div>
-      <img
-        ref="videoScrollPreview"
-        :class="data.scrolling ? 'visible' : 'hidden'"
-        class="absolute"
-        :src="videoPreviewImage"
-        alt="scrollpreview"
-      />
+      >
+        <img
+          v-if="data.scrolling"
+          ref="videoScrollPreview"
+          class="absolute"
+          :src="videoPreviewImage"
+          alt="scrollpreview"
+        />
+      </div>
+      <vue-feather
+        v-if="data.paused"
+        ref="playButton"
+        type="play"
+        class="cursor-pointer relative"
+        @click="togglePlay"
+      ></vue-feather>
+      <vue-feather
+        v-if="!data.paused"
+        ref="pauseButton"
+        type="pause"
+        class="cursor-pointer relative"
+        @click="togglePlay"
+      ></vue-feather>
+      <vue-feather
+        v-if="!data.fullscreen"
+        type="maximize"
+        class="cursor-pointer absolute right-0"
+        @click="toggleFullscreen"
+      ></vue-feather>
+      <vue-feather
+        v-if="data.fullscreen"
+        type="minimize"
+        class="cursor-pointer absolute right-0"
+        @click="toggleFullscreen"
+      ></vue-feather>
     </div>
   </div>
 </template>
@@ -50,7 +90,10 @@
 <script lang="ts" setup>
 import { reactive, ref, computed, watch, onMounted } from "vue";
 import type { Ref } from "vue";
-import { VideoFull } from "@/types";
+import { VideoFull, DOMEvent } from "@/types";
+import { useToast } from "vue-toastification";
+
+const toast = useToast();
 
 const videoContainer: Ref<HTMLElement | undefined> = ref();
 const videoElement: Ref<HTMLVideoElement | undefined> = ref();
@@ -66,19 +109,32 @@ const props = defineProps<Props>();
 
 declare interface BaseComponentData {
   video: VideoFull | null;
+  paused: boolean;
+  fullscreen: boolean;
   scrolling: boolean;
 }
 
 const data: BaseComponentData = reactive({
   video: null,
+  paused: true,
+  fullscreen: false,
   scrolling: false,
 } as BaseComponentData);
 
 watch(props, updateData);
-onMounted(updateData);
+onMounted(() => {
+  updateData();
+  document.addEventListener("fullscreenchange", updateFullscreen);
+});
 
 function updateData() {
   data.video = props.modelValue;
+}
+
+function updatePaused(event: DOMEvent<HTMLVideoElement>) {
+  if (event.target) {
+    data.paused = event.target.paused;
+  }
 }
 
 const videoPreviewImage = computed(getVideoThumbnailImage);
@@ -91,15 +147,66 @@ defineExpose({
   videoPreviewImage,
   onScroll,
   onScrollClick,
-  onVideoClick,
+  togglePlay,
+  toggleFullscreen,
 });
 
-function onVideoClick() {
+function togglePlay() {
   if (videoElement.value) {
     if (videoElement.value.paused) {
-      void videoElement.value.play();
+      videoElement.value
+        .play()
+        .then(() => {
+          data.paused = false;
+        })
+        .catch((error: Error) => {
+          toast.error(error.message);
+        });
     } else {
-      void videoElement.value.pause();
+      videoElement.value.pause();
+      data.paused = true;
+    }
+  }
+}
+
+function toggleFullscreen() {
+  if (videoContainer.value) {
+    if (!document.fullscreenElement) {
+      // request fullscreen
+      videoContainer.value
+        .requestFullscreen()
+        .then(updateFullscreen)
+        .catch((error: Error) => {
+          toast.error(error.message);
+        });
+    } else {
+      // exit fullscreen
+      document
+        .exitFullscreen()
+        .then(updateFullscreen)
+        .catch((error: Error) => {
+          toast.error(error.message);
+        });
+    }
+  }
+}
+
+function updateFullscreen() {
+  if (document.fullscreenElement) {
+    // fullscreen
+    if (videoElement.value && videoContainer.value) {
+      videoContainer.value.style.height = `calc(100vw * ${videoElement.value.videoHeight} / ${videoElement.value.videoWidth})`;
+      videoContainer.value.className = `${videoContainer.value.className} fullscreen`;
+      data.fullscreen = true;
+    }
+  } else {
+    // no fullscreen
+    if (videoElement.value && videoContainer.value) {
+      videoContainer.value.style.height = "auto";
+      videoContainer.value.className = videoContainer.value.className
+        .replaceAll("fullscreen", "")
+        .trim();
+      data.fullscreen = false;
     }
   }
 }
@@ -115,12 +222,7 @@ function onScroll(event: MouseEvent): void {
     videoScrollPreview.value.style.clip = `rect(${
       img * previewHeigth
     }px, ${previewWidth}px, ${img * previewHeigth + previewHeigth}px, 0)`;
-    const top: number = Math.floor(
-      videoContainer.value.offsetHeight -
-        previewHeigth -
-        videoScroller.value.offsetHeight -
-        img * previewHeigth
-    );
+    const top: number = Math.floor(0 - previewHeigth - img * previewHeigth);
     let left: number = Math.floor(x - previewWidth / 2);
     if (left < 0) {
       left = 0;
@@ -177,3 +279,28 @@ function formatTime(time: number): string {
   return ret;
 }
 </script>
+
+<style scoped>
+.vue-feather {
+  margin: 0 0.5em;
+  padding: 0.5em 0 0 0;
+}
+
+#videoContainer {
+  width: 100%;
+  height: auto;
+}
+
+#videoContainer.fullscreen {
+  width: 100%;
+  height: calc(100vw * 9 / 16);
+}
+
+#videoContainer.fullscreen video {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+</style>

@@ -25,7 +25,7 @@
       </div>
       <div v-else>
         <!--normal video page-->
-        <div class="w-7/12 mx-auto">
+        <div class="w-full md:w-10/12 lg:w-8/12 mx-auto">
           <webproject-video
             ref="videoElement"
             v-model="data.video"

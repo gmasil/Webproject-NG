@@ -108,7 +108,7 @@ export default defineComponent({
     ...mapStores(useStore),
   },
   watch: {
-    selectedTheme() {
+    selectedTheme(): void {
       this.onResetClick();
     },
   },

@@ -93,7 +93,15 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, computed, watch, onMounted, ComputedRef } from "vue";
+import {
+  reactive,
+  ref,
+  computed,
+  watch,
+  onMounted,
+  ComputedRef,
+  VueElement,
+} from "vue";
 import type { Ref } from "vue";
 import { VideoFull, DOMEvent } from "@/types";
 import { ToastInterface, useToast } from "vue-toastification";
@@ -133,11 +141,11 @@ onMounted(() => {
   document.addEventListener("fullscreenchange", updateFullscreenEvent);
 });
 
-function updateData() {
+function updateData(): void {
   data.video = props.modelValue;
 }
 
-function updatePaused(event: DOMEvent<HTMLVideoElement>) {
+function updatePaused(event: DOMEvent<HTMLVideoElement>): void {
   if (event.target) {
     data.paused = event.target.paused;
   }
@@ -161,7 +169,7 @@ defineExpose({
   updateTime,
 });
 
-function updateTime() {
+function updateTime(): void {
   if (
     videoTime.value &&
     videoElement.value &&
@@ -175,7 +183,7 @@ function updateTime() {
   }
 }
 
-function togglePlay() {
+function togglePlay(): void {
   if (videoElement.value) {
     if (videoElement.value.paused) {
       videoElement.value
@@ -193,7 +201,7 @@ function togglePlay() {
   }
 }
 
-function toggleFullscreen() {
+function toggleFullscreen(): void {
   if (videoContainer.value) {
     if (!document.fullscreenElement) {
       // request fullscreen
@@ -209,7 +217,7 @@ function toggleFullscreen() {
   }
 }
 
-function updateFullscreenEvent(event: Event) {
+function updateFullscreenEvent(event: Event): void {
   if (
     videoElement.value &&
     event &&
@@ -232,7 +240,7 @@ function updateFullscreenEvent(event: Event) {
   }
 }
 
-function updateFullscreen() {
+function updateFullscreen(): void {
   if (document.fullscreenElement) {
     // fullscreen
     if (videoElement.value && videoContainer.value) {
@@ -291,7 +299,7 @@ function onScrollClick(event: MouseEvent): void {
   }
 }
 
-function getVideoThumbnailImage() {
+function getVideoThumbnailImage(): string {
   if (data.video && data.video.thumbnail) {
     const base: string = data.video.thumbnail.substring(
       0,
@@ -299,9 +307,10 @@ function getVideoThumbnailImage() {
     );
     return `${base}/videopreview.jpg`;
   }
+  return "";
 }
 
-function jumpVideoTo(time: number) {
+function jumpVideoTo(time: number): void {
   if (videoElement.value) {
     videoElement.value.currentTime = time;
   }
@@ -318,6 +327,10 @@ function formatTime(time: number): string {
   ret += `${mins < 10 ? "0" : ""}${mins}:`;
   ret += `${secs < 10 ? "0" : ""}${secs}`;
   return ret;
+}
+
+export interface IWebprojectVideo extends VueElement {
+  jumpVideoTo(time: number): void;
 }
 </script>
 

@@ -97,10 +97,10 @@ export default defineComponent({
     openPage(pageNumber: number): void {
       videoService
         .loadVideos({ size: 10, page: pageNumber, sort: "id" } as Page)
-        .then((page: PageResponse<Video>) => {
+        .then((page: PageResponse<Video>): void => {
           this.page = page;
         })
-        .catch((error: AxiosError) => {
+        .catch((error: AxiosError): void => {
           toast.error("Error while loading videos: " + error.message);
         });
     },

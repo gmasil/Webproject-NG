@@ -16,7 +16,7 @@
 /// https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt
 ///
 
-import { App as AppType, createApp } from "vue";
+import { App as AppType, Component, createApp } from "vue";
 import { createPinia, Pinia } from "pinia";
 import App from "@/App.vue";
 import router from "@/router";
@@ -36,7 +36,7 @@ const pinia: Pinia = createPinia();
 
 const app: AppType<Element> = createApp(App).use(pinia).use(router);
 
-app.component("VSelect", vSelect);
+app.component("VSelect", vSelect as Component);
 app.component("Navbar", Navbar);
 app.component("ColorPicker", ColorPicker);
 app.component("WebprojectVideo", WebprojectVideo);

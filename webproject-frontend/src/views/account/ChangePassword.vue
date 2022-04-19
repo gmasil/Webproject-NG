@@ -68,7 +68,7 @@ export default defineComponent({
     };
   },
   methods: {
-    onChangeClick() {
+    onChangeClick(): void {
       if (this.newPassword != this.repeatPassword) {
         toast.error("Passwords mismatch");
         return;

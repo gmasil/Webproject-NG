@@ -16,7 +16,11 @@
 /// https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt
 ///
 
-import { defineStore, Store as PiniaStore } from "pinia";
+import {
+  defineStore,
+  Store as PiniaStore,
+  StoreDefinition as PiniaStoreDefinition,
+} from "pinia";
 import { AppProperties, Theme, User } from "@/types";
 
 export class State {
@@ -26,44 +30,54 @@ export class State {
   activeTheme: Theme | null = null;
 }
 
-export type Store = PiniaStore<
-  "main",
-  State,
-  {
-    isInitialized: (state: State) => boolean;
-    isAccessRestricted: (state: State) => boolean;
-    isAuthenticated(state: State): boolean;
-    getUsername(state: State): string;
-  }
->;
+export type Store = PiniaStore<"main", State, StoreGetters>;
+export type StoreDefinition = PiniaStoreDefinition<"main", State, StoreGetters>;
 
-// eslint-disable-next-line @typescript-eslint/typedef
-export const useStore = defineStore("main", {
-  state: () => {
+// getters
+
+export type StoreGetters = {
+  isInitialized: (state: State) => boolean;
+  isAccessRestricted: (state: State) => boolean;
+  isAuthenticated(state: State): boolean;
+  getUsername(state: State): string;
+};
+
+function isInitialized(state: State): boolean {
+  return state.initializedUser && state.appProperties != null;
+}
+
+function isAccessRestricted(state: State): boolean {
+  if (state.appProperties == null) {
+    return true;
+  }
+  if (state.appProperties.publicAccess) {
+    return false;
+  } else {
+    return state.currentUser == null;
+  }
+}
+
+function isAuthenticated(state: State): boolean {
+  return state.currentUser != null;
+}
+
+function getUsername(state: State): string {
+  if (state.currentUser != null) {
+    return state.currentUser.username;
+  }
+  return "Unauthorized";
+}
+
+// store
+
+export const useStore: StoreDefinition = defineStore("main", {
+  state: (): State => {
     return new State();
   },
   getters: {
-    isInitialized: (state: State) => {
-      return state.initializedUser && state.appProperties != null;
-    },
-    isAccessRestricted: (state: State) => {
-      if (state.appProperties == null) {
-        return true;
-      }
-      if (state.appProperties.publicAccess) {
-        return false;
-      } else {
-        return state.currentUser == null;
-      }
-    },
-    isAuthenticated(state: State): boolean {
-      return state.currentUser != null;
-    },
-    getUsername(state: State): string {
-      if (state.currentUser != null) {
-        return state.currentUser.username;
-      }
-      return "Unauthorized";
-    },
+    isInitialized,
+    isAccessRestricted,
+    isAuthenticated,
+    getUsername,
   },
 });

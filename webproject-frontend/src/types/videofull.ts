@@ -41,15 +41,17 @@ export class VideoFull {
     response: AxiosResponse<VideoFull, unknown>
   ): VideoFull {
     const video: VideoFull = Object.assign(new VideoFull(), response.data);
-    video.scenes?.sort((a: Scene, b: Scene) => {
-      if (a.time < b.time) {
-        return -1;
-      }
-      if (a.time > b.time) {
-        return 1;
-      }
-      return 0;
-    });
+    video.scenes?.sort(compareScenes);
     return video;
   }
+}
+
+function compareScenes(a: Scene, b: Scene): number {
+  if (a.time < b.time) {
+    return -1;
+  }
+  if (a.time > b.time) {
+    return 1;
+  }
+  return 0;
 }

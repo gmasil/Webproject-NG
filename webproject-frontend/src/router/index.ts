@@ -33,7 +33,7 @@ import Themes from "@/views/Themes.vue";
 import ChangePassword from "@/views/account/ChangePassword.vue";
 import Login from "@/views/Login.vue";
 
-const routes: Array<RouteRecordRaw> = [
+const routes: RouteRecordRaw[] = [
   {
     path: "/",
     name: "HelloWorld",
@@ -89,7 +89,7 @@ const router: Router = createRouter({
 
 function waitForInit(callback: CallbackFunction): void {
   if (!useStore().isInitialized) {
-    setTimeout(function () {
+    setTimeout(() => {
       waitForInit(callback);
     }, 50);
   } else {
@@ -102,7 +102,7 @@ router.beforeEach(
     to: RouteLocationNormalized,
     _from: RouteLocationNormalized,
     next: NavigationGuardNext
-  ) => {
+  ): void => {
     if (to.path == "/login" || to.path == "/logout" || to.path == "/error") {
       next();
     }

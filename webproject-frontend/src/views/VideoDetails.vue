@@ -26,7 +26,10 @@
       <div v-else>
         <!--normal video page-->
         <div class="w-7/12 mx-auto">
-          <webproject-video v-model="data.video"></webproject-video>
+          <webproject-video
+            ref="videoElement"
+            v-model="data.video"
+          ></webproject-video>
         </div>
         <h1 class="text-center text-2xl">
           {{ data.video.title }}
@@ -52,15 +55,19 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, onMounted } from "vue";
+import { reactive, onMounted, ref } from "vue";
+import type { Ref } from "vue";
 import { RouteLocationNormalizedLoaded, useRoute } from "vue-router";
 import { VideoFull } from "@/types";
 import { ToastInterface, useToast } from "vue-toastification";
 import { videoService } from "@/service/video";
 import { AxiosError } from "axios";
+import type { IWebprojectVideo } from "@/components/WebprojectVideo.vue";
 
 const toast: ToastInterface = useToast();
 const route: RouteLocationNormalizedLoaded = useRoute();
+
+const videoElement: Ref<IWebprojectVideo | undefined> = ref();
 
 declare interface BaseComponentData {
   id: string;
@@ -97,7 +104,14 @@ onMounted(() => {
 
 defineExpose({
   formatSceneTime,
+  jumpVideoTo,
 });
+
+function jumpVideoTo(time: number): void {
+  if (videoElement.value) {
+    videoElement.value.jumpVideoTo(time);
+  }
+}
 
 function formatSceneTime(time: number): string {
   const hrs: number = Math.floor(time / 3600);

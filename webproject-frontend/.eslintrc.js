@@ -31,7 +31,6 @@ module.exports = {
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
-    //"plugin:@typescript-eslint/recommended-requiring-type-checking",
     "plugin:sonarjs/recommended",
   ],
   parser: "vue-eslint-parser",
@@ -61,5 +60,16 @@ module.exports = {
       },
     ],
     "@typescript-eslint/no-inferrable-types": "off",
+    "@typescript-eslint/explicit-function-return-type": [
+      "error",
+      {
+        allowExpressions: false,
+        allowTypedFunctionExpressions: true, // allow anonymous lambda functions
+        allowHigherOrderFunctions: false,
+        allowDirectConstAssertionInArrowFunctions: false,
+        allowConciseArrowFunctionExpressionsStartingWithVoid: false,
+      },
+    ],
+    "@typescript-eslint/array-type": "error",
   },
 };

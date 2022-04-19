@@ -46,7 +46,7 @@ const emit = defineEmits<{
   (e: "update:modelValue", value: string): void;
 }>();
 
-watch(props, (newProps: Props) => {
+watch(props, (newProps: Props): void => {
   // manually set the correct color for little preview box
   if (colorInput.value && colorInput.value.parentElement) {
     colorInput.value.parentElement.style.color = newProps.modelValue;

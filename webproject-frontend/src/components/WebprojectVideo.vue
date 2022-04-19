@@ -24,6 +24,7 @@
     id="videoContainer"
     ref="videoContainer"
     class="relative"
+    @mousemove="onMouseMove"
   >
     <video
       ref="videoElement"
@@ -38,7 +39,13 @@
     >
       <source :src="data.video.files[0].name" type="video/mp4" />
     </video>
-    <div ref="videoControls" class="absolute bottom-0 left-0 right-0">
+    <div
+      ref="videoControls"
+      :data-show="data.paused || data.mouseOnControls || data.mouseOnVideo"
+      class="videoControls absolute bottom-0 left-0 right-0"
+      @mouseover="data.mouseOnControls = true"
+      @mouseleave="data.mouseOnControls = false"
+    >
       <div
         class="absolute top-0 bottom-0 left-0 right-0 bg-theme-background-highlight opacity-80"
       ></div>
@@ -51,7 +58,7 @@
         @click="onScrollClick"
       >
         <img
-          v-if="data.scrolling"
+          v-show="data.scrolling"
           ref="videoScrollPreview"
           class="absolute"
           :src="videoPreviewImage"
@@ -76,6 +83,7 @@
         class="cursor-pointer relative"
         @click="togglePlay"
       ></vue-feather>
+      <span class="videoTime relative">{{ data.time }}</span>
       <vue-feather
         v-if="!data.fullscreen"
         type="maximize"
@@ -126,6 +134,10 @@ declare interface BaseComponentData {
   paused: boolean;
   fullscreen: boolean;
   scrolling: boolean;
+  mouseOnVideo: boolean;
+  mouseOnControls: boolean;
+  hideControlsTimer: number;
+  time: string;
 }
 
 const data: BaseComponentData = reactive({
@@ -133,6 +145,10 @@ const data: BaseComponentData = reactive({
   paused: true,
   fullscreen: false,
   scrolling: false,
+  mouseOnVideo: false,
+  mouseOnControls: false,
+  hideControlsTimer: NaN,
+  time: "",
 } as BaseComponentData);
 
 watch(props, updateData);
@@ -167,19 +183,32 @@ defineExpose({
   toggleFullscreen,
   updatePaused,
   updateTime,
+  onMouseMove,
 });
 
+function onMouseMove(): void {
+  data.mouseOnVideo = true;
+  if (!isNaN(data.hideControlsTimer)) {
+    clearTimeout(data.hideControlsTimer);
+  }
+  data.hideControlsTimer = setTimeout(() => {
+    data.mouseOnVideo = false;
+  }, 2000);
+}
+
 function updateTime(): void {
-  if (
-    videoTime.value &&
-    videoElement.value &&
-    data.video &&
-    data.video.length &&
-    videoScroller.value
-  ) {
-    const width: number =
-      (videoElement.value.currentTime * 100) / data.video.length;
-    videoTime.value.style.width = `${width}%`;
+  if (videoElement.value) {
+    data.time = formatTime(videoElement.value.currentTime);
+    if (
+      videoTime.value &&
+      data.video &&
+      data.video.length &&
+      videoScroller.value
+    ) {
+      const width: number =
+        (videoElement.value.currentTime * 100) / data.video.length;
+      videoTime.value.style.width = `${width}%`;
+    }
   }
 }
 
@@ -338,6 +367,19 @@ export interface IWebprojectVideo extends VueElement {
 .vue-feather {
   margin: 0 0.5em;
   padding: 0.5em 0 0 0;
+}
+
+.videoTime {
+  top: -0.4em;
+}
+
+.videoControls {
+  opacity: 1;
+  transition: opacity 0.1s linear;
+}
+
+.videoControls[data-show="false"] {
+  opacity: 0;
 }
 
 #videoContainer {

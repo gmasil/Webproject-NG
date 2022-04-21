@@ -47,11 +47,5 @@ export class VideoFull {
 }
 
 function compareScenes(a: Scene, b: Scene): number {
-  if (a.time < b.time) {
-    return -1;
-  }
-  if (a.time > b.time) {
-    return 1;
-  }
-  return 0;
+  return a.time - b.time;
 }

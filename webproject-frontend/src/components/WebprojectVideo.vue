@@ -23,7 +23,7 @@
     v-if="data.video"
     id="videoContainer"
     ref="videoContainer"
-    class="relative"
+    class="relative overflow-hidden select-none"
     @mousemove="onMouseMove"
   >
     <video
@@ -41,7 +41,12 @@
     </video>
     <div
       ref="videoControls"
-      :data-show="data.paused || data.mouseOnControls || data.mouseOnVideo"
+      :data-show="
+        data.paused ||
+        data.mouseOnControls ||
+        data.mouseOnVideo ||
+        data.videoSliderDragging
+      "
       class="videoControls absolute bottom-0 left-0 right-0"
       @mouseover="data.mouseOnControls = true"
       @mouseleave="data.mouseOnControls = false"
@@ -58,15 +63,29 @@
         @click="onScrollClick"
       >
         <img
-          v-show="data.scrolling"
+          v-show="data.scrolling || data.videoSliderDragging"
           ref="videoScrollPreview"
           class="absolute"
           :src="videoPreviewImage"
           alt="scrollpreview"
         />
+        <invisible-slider
+          v-model="data.videoSliderTime"
+          class="absolute w-full h-2 z-40"
+          min="0"
+          :max="data.video.length"
+          @change="onSliderChange"
+          @dragstart="data.videoSliderDragging = true"
+          @dragend="data.videoSliderDragging = false"
+          @move="onVideoSliderMove"
+        ></invisible-slider>
         <div
           ref="videoTime"
           class="absolute left-0 h-2 z-30 bg-theme-text border-y border-theme-background-highlight"
+        ></div>
+        <div
+          ref="videoBuffer"
+          class="absolute left-0 h-2 z-20 bg-theme-text border-y border-theme-background-highlight opacity-50"
         ></div>
       </div>
       <vue-feather
@@ -83,7 +102,9 @@
         class="cursor-pointer relative"
         @click="togglePlay"
       ></vue-feather>
-      <span class="videoTime relative">{{ data.time }}</span>
+      <span class="videoTime relative"
+        >{{ data.currentTime }} / {{ data.videoDuration }}</span
+      >
       <vue-feather
         v-if="!data.fullscreen"
         type="maximize"
@@ -122,12 +143,20 @@ const videoScroller: Ref<HTMLElement | undefined> = ref();
 const videoScrollPreview: Ref<HTMLImageElement | undefined> = ref();
 const videoControls: Ref<HTMLElement | undefined> = ref();
 const videoTime: Ref<HTMLElement | undefined> = ref();
+const videoBuffer: Ref<HTMLElement | undefined> = ref();
 
 interface Props {
   modelValue: VideoFull;
 }
 
 const props: Readonly<Props> = defineProps<Props>();
+
+function onSliderChange(value: number): void {
+  refreshControlsHideTimer();
+  if (videoElement.value) {
+    videoElement.value.currentTime = value;
+  }
+}
 
 declare interface BaseComponentData {
   video: VideoFull | null;
@@ -137,7 +166,10 @@ declare interface BaseComponentData {
   mouseOnVideo: boolean;
   mouseOnControls: boolean;
   hideControlsTimer: number;
-  time: string;
+  currentTime: string;
+  videoDuration: string;
+  videoSliderDragging: boolean;
+  videoSliderTime: number;
 }
 
 const data: BaseComponentData = reactive({
@@ -148,7 +180,10 @@ const data: BaseComponentData = reactive({
   mouseOnVideo: false,
   mouseOnControls: false,
   hideControlsTimer: NaN,
-  time: "",
+  currentTime: formatTime(0),
+  videoDuration: formatTime(0),
+  videoSliderDragging: false,
+  videoSliderTime: 0,
 } as BaseComponentData);
 
 watch(props, updateData);
@@ -157,13 +192,17 @@ onMounted(() => {
   document.addEventListener("fullscreenchange", updateFullscreenEvent);
 });
 
-function updateData(): void {
-  data.video = props.modelValue;
+function onVideoSliderMove(): void {
+  if (data.videoSliderDragging && data.video && data.video.length) {
+    const percentage: number = data.videoSliderTime / data.video.length;
+    showPreview(percentage);
+  }
 }
 
-function updatePaused(event: DOMEvent<HTMLVideoElement>): void {
-  if (event.target) {
-    data.paused = event.target.paused;
+function updateData(): void {
+  data.video = props.modelValue;
+  if (data.video.length) {
+    data.videoDuration = formatTime(data.video.length);
   }
 }
 
@@ -184,9 +223,21 @@ defineExpose({
   updatePaused,
   updateTime,
   onMouseMove,
+  onSliderChange,
+  onVideoSliderMove,
 });
 
+function updatePaused(event: DOMEvent<HTMLVideoElement>): void {
+  if (event.target) {
+    data.paused = event.target.paused;
+  }
+}
+
 function onMouseMove(): void {
+  refreshControlsHideTimer();
+}
+
+function refreshControlsHideTimer(): void {
   data.mouseOnVideo = true;
   if (!isNaN(data.hideControlsTimer)) {
     clearTimeout(data.hideControlsTimer);
@@ -198,16 +249,28 @@ function onMouseMove(): void {
 
 function updateTime(): void {
   if (videoElement.value) {
-    data.time = formatTime(videoElement.value.currentTime);
+    const currentTime: number = videoElement.value.currentTime;
+    data.currentTime = formatTime(currentTime);
+    if (!data.videoSliderDragging) {
+      data.videoSliderTime = currentTime;
+    }
     if (
       videoTime.value &&
+      videoBuffer.value &&
       data.video &&
       data.video.length &&
       videoScroller.value
     ) {
-      const width: number =
-        (videoElement.value.currentTime * 100) / data.video.length;
+      const width: number = (currentTime * 100) / data.video.length;
       videoTime.value.style.width = `${width}%`;
+      for (let i: number = 0; i < videoElement.value.buffered.length; i++) {
+        const start: number = videoElement.value.buffered.start(i);
+        const end: number = videoElement.value.buffered.end(i);
+        if (start < currentTime && currentTime < end) {
+          const bufferWidth: number = (end * 100) / data.video.length;
+          videoBuffer.value.style.width = `${bufferWidth}%`;
+        }
+      }
     }
   }
 }
@@ -290,18 +353,37 @@ function updateFullscreen(): void {
 }
 
 function onScroll(event: MouseEvent): void {
-  if (videoScrollPreview.value && videoScroller.value && videoContainer.value) {
+  if (
+    videoScroller.value &&
+    data.videoDuration &&
+    data.video &&
+    data.video.length
+  ) {
+    const rect: DOMRect = videoScroller.value.getBoundingClientRect();
+    const pos: number = event.clientX - rect.left;
+    const percentage: number = pos / rect.width;
+    showPreview(percentage);
+  }
+}
+
+function showPreview(percentage: number): void {
+  if (
+    videoScrollPreview.value &&
+    videoScroller.value &&
+    videoContainer.value &&
+    data.video &&
+    data.video.length
+  ) {
     const previewWidth: number = 192;
     const previewHeigth: number = 108;
     const previewFrames: number = 600;
     const rect: DOMRect = videoScroller.value.getBoundingClientRect();
-    const x: number = event.clientX - rect.left;
-    const img: number = Math.floor((x / rect.width) * previewFrames);
+    const img: number = Math.floor(percentage * previewFrames);
     videoScrollPreview.value.style.clip = `rect(${
       img * previewHeigth
     }px, ${previewWidth}px, ${img * previewHeigth + previewHeigth}px, 0)`;
     const top: number = Math.floor(0 - previewHeigth - img * previewHeigth);
-    let left: number = Math.floor(x - previewWidth / 2);
+    let left: number = Math.floor(percentage * rect.width - previewWidth / 2);
     if (left < 0) {
       left = 0;
     } else if (left > rect.width - previewWidth) {

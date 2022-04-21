@@ -90,14 +90,12 @@
       </div>
       <vue-feather
         v-if="data.paused"
-        ref="playButton"
         type="play"
         class="cursor-pointer relative"
         @click="togglePlay"
       ></vue-feather>
       <vue-feather
         v-if="!data.paused"
-        ref="pauseButton"
         type="pause"
         class="cursor-pointer relative"
         @click="togglePlay"
@@ -290,6 +288,7 @@ function togglePlay(): void {
       videoElement.value.pause();
       data.paused = true;
     }
+    data.mouseOnControls = false;
   }
 }
 
@@ -306,6 +305,7 @@ function toggleFullscreen(): void {
         toast.error(error.message);
       });
     }
+    data.mouseOnControls = false;
   }
 }
 

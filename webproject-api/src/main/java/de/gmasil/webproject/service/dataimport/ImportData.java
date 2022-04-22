@@ -21,6 +21,7 @@ import java.awt.Color;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -101,6 +102,7 @@ public class ImportData {
 
             private @Default String video = "";
             private @Default String thumbnail = "";
+            private @Default String videoPreview = "";
 
             public void removeEmpty() {
                 if (isEmpty(video)) {
@@ -109,10 +111,13 @@ public class ImportData {
                 if (isEmpty(thumbnail)) {
                     thumbnail = null;
                 }
+                if (isEmpty(videoPreview)) {
+                    videoPreview = null;
+                }
             }
 
             public boolean isEmpty() {
-                return video == null && thumbnail == null;
+                return video == null && thumbnail == null && videoPreview == null;
             }
 
             private boolean isEmpty(String s) {
@@ -168,7 +173,8 @@ public class ImportData {
         private String title;
         private String description;
         private String origin;
-        private float length;
+        @JsonAlias({ "duration", "length" })
+        private float duration;
         private String thumbnail;
         private String studio;
         private @Default List<ImportFile> files = new LinkedList<>();
@@ -178,6 +184,8 @@ public class ImportData {
         private @Default List<String> favoriters = new LinkedList<>();
         private @Default List<ImportRating> ratings = new LinkedList<>();
         private @Default List<ImportScene> scenes = new LinkedList<>();
+        @JsonAlias({ "seekPreviewFile", "seek-preview-file", "seekpreviewfile" })
+        private ImportSeekPreviewFile seekPreviewFile;
 
         @Getter
         @Setter
@@ -229,6 +237,21 @@ public class ImportData {
 
             private String name;
             private float time;
+        }
+
+        @Getter
+        @Setter
+        @Builder
+        @NoArgsConstructor
+        @AllArgsConstructor
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
+        public static class ImportSeekPreviewFile {
+
+            private String name;
+            private int width;
+            private int height;
+            private int frames;
         }
     }
 }

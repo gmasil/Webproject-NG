@@ -3,9 +3,11 @@
     "target": "esnext",
     "module": "esnext",
     "strict": true,
+    "alwaysStrict": true,
     "jsx": "preserve",
     "moduleResolution": "node",
     "experimentalDecorators": true,
+    "allowJs": false,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -20,7 +22,6 @@
     "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
   },
   "include": [
-    ".eslintrc.js",
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.vue",

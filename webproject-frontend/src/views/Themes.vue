@@ -89,7 +89,7 @@ import { mapStores } from "pinia";
 
 const toast: ToastInterface = useToast();
 
-declare interface BaseComponentData {
+interface BaseComponentData {
   themes: Theme[];
   selectedTheme: Theme | null;
   selectedThemeCopy: Theme | null;

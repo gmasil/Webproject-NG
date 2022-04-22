@@ -65,7 +65,7 @@ const value: WritableComputedRef<number | string> = computed({
   },
 });
 
-declare interface BaseComponentData {
+interface BaseComponentData {
   dragging: boolean;
 }
 

@@ -40,7 +40,6 @@
       <source :src="data.video.files[0].name" type="video/mp4" />
     </video>
     <div
-      ref="videoControls"
       :data-show="
         data.paused ||
         data.mouseOnControls ||
@@ -63,7 +62,10 @@
         @click="onScrollClick"
       >
         <img
-          v-show="data.scrolling || data.videoSliderDragging"
+          v-show="
+            data.video?.seekPreviewFile &&
+            (data.scrolling || data.videoSliderDragging)
+          "
           ref="videoScrollPreview"
           class="absolute"
           :src="videoPreviewImage"
@@ -73,7 +75,7 @@
           v-model="data.videoSliderTime"
           class="absolute w-full h-2 z-40"
           min="0"
-          :max="data.video.length"
+          :max="data.video.duration"
           @change="onSliderChange"
           @dragstart="data.videoSliderDragging = true"
           @dragend="data.videoSliderDragging = false"
@@ -119,18 +121,10 @@
   </div>
 </template>
 
-<script lang="ts" setup>
-import {
-  reactive,
-  ref,
-  computed,
-  watch,
-  onMounted,
-  ComputedRef,
-  VueElement,
-} from "vue";
+<script setup lang="ts">
+import { reactive, ref, computed, watch, onMounted, ComputedRef } from "vue";
 import type { Ref } from "vue";
-import { VideoFull, DOMEvent } from "@/types";
+import { VideoFull } from "@/types";
 import { ToastInterface, useToast } from "vue-toastification";
 
 const toast: ToastInterface = useToast();
@@ -139,7 +133,6 @@ const videoContainer: Ref<HTMLElement | undefined> = ref();
 const videoElement: Ref<HTMLVideoElement | undefined> = ref();
 const videoScroller: Ref<HTMLElement | undefined> = ref();
 const videoScrollPreview: Ref<HTMLImageElement | undefined> = ref();
-const videoControls: Ref<HTMLElement | undefined> = ref();
 const videoTime: Ref<HTMLElement | undefined> = ref();
 const videoBuffer: Ref<HTMLElement | undefined> = ref();
 
@@ -156,7 +149,7 @@ function onSliderChange(value: number): void {
   }
 }
 
-declare interface BaseComponentData {
+interface BaseComponentData {
   video: VideoFull | null;
   paused: boolean;
   fullscreen: boolean;
@@ -190,17 +183,10 @@ onMounted(() => {
   document.addEventListener("fullscreenchange", updateFullscreenEvent);
 });
 
-function onVideoSliderMove(): void {
-  if (data.videoSliderDragging && data.video && data.video.length) {
-    const percentage: number = data.videoSliderTime / data.video.length;
-    showPreview(percentage);
-  }
-}
-
 function updateData(): void {
   data.video = props.modelValue;
-  if (data.video.length) {
-    data.videoDuration = formatTime(data.video.length);
+  if (data.video.duration) {
+    data.videoDuration = formatTime(data.video.duration);
   }
 }
 
@@ -225,9 +211,9 @@ defineExpose({
   onVideoSliderMove,
 });
 
-function updatePaused(event: DOMEvent<HTMLVideoElement>): void {
-  if (event.target) {
-    data.paused = event.target.paused;
+function updatePaused(): void {
+  if (videoElement.value) {
+    data.paused = videoElement.value.paused;
   }
 }
 
@@ -256,16 +242,16 @@ function updateTime(): void {
       videoTime.value &&
       videoBuffer.value &&
       data.video &&
-      data.video.length &&
+      data.video.duration &&
       videoScroller.value
     ) {
-      const width: number = (currentTime * 100) / data.video.length;
+      const width: number = (currentTime * 100) / data.video.duration;
       videoTime.value.style.width = `${width}%`;
       for (let i: number = 0; i < videoElement.value.buffered.length; i++) {
         const start: number = videoElement.value.buffered.start(i);
         const end: number = videoElement.value.buffered.end(i);
         if (start < currentTime && currentTime < end) {
-          const bufferWidth: number = (end * 100) / data.video.length;
+          const bufferWidth: number = (end * 100) / data.video.duration;
           videoBuffer.value.style.width = `${bufferWidth}%`;
         }
       }
@@ -352,13 +338,15 @@ function updateFullscreen(): void {
   }
 }
 
+function onVideoSliderMove(): void {
+  if (data.videoSliderDragging && data.video && data.video.duration) {
+    const percentage: number = data.videoSliderTime / data.video.duration;
+    showPreview(percentage);
+  }
+}
+
 function onScroll(event: MouseEvent): void {
-  if (
-    videoScroller.value &&
-    data.videoDuration &&
-    data.video &&
-    data.video.length
-  ) {
+  if (videoScroller.value) {
     const rect: DOMRect = videoScroller.value.getBoundingClientRect();
     const pos: number = event.clientX - rect.left;
     const percentage: number = pos / rect.width;
@@ -370,13 +358,12 @@ function showPreview(percentage: number): void {
   if (
     videoScrollPreview.value &&
     videoScroller.value &&
-    videoContainer.value &&
     data.video &&
-    data.video.length
+    data.video.seekPreviewFile
   ) {
-    const previewWidth: number = 192;
-    const previewHeigth: number = 108;
-    const previewFrames: number = 600;
+    const previewWidth: number = data.video.seekPreviewFile.width;
+    const previewHeigth: number = data.video.seekPreviewFile.height;
+    const previewFrames: number = data.video.seekPreviewFile.frames;
     const rect: DOMRect = videoScroller.value.getBoundingClientRect();
     const img: number = Math.floor(percentage * previewFrames);
     videoScrollPreview.value.style.clip = `rect(${
@@ -395,17 +382,12 @@ function showPreview(percentage: number): void {
 }
 
 function onScrollClick(event: MouseEvent): void {
-  if (
-    videoScrollPreview.value &&
-    videoScroller.value &&
-    data.video &&
-    data.video.length
-  ) {
+  if (videoScroller.value && data.video && data.video.duration) {
     const previewFrames: number = 600;
     const rect: DOMRect = videoScroller.value.getBoundingClientRect();
     const x: number = event.clientX - rect.left;
     const img: number = Math.floor((x / rect.width) * previewFrames);
-    const time: number = (img / previewFrames) * data.video.length;
+    const time: number = (img / previewFrames) * data.video.duration;
     jumpVideoTo(time);
   }
 }
@@ -439,10 +421,13 @@ function formatTime(time: number): string {
   ret += `${secs < 10 ? "0" : ""}${secs}`;
   return ret;
 }
+</script>
 
-export interface IWebprojectVideo extends VueElement {
+<script lang="ts">
+export interface IWebprojectVideo {
   jumpVideoTo(time: number): void;
 }
+export default {};
 </script>
 
 <style scoped>

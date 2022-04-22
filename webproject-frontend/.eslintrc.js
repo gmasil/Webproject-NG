@@ -19,6 +19,8 @@ module.exports = {
   root: true,
   env: {
     node: true,
+    browser: true,
+    es6: true,
     "vue/setup-compiler-macros": true,
   },
   extends: [
@@ -39,11 +41,9 @@ module.exports = {
     project: "./tsconfig.json",
     ecmaVersion: 2020,
   },
-  plugins: ["@typescript-eslint", "sonarjs"],
+  plugins: ["@typescript-eslint", "sonarjs", "vue"],
   rules: {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     "no-console": process.env.NODE_ENV === "production" ? "error" : "warn",
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     "no-debugger": process.env.NODE_ENV === "production" ? "error" : "warn",
     "vue/multi-word-component-names": "off",
     "@typescript-eslint/typedef": [
@@ -70,6 +70,25 @@ module.exports = {
         allowConciseArrowFunctionExpressionsStartingWithVoid: false,
       },
     ],
+    "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
+    // internet
+    "@typescript-eslint/adjacent-overload-signatures": "error",
     "@typescript-eslint/array-type": "error",
+    "@typescript-eslint/ban-types": "error",
+    "@typescript-eslint/consistent-type-assertions": "error",
+    "@typescript-eslint/no-empty-interface": "error",
+    "@typescript-eslint/no-explicit-any": "error",
+    "@typescript-eslint/no-misused-new": "error",
+    "@typescript-eslint/no-namespace": "error",
+    "@typescript-eslint/no-parameter-properties": "error",
+    "@typescript-eslint/triple-slash-reference": "error",
+    "@typescript-eslint/no-var-requires": "error",
+    "@typescript-eslint/prefer-for-of": "error",
+    "@typescript-eslint/consistent-type-definitions": "error",
+    "@typescript-eslint/prefer-namespace-keyword": "error",
+    "@typescript-eslint/type-annotation-spacing": "error",
+    "@typescript-eslint/unified-signatures": "off",
+    "@typescript-eslint/member-ordering": "error",
+    "@typescript-eslint/no-empty-function": "error",
   },
 };

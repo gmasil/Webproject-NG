@@ -31,3 +31,4 @@ export * from "@/types/user";
 export * from "@/types/video";
 export * from "@/types/videofile";
 export * from "@/types/videofull";
+export * from "@/types/videoseekpreviewfile";

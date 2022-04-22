@@ -69,7 +69,7 @@ const route: RouteLocationNormalizedLoaded = useRoute();
 
 const videoElement: Ref<IWebprojectVideo | undefined> = ref();
 
-declare interface BaseComponentData {
+interface BaseComponentData {
   id: string;
   video: VideoFull | null;
   loading: boolean;

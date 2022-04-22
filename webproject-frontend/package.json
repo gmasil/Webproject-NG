@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "vue-tsc --noEmit && vue-cli-service build",
+    "check-types": "vue-tsc --noEmit",
+    "update": "npm-check-updates -u",
     "lint": "eslint --ext .ts,.js,.jsx,.vue src/",
     "fix": "eslint --fix --ext .ts,.js,.jsx,.vue src/",
     "sonar": "eslint -o eslint-report.json -f json --ext .ts,.js,.jsx,.vue src/"
@@ -14,6 +16,7 @@
     "axios": "^0.26.1",
     "core-js": "^3.21.1",
     "pinia": "^2.0.13",
+    "typescript": "^4.6.3",
     "vue": "^3.2.31",
     "vue-class-component": "^8.0.0-0",
     "vue-feather": "^2.0.0",
@@ -45,6 +48,6 @@
     "sass": "^1.50.0",
     "sass-loader": "^12.6.0",
     "tailwindcss": "^3.0.23",
-    "typescript": "~4.6.3"
+    "vue-tsc": "^0.34.9"
   }
 }

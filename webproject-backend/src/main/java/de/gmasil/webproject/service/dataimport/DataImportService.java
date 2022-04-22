@@ -58,6 +58,7 @@ import de.gmasil.webproject.jpa.user.User;
 import de.gmasil.webproject.jpa.user.UserService;
 import de.gmasil.webproject.jpa.video.Video;
 import de.gmasil.webproject.jpa.video.VideoRepository;
+import de.gmasil.webproject.jpa.video.VideoSeekPreviewFile;
 import de.gmasil.webproject.jpa.videofavorite.VideoFavorite;
 import de.gmasil.webproject.jpa.videofavorite.VideoFavoriteRepository;
 import de.gmasil.webproject.jpa.videofile.VideoFile;
@@ -70,6 +71,7 @@ import de.gmasil.webproject.service.dataimport.ImportData.ImportVideo.ImportComm
 import de.gmasil.webproject.service.dataimport.ImportData.ImportVideo.ImportFile;
 import de.gmasil.webproject.service.dataimport.ImportData.ImportVideo.ImportRating;
 import de.gmasil.webproject.service.dataimport.ImportData.ImportVideo.ImportScene;
+import de.gmasil.webproject.service.dataimport.ImportData.ImportVideo.ImportSeekPreviewFile;
 
 @Service
 public class DataImportService {
@@ -239,9 +241,14 @@ public class DataImportService {
             Video video = Video.builder() //
                     .title(v.getTitle()) //
                     .description(v.getDescription()) //
-                    .length(v.getLength()) //
+                    .duration(v.getDuration()) //
                     .thumbnail(data.getPaths().getPrefix().getThumbnail() + v.getThumbnail()) //
                     .build();
+            if (v.getSeekPreviewFile() != null) {
+                ImportSeekPreviewFile spf = v.getSeekPreviewFile();
+                video.setSeekPreviewFile(
+                        new VideoSeekPreviewFile(spf.getName(), spf.getWidth(), spf.getHeight(), spf.getFrames()));
+            }
             for (ImportFile file : v.getFiles()) {
                 video.addFile(VideoFile.builder().name(data.getPaths().getPrefix().getVideo() + file.getName())
                         .quality(file.getQuality()).build());

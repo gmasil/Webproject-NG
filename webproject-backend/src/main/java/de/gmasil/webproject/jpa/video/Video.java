@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
@@ -77,7 +78,7 @@ public class Video extends Auditable {
     @Lob
     private String description;
 
-    private float length;
+    private float duration;
 
     private String thumbnail;
 
@@ -107,11 +108,14 @@ public class Video extends Auditable {
     @OneToMany(mappedBy = "video", cascade = { CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REMOVE })
     private Set<Scene> scenes = new HashSet<>();
 
+    @Embedded
+    private VideoSeekPreviewFile seekPreviewFile;
+
     @Builder
-    public Video(String title, String description, float length, String thumbnail) {
+    public Video(String title, String description, float duration, String thumbnail) {
         this.title = title;
         this.description = description;
-        this.length = length;
+        this.duration = duration;
         this.thumbnail = thumbnail;
     }
 
@@ -120,7 +124,7 @@ public class Video extends Auditable {
         builder.id(getId());
         builder.title(getTitle());
         builder.description(getDescription());
-        builder.length(getLength());
+        builder.duration(getDuration());
         builder.thumbnail(getThumbnail());
         builder.thumbnailPreview(getThumbnailPreview());
         return builder.build();
@@ -131,7 +135,7 @@ public class Video extends Auditable {
         builder.id(getId());
         builder.title(getTitle());
         builder.description(getDescription());
-        builder.length(getLength());
+        builder.duration(getDuration());
         builder.thumbnail(getThumbnail());
         builder.thumbnailPreview(getThumbnailPreview());
         builder.files(getFiles().stream().map(VideoFile::toDto).collect(Collectors.toSet()));
@@ -146,6 +150,9 @@ public class Video extends Auditable {
         }
         builder.rating(rating);
         builder.scenes(getScenes().stream().map(Scene::toDto).collect(Collectors.toSet()));
+        if (getSeekPreviewFile() != null) {
+            builder.seekPreviewFile(getSeekPreviewFile().toDto());
+        }
         return builder.build();
     }
 

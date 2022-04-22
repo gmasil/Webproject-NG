@@ -16,10 +16,9 @@
 /// https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt
 ///
 
-export interface Video {
-  id: number;
-  title: string;
-  thumbnail: string;
-  duration: number;
-  description: string;
+export interface VideoSeekPreviewFile {
+  name: string;
+  width: number;
+  height: number;
+  frames: number;
 }

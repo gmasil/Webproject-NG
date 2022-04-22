@@ -17,39 +17,28 @@
  */
 package de.gmasil.webproject.dto;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Builder.Default;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
-public class VideoFullDto {
+public class VideoSeekPreviewFileDto {
 
-    private Long id;
-    private String title;
-    private String description;
-    private float duration;
-    private String thumbnail;
-    private String thumbnailPreview;
-    private @Default Set<VideoFileDto> files = new HashSet<>();
-    private @Default Set<ArtistDto> artists = new HashSet<>();
-    private @Default Set<String> categories = new HashSet<>();
-    private @Default Set<CommentDto> comments = new HashSet<>();
-    private float rating;
-    private @Default Set<SceneDto> scenes = new HashSet<>();
-    private VideoSeekPreviewFileDto seekPreviewFile;
+    private String name;
+    private int width;
+    private int height;
+    private int frames;
 
     @JsonCreator
-    public static VideoFullDto create() {
-        return VideoFullDto.builder().build();
+    public static VideoSeekPreviewFileDto create() {
+        return VideoSeekPreviewFileDto.builder().build();
     }
 }

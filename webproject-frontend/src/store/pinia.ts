@@ -23,11 +23,11 @@ import {
 } from "pinia";
 import { AppProperties, Theme, User } from "@/types";
 
-export class State {
-  initializedUser: boolean = false;
-  currentUser: User | null = null;
-  appProperties: AppProperties | null = null;
-  activeTheme: Theme | null = null;
+export interface State {
+  initializedUser: boolean;
+  currentUser: User | null;
+  appProperties: AppProperties | null;
+  activeTheme: Theme | null;
 }
 
 export type Store = PiniaStore<"main", State, StoreGetters>;
@@ -35,12 +35,12 @@ export type StoreDefinition = PiniaStoreDefinition<"main", State, StoreGetters>;
 
 // getters
 
-export type StoreGetters = {
+export interface StoreGetters {
   isInitialized: (state: State) => boolean;
   isAccessRestricted: (state: State) => boolean;
   isAuthenticated(state: State): boolean;
   getUsername(state: State): string;
-};
+}
 
 function isInitialized(state: State): boolean {
   return state.initializedUser && state.appProperties != null;
@@ -71,8 +71,13 @@ function getUsername(state: State): string {
 // store
 
 export const useStore: StoreDefinition = defineStore("main", {
-  state: (): State => {
-    return new State();
+  state: () => {
+    return {
+      initializedUser: false,
+      currentUser: null,
+      appProperties: null,
+      activeTheme: null,
+    } as State;
   },
   getters: {
     isInitialized,

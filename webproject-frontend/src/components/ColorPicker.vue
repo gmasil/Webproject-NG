@@ -24,7 +24,7 @@
     class="colorisify"
     :value="modelValue"
     data-coloris
-    @input="$emit('update:modelValue', $event.target.value)"
+    @input="onChange"
   />
 </template>
 
@@ -53,6 +53,10 @@ watch(props, (newProps: Props): void => {
   }
 });
 
+function onChange(event: Event): void {
+  emit("update:modelValue", (event.target as HTMLInputElement).value);
+}
+
 onMounted(() => {
   Coloris({
     el: ".colorisify",
@@ -75,5 +79,6 @@ onMounted(() => {
 
 defineExpose({
   emit,
+  onChange,
 });
 </script>

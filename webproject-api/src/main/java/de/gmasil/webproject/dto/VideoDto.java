@@ -33,7 +33,7 @@ public class VideoDto {
     private Long id;
     private String title;
     private String description;
-    private float length;
+    private float duration;
     private String thumbnail;
     private String thumbnailPreview;
 

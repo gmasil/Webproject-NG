@@ -22,12 +22,13 @@ import { VideoFile } from "@/types/videofile";
 import { Artist } from "@/types/artist";
 import { Comment } from "@/types/comment";
 import { Scene } from "@/types/scene";
+import { VideoSeekPreviewFile } from "@/types/videoseekpreviewfile";
 
 export class VideoFull {
   id?: number;
   title?: string;
   description?: string;
-  length?: number;
+  duration?: number;
   thumbnail?: string;
   thumbnailPreview?: string;
   files?: VideoFile[];
@@ -36,6 +37,7 @@ export class VideoFull {
   comments?: Comment[];
   rating?: number;
   scenes?: Scene[];
+  seekPreviewFile?: VideoSeekPreviewFile;
 
   public static fromResponse(
     response: AxiosResponse<VideoFull, unknown>

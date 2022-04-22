@@ -54,13 +54,18 @@ videos:
   description: |
     This video shows something...
     Btw this is another line!
-  length: 13.5
+  duration: 13.5
   thumbnail: /files/something.png
   files:
   - name: /files/media/something.mp4
     quality: HD
   - name: /files/media/something-low.mp4
     quality: SD
+  seek-preview-file:
+    name: testfile.jpg
+    width: 192
+    height: 108
+    frames: 300
   artists:
   - Peter Panda
   - John Doe

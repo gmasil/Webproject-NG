@@ -79,7 +79,7 @@ import { AxiosError } from "axios";
 
 const toast: ToastInterface = useToast();
 
-declare interface BaseComponentData {
+interface BaseComponentData {
   page: PageResponse<Video> | null;
 }
 

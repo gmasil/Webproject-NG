@@ -140,6 +140,7 @@
                             <factories>SCRIPT_STYLE</factories>
                             <scss>DOUBLESLASH_STYLE</scss>
                             <vue>XML_STYLE</vue>
+                            <eslintignore>SCRIPT_STYLE</eslintignore>
                         </mapping>
                     </configuration>
                     <executions>

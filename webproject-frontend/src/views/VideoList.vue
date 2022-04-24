@@ -19,7 +19,7 @@
 -->
 <template>
   <div v-if="page != null">
-    <div class="text-center select-none">
+    <div class="text-center select-none pb-4">
       <a
         class="bg-theme-background-highlight px-4 py-2 rounded-lg cursor-pointer"
         @click="openPreviousPage()"
@@ -33,12 +33,12 @@
       >
     </div>
     <div
-      class="grid xl:grid-cols-5 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5 p-5"
+      class="video-wrapper grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5"
     >
       <div
         v-for="video in page.content"
         :key="video.id"
-        class="w-full flex rounded-lg bg-theme-background-highlight"
+        class="video-card w-full flex rounded-lg bg-theme-background-highlight"
       >
         <router-link class="w-full" :to="`/videos/${video.id}`">
           <img
@@ -54,7 +54,7 @@
         </router-link>
       </div>
     </div>
-    <div class="text-center select-none">
+    <div class="text-center select-none py-4">
       <a
         class="bg-theme-background-highlight px-4 py-2 rounded-lg cursor-pointer"
         @click="openPreviousPage()"
@@ -97,12 +97,13 @@ export default defineComponent({
     openPage(pageNumber: number): void {
       videoService
         .loadVideos({
-          size: 10,
+          size: 12,
           page: pageNumber,
           sort: "releaseDate,DESC",
         } as Page)
         .then((page: PageResponse<Video>): void => {
           this.page = page;
+          window.scrollTo(0, 0);
         })
         .catch((error: AxiosError): void => {
           toast.error("Error while loading videos: " + error.message);

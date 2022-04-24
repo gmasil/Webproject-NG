@@ -24,7 +24,11 @@
     class="bg-theme-background min-h-screen text-theme-text"
   >
     <navbar v-if="!isAccessRestricted" />
-    <router-view />
+    <div class="grid justify-items-center">
+      <div class="p-4 w-full sm:w-sm md:w-md lg:w-lg xl:w-xl 2xl:w-2xl">
+        <router-view />
+      </div>
+    </div>
   </div>
 </template>
 

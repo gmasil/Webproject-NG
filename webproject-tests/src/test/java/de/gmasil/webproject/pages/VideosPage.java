@@ -32,6 +32,6 @@ public class VideosPage extends Page {
     }
 
     public int countVideos() {
-        return browser.findElements(By.cssSelector(".grid > div")).size();
+        return browser.findElements(By.cssSelector(".video-wrapper > .video-card")).size();
     }
 }

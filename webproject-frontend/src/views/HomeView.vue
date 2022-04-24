@@ -19,7 +19,7 @@
 -->
 <template>
   <div v-if="isAllLoaded">
-    <div class="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-6 p-4">
+    <div class="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-6">
       <div
         class="md:col-start-1 md:col-end-3 md:row-span-2 lg:self-stretch relative lg:flex lg:justify-center rounded-lg"
       >
@@ -101,7 +101,7 @@ onMounted(() => {
 function loadVideoPage(): void {
   videoService
     .loadVideos({
-      size: 12,
+      size: 20,
       page: 0,
       sort: "releaseDate,DESC",
     } as Page)

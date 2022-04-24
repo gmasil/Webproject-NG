@@ -24,34 +24,35 @@
       |
       <router-link to="/videos">Videos</router-link>
       |
-      <router-link v-if="isAuthenticated" class="inline-block" to="/themes"
+      <router-link
+        v-if="store.isAuthenticated"
+        class="inline-block"
+        to="/themes"
         >Themes</router-link
       >
-      |
-      <router-link v-if="!isAuthenticated" to="/login">Login</router-link>
-      <span v-if="!isAuthenticated"> |</span>
+      <span v-if="store.isAuthenticated"> | </span>
+      <router-link v-if="!store.isAuthenticated" to="/login">Login</router-link>
+      <span v-if="!store.isAuthenticated && store.isAccessRestricted"> |</span>
       <router-link
-        v-if="isAuthenticated"
+        v-if="store.isAuthenticated"
         id="navbar-username"
         to="/changepassword"
-        >Account: {{ getUsername }}</router-link
+        >Account: {{ store.getUsername }}</router-link
       >
-      |
-      <a v-if="isAuthenticated" href="/logout">Logout</a>
+      <span v-if="store.isAuthenticated"> | </span>
+      <a v-if="store.isAuthenticated" href="/logout">Logout</a>
     </div>
-    <hr v-if="isAuthenticated" class="border-theme-text my-2" />
+    <hr class="border-theme-text my-2" />
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-import { mapState } from "pinia";
+<script setup lang="ts">
 import { useStore } from "@/store/pinia";
+import type { Store } from "@/store/pinia";
 
-export default defineComponent({
-  name: "Navbar",
-  computed: {
-    ...mapState(useStore, ["isAuthenticated", "getUsername"]),
-  },
+const store: Store = useStore();
+
+defineExpose({
+  store,
 });
 </script>

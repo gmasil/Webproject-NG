@@ -17,9 +17,9 @@
  */
 package de.gmasil.webproject;
 
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +46,7 @@ class VideoTest {
         loginPage.open();
         loginPage.performLogin("admin", "admin");
         videosPage.open();
-        assertThat(videosPage.countVideos(), is(equalTo(10)));
+        assertThat(videosPage.countVideos(), is(greaterThan(4)));
         screenshot.waitUntilImagesareLoaded();
         screenshot.takeInTestFolder(1000);
     }

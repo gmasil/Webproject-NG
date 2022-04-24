@@ -18,28 +18,121 @@
 
 -->
 <template>
-  <div>
-    <h1 v-if="isAccessRestricted">Restricted Access!</h1>
-    <h1>Login</h1>
-    <form method="post" action="/performlogin">
-      <input id="login-input-username" type="text" name="username" />
-      <input id="login-input-password" type="password" name="password" />
-      <input id="login-input-remember" type="checkbox" name="rememberme" />
-      <label for="login-input-remember">Stay logged in</label>
-      <input id="login-input-submit" type="submit" value="Login" />
-    </form>
+  <div class="grid justify-items-center -m-4">
+    <div class="text-center pt-20 text-lg w-full sm:w-sm p-4">
+      <div v-if="store.isAccessRestricted" class="mb-12">
+        <p class="text-3xl">Restricted Access!</p>
+        <p>You have to login to access this site!</p>
+      </div>
+      <form method="post" action="/performlogin">
+        <div class="grid grid-cols-2 gap-4">
+          <div class="col-span-2">
+            <p class="text-left pl-2">Username:</p>
+            <input
+              id="login-input-username"
+              ref="inputUsername"
+              class="w-full p-2 rounded-lg"
+              type="text"
+              name="username"
+              :value="getUsername"
+              autofocus
+            />
+          </div>
+          <div class="col-span-2">
+            <p class="text-left pl-2">Password:</p>
+            <input
+              id="login-input-password"
+              ref="inputPassword"
+              class="w-full p-2 rounded-lg"
+              type="password"
+              name="password"
+            />
+          </div>
+          <div class="justify-self-start pl-2">
+            <input
+              id="login-input-remember"
+              class="cursor-pointer"
+              type="checkbox"
+              name="rememberme"
+              :checked="isRememberMe"
+            />
+            <label class="w-full ml-2 cursor-pointer" for="login-input-remember"
+              >Stay logged in</label
+            >
+          </div>
+          <div class="justify-self-end">
+            <input
+              id="login-input-submit"
+              class="px-4 py-1 rounded-lg cursor-pointer bg-theme-background-highlight"
+              type="submit"
+              value="Login"
+            />
+          </div>
+        </div>
+      </form>
+    </div>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-import { mapState } from "pinia";
+<script setup lang="ts">
 import { useStore } from "@/store/pinia";
+import type { Store } from "@/store/pinia";
+import { computed, onMounted, ref } from "@vue/runtime-core";
+import type { Ref, ComputedRef } from "@vue/runtime-core";
+import { useRoute } from "vue-router";
+import type { RouteLocationNormalizedLoaded } from "vue-router";
+import { useToast } from "vue-toastification";
+import type { ToastInterface } from "vue-toastification";
 
-export default defineComponent({
-  name: "Login",
-  computed: {
-    ...mapState(useStore, ["isAccessRestricted"]),
-  },
+const store: Store = useStore();
+const route: RouteLocationNormalizedLoaded = useRoute();
+const toast: ToastInterface = useToast();
+
+const inputUsername: Ref<HTMLInputElement | undefined> =
+  ref<HTMLInputElement>();
+const inputPassword: Ref<HTMLInputElement | undefined> =
+  ref<HTMLInputElement>();
+
+const isLoginFailed: ComputedRef<boolean> = computed(() => {
+  return route.query.error !== undefined;
+});
+
+const isLogout: ComputedRef<boolean> = computed(() => {
+  return route.query.logout !== undefined;
+});
+
+const isRememberMe: ComputedRef<boolean> = computed(() => {
+  return route.query.rememberme !== undefined && route.query.rememberme == "on";
+});
+
+const getUsername: ComputedRef<string> = computed(() => {
+  if (route.query.username && route.query.username.length != 0) {
+    return route.query.username as string;
+  }
+  return "";
+});
+
+onMounted(() => {
+  if (inputUsername.value && inputPassword.value) {
+    if (getUsername.value.length == 0) {
+      inputUsername.value.focus();
+    } else {
+      inputPassword.value.focus();
+    }
+  }
+  if (isLoginFailed.value) {
+    toast.error("Wrong username or password");
+  }
+  if (isLogout.value) {
+    toast.success("You have been logged out");
+  }
+});
+
+defineExpose({
+  store,
+  isLoginFailed,
+  isLogout,
+  getUsername,
+  isRememberMe,
 });
 </script>

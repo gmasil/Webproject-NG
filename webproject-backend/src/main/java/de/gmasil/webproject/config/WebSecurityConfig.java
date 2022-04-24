@@ -41,6 +41,10 @@ import de.gmasil.webproject.jpa.user.UserService;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    static final String USERNAME_PARAMETER = "username";
+    static final String PASSWORD_PARAMETER = "password";
+    static final String REMEMBER_ME_PARAMETER = "rememberme";
+
     @Lazy
     @Autowired
     private UserService userService;
@@ -75,18 +79,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .anyRequest().authenticated();
         }
 
-        http.formLogin().loginPage("/login").failureUrl("/login?error") //
+        http.formLogin().loginPage("/login") //
+                .failureHandler(new AuthenticationFailureHandler("/login")) //
                 .loginProcessingUrl("/performlogin") //
-                .usernameParameter("username") //
-                .passwordParameter("password");
+                .usernameParameter(USERNAME_PARAMETER) //
+                .passwordParameter(PASSWORD_PARAMETER);
         http.logout() //
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout")) //
                 .logoutSuccessUrl("/login?logout") //
-                .deleteCookies("JSESSIONID", "rememberme");
+                .deleteCookies("JSESSIONID", REMEMBER_ME_PARAMETER);
         http.rememberMe() //
                 .key("uniqueAndSecret") //
                 .userDetailsService(userService) //
-                .rememberMeParameter("rememberme");
+                .rememberMeParameter(REMEMBER_ME_PARAMETER);
     }
 
     @Bean

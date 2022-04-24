@@ -21,11 +21,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
+import de.gmasil.webproject.service.initialize.InitializeService;
+
 @EnableJpaAuditing
 @SpringBootApplication
 public class Application {
 
     public static void main(String[] args) {
+        System.setProperty(InitializeService.TIMEZONE_HIBERNATE_PROPERTY, InitializeService.TIMEZONE);
         SpringApplication.run(Application.class, args);
     }
 }

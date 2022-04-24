@@ -32,6 +32,7 @@ import "vue-toastification/dist/index.css";
 import "tailwindcss/tailwind.css";
 import "vue-select/dist/vue-select.css";
 import "@melloware/coloris/dist/coloris.css";
+import "@/assets/styles/main.scss";
 
 const pinia: Pinia = createPinia();
 

@@ -59,10 +59,24 @@ export const loadVideos = (page: Page): Promise<PageResponse<Video>> => {
   );
 };
 
+export const loadFeaturedVideo = (): Promise<Video> => {
+  return new Promise<Video>((resolve: Resolve<Video>, reject: Reject) => {
+    axios
+      .get<Video>(`/api/videos/featured`)
+      .then((response: Response<Video>) => {
+        resolve(response.data);
+      })
+      .catch((error: AxiosError) => {
+        reject(error);
+      });
+  });
+};
+
 // eslint-disable-next-line @typescript-eslint/typedef
 export const videoService = {
   loadVideo,
   loadVideos,
+  loadFeaturedVideo,
 };
 
 export default videoService;

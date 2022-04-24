@@ -42,6 +42,8 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ImportData {
 
+    public static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss z";
+
     private @Default ImportPaths paths = new ImportPaths();
     private @Default List<ImportUser> users = new LinkedList<>();
     private @Default List<ImportTheme> themes = new LinkedList<>();
@@ -177,6 +179,7 @@ public class ImportData {
         private float duration;
         private String thumbnail;
         private String studio;
+        private @Default String released = "now";
         private @Default List<ImportFile> files = new LinkedList<>();
         private @Default List<String> artists = new LinkedList<>();
         private @Default List<String> categories = new LinkedList<>();

@@ -17,12 +17,17 @@
  */
 package de.gmasil.webproject.controller.rest;
 
+import java.util.Calendar;
 import java.util.Optional;
+import java.util.Random;
 
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import de.gmasil.webproject.controller.PermitAll;
+import de.gmasil.webproject.dto.VideoDto;
 import de.gmasil.webproject.dto.VideoFullDto;
 import de.gmasil.webproject.jpa.video.VideoRepository;
 
@@ -44,14 +50,14 @@ public class VideoRestController {
     @PermitAll
     @Transactional
     @GetMapping("")
-    public ResponseEntity<Object> get(Pageable pageable) {
-        return ResponseEntity.ok(videoRepo.findAllProjectionBy(pageable));
+    public ResponseEntity<Object> get(Pageable page) {
+        return ResponseEntity.ok(videoRepo.findAllProjectionByReleaseDateNotNull(page));
     }
 
     @PermitAll
     @GetMapping("/{id}")
     public ResponseEntity<Object> get(@PathVariable Long id) {
-        Optional<VideoFullDto> video = videoRepo.findFullProjectionById(id);
+        Optional<VideoFullDto> video = videoRepo.findFullProjectionByReleasedNotNullAndId(id);
         if (video.isPresent()) {
             return ResponseEntity.ok(video.get());
         } else {
@@ -59,9 +65,39 @@ public class VideoRestController {
         }
     }
 
+    @PermitAll
+    @GetMapping("/featured")
+    public ResponseEntity<Object> getFeaturedVideo() {
+        VideoDto video = getFeaturedVideoDto();
+        if (video == null) {
+            return createVideoNotFound(null);
+        }
+        return ResponseEntity.ok(video);
+    }
+
     // utils
 
+    private VideoDto getFeaturedVideoDto() {
+        Calendar calendar = Calendar.getInstance();
+        int seed = calendar.get(Calendar.HOUR_OF_DAY) * 10 + (calendar.get(Calendar.MINUTE) / 10);
+        Random r = new Random(seed);
+        int count = (int) (videoRepo.countReleased() % Integer.MAX_VALUE);
+        int selection = r.nextInt(count);
+        Pageable paging = PageRequest.of(selection, 1, Sort.by("id"));
+        Page<VideoDto> page = videoRepo.findAllProjectionByReleaseDateNotNull(paging);
+        if (page.isEmpty()) {
+            return null;
+        }
+        return page.getContent().get(0);
+    }
+
     private ResponseEntity<Object> createVideoNotFound(Long id) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Video with id " + id + " not found");
+        String msg;
+        if (id == null) {
+            msg = "No video found";
+        } else {
+            msg = "Video with id " + id + " not found";
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(msg);
     }
 }

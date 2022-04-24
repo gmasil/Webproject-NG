@@ -61,9 +61,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style lang="scss">
-@import "vue-select/src/scss/vue-select.scss";
-@import "@melloware/coloris/dist/coloris.css";
-@import "@/assets/styles/main.scss";
-</style>

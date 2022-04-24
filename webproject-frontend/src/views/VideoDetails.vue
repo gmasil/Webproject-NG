@@ -34,6 +34,9 @@
         <h1 class="text-center text-2xl">
           {{ data.video.title }}
         </h1>
+        <h1 class="text-center text-2xl">
+          {{ releaseDate }}
+        </h1>
         <div>
           <table>
             <tr v-for="scene in data.video.scenes" :key="scene.id">
@@ -55,7 +58,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, onMounted, ref } from "vue";
+import { reactive, onMounted, ref, computed, ComputedRef } from "vue";
 import type { Ref } from "vue";
 import { RouteLocationNormalizedLoaded, useRoute } from "vue-router";
 import { VideoFull } from "@/types";
@@ -63,6 +66,7 @@ import { ToastInterface, useToast } from "vue-toastification";
 import { videoService } from "@/service/video";
 import { AxiosError } from "axios";
 import type { IWebprojectVideo } from "@/components/WebprojectVideo.vue";
+import dateFormat from "dateformat";
 
 const toast: ToastInterface = useToast();
 const route: RouteLocationNormalizedLoaded = useRoute();
@@ -81,6 +85,13 @@ const data: BaseComponentData = reactive({
   video: null,
   loading: true,
   loadingError: null,
+});
+
+const releaseDate: ComputedRef<string> = computed(() => {
+  if (data.video && data.video.releaseDate) {
+    return dateFormat(data.video.releaseDate, "dd.mm.yyyy hh:MM:ss");
+  }
+  return "";
 });
 
 onMounted(() => {
@@ -105,6 +116,7 @@ onMounted(() => {
 defineExpose({
   formatSceneTime,
   jumpVideoTo,
+  releaseDate,
 });
 
 function jumpVideoTo(time: number): void {

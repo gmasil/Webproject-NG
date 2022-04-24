@@ -18,10 +18,12 @@
 package de.gmasil.webproject.service.initialize;
 
 import java.lang.invoke.MethodHandles;
+import java.util.TimeZone;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
@@ -30,6 +32,11 @@ import org.springframework.util.StopWatch;
 public class InitializeService {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    public static final String TIMEZONE_HIBERNATE_PROPERTY = "spring.jpa.properties.hibernate.jdbc.time_zone";
+    public static final String TIMEZONE = "UTC";
+
+    @Value("${" + TIMEZONE_HIBERNATE_PROPERTY + "}")
+    private String timezoneProperty;
 
     @Autowired
     private InitializeProperties properties;
@@ -44,6 +51,7 @@ public class InitializeService {
     private ApplicationEventPublisher eventPublisher;
 
     public void initialize() {
+        initTimezone();
         if (!properties.isSkip()) {
             StopWatch watch = new StopWatch();
             watch.start();
@@ -53,5 +61,16 @@ public class InitializeService {
             LOG.info("Initialized application in {}s", watch.getTotalTimeSeconds());
         }
         eventPublisher.publishEvent(new InitializeFinishedEvent(this));
+    }
+
+    private void initTimezone() {
+        TimeZone.setDefault(TimeZone.getTimeZone(TIMEZONE));
+        if (!TIMEZONE.equals(TimeZone.getDefault().getID())) {
+            LOG.warn("Incorrect timezone detected: {}, but should always be {}", TimeZone.getDefault().getID(),
+                    TIMEZONE);
+        }
+        if (!TIMEZONE.equals(timezoneProperty)) {
+            LOG.warn("Incorrect hibernate timezone detected: {}, but should always be {}", timezoneProperty, TIMEZONE);
+        }
     }
 }

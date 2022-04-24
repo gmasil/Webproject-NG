@@ -22,4 +22,5 @@ export interface Video {
   thumbnail: string;
   duration: number;
   description: string;
+  releaseDate: Date;
 }

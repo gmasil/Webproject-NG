@@ -32,6 +32,10 @@ server:
 
 spring:
   jpa:
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
     open-in-view: false
     hibernate:
       ddl-auto: update

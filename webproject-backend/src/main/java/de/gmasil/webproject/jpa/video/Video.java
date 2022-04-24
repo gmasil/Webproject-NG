@@ -17,6 +17,7 @@
  */
 package de.gmasil.webproject.jpa.video;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -36,6 +37,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.PreRemove;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -84,6 +87,10 @@ public class Video extends Auditable {
 
     private String thumbnailPreview;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = true)
+    private Date releaseDate;
+
     @ManyToMany(cascade = { CascadeType.DETACH, CascadeType.PERSIST })
     @JoinTable(name = "VIDEO_FILES", joinColumns = @JoinColumn(name = "VIDEO_ID"), inverseJoinColumns = @JoinColumn(name = "FILE_ID"))
     private Set<VideoFile> files = new HashSet<>();
@@ -127,6 +134,7 @@ public class Video extends Auditable {
         builder.duration(getDuration());
         builder.thumbnail(getThumbnail());
         builder.thumbnailPreview(getThumbnailPreview());
+        builder.releaseDate(getReleaseDate());
         return builder.build();
     }
 
@@ -138,6 +146,7 @@ public class Video extends Auditable {
         builder.duration(getDuration());
         builder.thumbnail(getThumbnail());
         builder.thumbnailPreview(getThumbnailPreview());
+        builder.releaseDate(getReleaseDate());
         builder.files(getFiles().stream().map(VideoFile::toDto).collect(Collectors.toSet()));
         builder.artists(getArtists().stream().map(Artist::toDto).collect(Collectors.toSet()));
         builder.categories(getCategories().stream().map(Category::getName).collect(Collectors.toSet()));

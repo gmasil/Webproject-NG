@@ -17,13 +17,24 @@
  */
 package de.gmasil.webproject.jpa.video;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import de.gmasil.webproject.dto.VideoDto;
 
 public interface VideoRepository extends JpaRepository<Video, Long>, VideoRepositoryExtension {
 
     public Page<VideoDto> findAllProjectionBy(Pageable pageable);
+
+    public Page<VideoDto> findAllProjectionByReleaseDateNotNull(Pageable pageable);
+
+    @Query("select id from #{#entityName}")
+    public List<Long> findAllIds();
+
+    @Query("select count(*) from VIDEO where releaseDate IS NOT NULL")
+    public Long countReleased();
 }

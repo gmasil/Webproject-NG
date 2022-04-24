@@ -56,6 +56,7 @@ videos:
     Btw this is another line!
   duration: 13.5
   thumbnail: /files/something.png
+  released: no
   files:
   - name: /files/media/something.mp4
     quality: HD
@@ -99,3 +100,5 @@ videos:
   - Comedy
   favoriters:
   - user
+- title: Movie Part 3
+  released: "2022-01-15 15:30:23 Europe/Berlin"

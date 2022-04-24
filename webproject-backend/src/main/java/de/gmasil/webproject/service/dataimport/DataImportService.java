@@ -20,6 +20,9 @@ package de.gmasil.webproject.service.dataimport;
 import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -244,35 +247,58 @@ public class DataImportService {
                     .duration(v.getDuration()) //
                     .thumbnail(data.getPaths().getPrefix().getThumbnail() + v.getThumbnail()) //
                     .build();
-            if (v.getSeekPreviewFile() != null) {
-                ImportSeekPreviewFile spf = v.getSeekPreviewFile();
-                video.setSeekPreviewFile(
-                        new VideoSeekPreviewFile(spf.getName(), spf.getWidth(), spf.getHeight(), spf.getFrames()));
-            }
-            for (ImportFile file : v.getFiles()) {
-                video.addFile(VideoFile.builder().name(data.getPaths().getPrefix().getVideo() + file.getName())
-                        .quality(file.getQuality()).build());
-            }
-            for (String artist : v.getArtists()) {
-                video.addArtist(artistRepo.findByNameOrCreate(artist));
-            }
-            for (String category : v.getCategories()) {
-                video.addCategory(categoryRepo.findByNameOrCreate(category));
-            }
-            for (ImportComment comment : v.getComments()) {
-                importVideoComment(video, comment);
-            }
+            importVideoDataBeforeSave(video, v, data);
             video = videoRepo.save(video);
-            // Scene, VideoFavorite and VideoRating require the video to exist first
-            for (ImportScene scene : v.getScenes()) {
-                importScene(video, scene);
-            }
-            for (String favoriter : v.getFavoriters()) {
-                importVideoFavorites(video, favoriter);
-            }
-            for (ImportRating rating : v.getRatings()) {
-                importVideoRating(video, rating);
-            }
+            importVideoDataAfterSave(video, v);
+        }
+    }
+
+    private void importVideoDataBeforeSave(Video video, ImportVideo v, ImportData data) {
+        // import release date
+        if ("no".equals(v.getReleased())) {
+            video.setReleaseDate(null);
+        } else if ("now".equals(v.getReleased())) {
+            video.setReleaseDate(new Date());
+        } else {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(ImportData.DATE_TIME_FORMAT);
+            ZonedDateTime zonedDateTime = ZonedDateTime.parse(v.getReleased(), formatter);
+            video.setReleaseDate(Date.from(zonedDateTime.toInstant()));
+        }
+        // seek preview
+        if (v.getSeekPreviewFile() != null) {
+            ImportSeekPreviewFile spf = v.getSeekPreviewFile();
+            video.setSeekPreviewFile(
+                    new VideoSeekPreviewFile(spf.getName(), spf.getWidth(), spf.getHeight(), spf.getFrames()));
+        }
+        // video files
+        for (ImportFile file : v.getFiles()) {
+            video.addFile(VideoFile.builder().name(data.getPaths().getPrefix().getVideo() + file.getName())
+                    .quality(file.getQuality()).build());
+        }
+        // artists
+        for (String artist : v.getArtists()) {
+            video.addArtist(artistRepo.findByNameOrCreate(artist));
+        }
+        // categories
+        for (String category : v.getCategories()) {
+            video.addCategory(categoryRepo.findByNameOrCreate(category));
+        }
+        // comments
+        for (ImportComment comment : v.getComments()) {
+            importVideoComment(video, comment);
+        }
+    }
+
+    private void importVideoDataAfterSave(Video video, ImportVideo v) {
+        // Scene, VideoFavorite and VideoRating require the video to exist first
+        for (ImportScene scene : v.getScenes()) {
+            importScene(video, scene);
+        }
+        for (String favoriter : v.getFavoriters()) {
+            importVideoFavorites(video, favoriter);
+        }
+        for (ImportRating rating : v.getRatings()) {
+            importVideoRating(video, rating);
         }
     }
 

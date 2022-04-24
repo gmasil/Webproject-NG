@@ -40,7 +40,7 @@
       </button>
     </div>
 
-    <div v-if="selectedTheme && !selectedTheme.preset" class="mt-4">
+    <div v-if="selectedThemeCopy && !selectedThemeCopy.preset" class="mt-4">
       <div class="grid grid-cols-fit gap-x-4 gap-y-1 justify-items-start">
         <span class="inline-block">ID</span>
         <input v-model="selectedThemeCopy.id" type="text" />

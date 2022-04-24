@@ -26,7 +26,7 @@ import {
 } from "vue-router";
 import { CallbackFunction } from "@/types";
 import { Store, useStore } from "@/store/pinia";
-import HelloWorld from "@/views/HelloWorld.vue";
+import HomeView from "@/views/HomeView.vue";
 import VideoList from "@/views/VideoList.vue";
 import VideoDetails from "@/views/VideoDetails.vue";
 import Themes from "@/views/Themes.vue";
@@ -36,8 +36,8 @@ import Login from "@/views/Login.vue";
 const routes: RouteRecordRaw[] = [
   {
     path: "/",
-    name: "HelloWorld",
-    component: HelloWorld,
+    name: "HomeView",
+    component: HomeView,
   },
   {
     path: "/videos",

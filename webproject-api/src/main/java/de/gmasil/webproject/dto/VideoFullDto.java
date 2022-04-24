@@ -17,6 +17,7 @@
  */
 package de.gmasil.webproject.dto;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -40,6 +41,7 @@ public class VideoFullDto {
     private float duration;
     private String thumbnail;
     private String thumbnailPreview;
+    private Date releaseDate;
     private @Default Set<VideoFileDto> files = new HashSet<>();
     private @Default Set<ArtistDto> artists = new HashSet<>();
     private @Default Set<String> categories = new HashSet<>();

@@ -24,4 +24,6 @@ import de.gmasil.webproject.dto.VideoFullDto;
 public interface VideoRepositoryExtension {
 
     public Optional<VideoFullDto> findFullProjectionById(Long id);
+
+    public Optional<VideoFullDto> findFullProjectionByReleasedNotNullAndId(Long id);
 }

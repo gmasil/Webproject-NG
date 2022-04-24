@@ -96,7 +96,11 @@ export default defineComponent({
   methods: {
     openPage(pageNumber: number): void {
       videoService
-        .loadVideos({ size: 10, page: pageNumber, sort: "id" } as Page)
+        .loadVideos({
+          size: 10,
+          page: pageNumber,
+          sort: "releaseDate,DESC",
+        } as Page)
         .then((page: PageResponse<Video>): void => {
           this.page = page;
         })

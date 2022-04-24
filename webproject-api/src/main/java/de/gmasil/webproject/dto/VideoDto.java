@@ -17,6 +17,8 @@
  */
 package de.gmasil.webproject.dto;
 
+import java.util.Date;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 import lombok.AllArgsConstructor;
@@ -36,6 +38,7 @@ public class VideoDto {
     private float duration;
     private String thumbnail;
     private String thumbnailPreview;
+    private Date releaseDate;
 
     @JsonCreator
     public static VideoDto create() {

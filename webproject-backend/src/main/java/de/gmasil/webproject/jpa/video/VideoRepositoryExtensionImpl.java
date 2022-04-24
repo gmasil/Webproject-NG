@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.JoinType;
@@ -38,6 +39,31 @@ public class VideoRepositoryExtensionImpl implements VideoRepositoryExtension {
 
     @Override
     public Optional<VideoFullDto> findFullProjectionById(Long id) {
+        List<Video> resultList = createFullDtoQuery((builder, criteria, from) -> {
+            criteria.where(builder.equal(from.get("id"), id));
+        }).getResultList();
+        if (resultList.size() != 1) {
+            return Optional.empty();
+        }
+        Video video = resultList.get(0);
+        return Optional.of(video.toFullDto());
+    }
+
+    @Override
+    public Optional<VideoFullDto> findFullProjectionByReleasedNotNullAndId(Long id) {
+        List<Video> resultList = createFullDtoQuery((builder, criteria, from) -> {
+            criteria.where(builder.equal(from.get("id"), id), builder.isNotNull(from.get("releaseDate")));
+        }).getResultList();
+        if (resultList.size() != 1) {
+            return Optional.empty();
+        }
+        Video video = resultList.get(0);
+        return Optional.of(video.toFullDto());
+    }
+
+    // utils
+
+    private TypedQuery<Video> createFullDtoQuery(ExecutableWithCriteria withCriteria) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Video> criteria = builder.createQuery(Video.class);
         criteria.distinct(true);
@@ -48,12 +74,12 @@ public class VideoRepositoryExtensionImpl implements VideoRepositoryExtension {
         from.fetch("categories", JoinType.LEFT);
         from.fetch("comments", JoinType.LEFT);
         from.fetch("ratings", JoinType.LEFT);
-        criteria.where(builder.equal(from.get("id"), id));
-        List<Video> resultList = entityManager.createQuery(criteria).getResultList();
-        if (resultList.size() != 1) {
-            return Optional.empty();
-        }
-        Video video = resultList.get(0);
-        return Optional.of(video.toFullDto());
+        withCriteria.run(builder, criteria, from);
+        return entityManager.createQuery(criteria);
+    }
+
+    public static interface ExecutableWithCriteria {
+
+        public void run(CriteriaBuilder builder, CriteriaQuery<Video> criteria, Root<Video> from);
     }
 }

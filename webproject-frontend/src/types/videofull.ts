@@ -31,6 +31,7 @@ export class VideoFull {
   duration?: number;
   thumbnail?: string;
   thumbnailPreview?: string;
+  releaseDate?: Date;
   files?: VideoFile[];
   artists?: Artist[];
   categories?: string[];

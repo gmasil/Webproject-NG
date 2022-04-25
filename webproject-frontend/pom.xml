@@ -119,10 +119,6 @@
                             <resources>
                                 <resource>
                                     <directory>${project.basedir}/dist</directory>
-                                    <includes>
-                                        <include>static/</include>
-                                        <include>index.html</include>
-                                    </includes>
                                 </resource>
                             </resources>
                         </configuration>

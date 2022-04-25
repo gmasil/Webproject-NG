@@ -44,6 +44,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     static final String USERNAME_PARAMETER = "username";
     static final String PASSWORD_PARAMETER = "password";
     static final String REMEMBER_ME_PARAMETER = "rememberme";
+    private static final String[] PWA_MATCHERS = new String[] { "/manifest.json", "/service-worker.js",
+            "/service-worker.js.map", "/workbox-*.js", "/workbox-*.js.map" };
 
     @Lazy
     @Autowired
@@ -70,9 +72,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             http.authorizeRequests().anyRequest().permitAll();
         } else {
             http.authorizeRequests() //
-                    .antMatchers("/static/**").permitAll() //
-                    .antMatchers("/health").permitAll() //
-                    .antMatchers("/actuator/**").permitAll() //
+                    .antMatchers(PWA_MATCHERS).permitAll() //
+                    .antMatchers("/static/**", "/robots.txt").permitAll() //
+                    .antMatchers("/health", "/actuator/**").permitAll() //
                     .antMatchers("/api/users/current", "/api/app/config").permitAll() //
                     .antMatchers("/api/themes/active.css", "/api/themes/active").permitAll() //
                     .antMatchers("/login", "/logout", "/performlogin").permitAll() //

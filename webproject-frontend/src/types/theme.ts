@@ -18,6 +18,10 @@
 
 import { AxiosResponse } from "axios";
 
+interface ContentElement {
+  content: string;
+}
+
 export class Theme {
   id?: number | null;
   name?: string;
@@ -67,6 +71,12 @@ export class Theme {
     }
     if (this.textColor == null) {
       return;
+    }
+    const x: Element | null = document.querySelector(
+      'meta[name="theme-color"]'
+    );
+    if (x != null) {
+      (x as unknown as ContentElement).content = this.backgroundColor;
     }
     document.documentElement.style.setProperty(
       "--theme-background",

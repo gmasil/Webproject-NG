@@ -129,6 +129,7 @@
                                     <exclude>**/node_modules/**</exclude>
                                     <exclude>**/.babelrc</exclude>
                                     <exclude>**/.browserslistrc</exclude>
+                                    <exclude>**/robots.txt</exclude>
                                 </excludes>
                                 <properties>
                                     <owner>Gmasil</owner>

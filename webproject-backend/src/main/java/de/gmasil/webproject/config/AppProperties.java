@@ -17,9 +17,14 @@
  */
 package de.gmasil.webproject.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,8 +35,14 @@ import lombok.Setter;
 @NoArgsConstructor
 @Configuration
 @ConfigurationProperties(prefix = "app")
+@JsonAutoDetect(fieldVisibility = Visibility.NONE, setterVisibility = Visibility.NONE, getterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE, creatorVisibility = Visibility.NONE)
 public class AppProperties {
 
+    @JsonProperty
     @Value("${app.access.public}")
     private boolean publicAccess;
+
+    @Autowired
+    @JsonProperty
+    private GitBuildProperties git;
 }

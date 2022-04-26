@@ -153,6 +153,27 @@
 
     <build>
         <plugins>
+            <!-- make git revision available -->
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <offline>true</offline>
+                    <generateGitPropertiesFile>true</generateGitPropertiesFile>
+                    <includeOnlyProperties>
+                        <includeOnlyProperty>^git\.build\.(time|version)$</includeOnlyProperty>
+                        <includeOnlyProperty>^git\.commit\.id.*$</includeOnlyProperty>
+                        <includeOnlyProperty>^git\.dirty$</includeOnlyProperty>
+                    </includeOnlyProperties>
+                </configuration>
+            </plugin>
             <!-- surefire -->
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -327,6 +348,10 @@
                                 <env>
                                     <BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>
                                     <BP_JVM_VERSION>17</BP_JVM_VERSION>
+                                    <BP_OCI_TITLE>Webproject NG</BP_OCI_TITLE>
+                                    <BP_IMAGE_LABELS>webproject.tag=${target.tag} webproject.version=${project.version}
+                                        webproject.revision=${git.commit.id.describe-short}</BP_IMAGE_LABELS>
+                                    <LANG>en_US.utf8</LANG>
                                 </env>
                                 <name>${target.image}:${target.tag}</name>
                             </image>

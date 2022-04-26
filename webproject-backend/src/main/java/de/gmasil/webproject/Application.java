@@ -28,6 +28,8 @@ import de.gmasil.webproject.service.initialize.InitializeService;
 public class Application {
 
     public static void main(String[] args) {
+        // hardcoded is required by spring native
+        System.setProperty("spring.config.additional-location", "classpath:git.properties");
         System.setProperty(InitializeService.TIMEZONE_HIBERNATE_PROPERTY, InitializeService.TIMEZONE);
         SpringApplication.run(Application.class, args);
     }

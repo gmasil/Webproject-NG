@@ -138,6 +138,12 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>native</id>
+            <properties>
+                <target.tag>${project.version}-native</target.tag>
+            </properties>
+        </profile>
     </profiles>
 
     <build>

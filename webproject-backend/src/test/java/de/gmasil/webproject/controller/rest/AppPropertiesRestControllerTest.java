@@ -19,6 +19,7 @@ package de.gmasil.webproject.controller.rest;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,10 +44,20 @@ class AppPropertiesRestControllerTest extends GherkinTest {
     void testAppProperties(Reference<AppProperties> appProperties) {
         AdvRestTemplate rest = factory.createRestTemplate();
         when("an anonymous user retrieves the active theme", () -> {
+            System.out.println(rest.getForObject("/api/app/config", String.class));
             appProperties.set(rest.getForObject("/api/app/config", AppProperties.class));
         });
         then("the default theme is returned", () -> {
             assertThat(appProperties.get().isPublicAccess(), is(equalTo(false)));
+            assertThat(appProperties.get().getGit(), is(notNullValue()));
+            assertThat(appProperties.get().getGit().getBuild(), is(notNullValue()));
+            assertThat(appProperties.get().getGit().getBuild().getVersion(), is(notNullValue()));
+            assertThat(appProperties.get().getGit().getBuild().getTime(), is(notNullValue()));
+            assertThat(appProperties.get().getGit().getCommit(), is(notNullValue()));
+            assertThat(appProperties.get().getGit().getCommit().getId(), is(notNullValue()));
+            assertThat(appProperties.get().getGit().getCommit().getAbbrev(), is(notNullValue()));
+            assertThat(appProperties.get().getGit().getCommit().getDescribe(), is(notNullValue()));
+            assertThat(appProperties.get().getGit().getCommit().getDescribeShort(), is(notNullValue()));
         });
     }
 }

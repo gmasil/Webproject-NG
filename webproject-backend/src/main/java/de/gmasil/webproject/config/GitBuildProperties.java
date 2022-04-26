@@ -34,8 +34,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @Component
 @PropertySource("classpath:git.properties")
 @JsonAutoDetect(fieldVisibility = Visibility.NONE, setterVisibility = Visibility.NONE, getterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE, creatorVisibility = Visibility.NONE)
@@ -57,8 +59,11 @@ public class GitBuildProperties {
             @Value("${git.commit.id.describe-short}") String describeShort, //
             @Value("${git.dirty}") boolean dirty //
     ) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ");
-        Date time = Date.from(ZonedDateTime.parse(timeString, formatter).toInstant());
+        Date time = null;
+        if (timeString != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ");
+            time = Date.from(ZonedDateTime.parse(timeString, formatter).toInstant());
+        }
         build = new BuildProperties(time, version);
         commit = new CommitProperties(id, abbrev, describe, describeShort, dirty);
     }
@@ -69,6 +74,7 @@ public class GitBuildProperties {
     }
 
     @Getter
+    @Setter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class BuildProperties {
@@ -78,6 +84,7 @@ public class GitBuildProperties {
     }
 
     @Getter
+    @Setter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class CommitProperties {

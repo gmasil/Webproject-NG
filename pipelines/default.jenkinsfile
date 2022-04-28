@@ -79,6 +79,7 @@ pipeline {
               post {
                 always {
                   archiveArtifacts artifacts: '**/selenium-screenshots/**/*.png', fingerprint: true, allowEmptyArchive: true
+                  cleanWs()
                 }
               }
             }
@@ -122,6 +123,7 @@ pipeline {
               post {
                 always {
                   archiveArtifacts artifacts: '**/selenium-screenshots/**/*.png', fingerprint: true, allowEmptyArchive: true
+                  cleanWs()
                 }
               }
             }

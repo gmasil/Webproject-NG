@@ -19,49 +19,56 @@
 -->
 <template>
   <div
-    v-if="isInitialized"
+    v-if="store.isInitialized"
     id="app"
-    class="bg-theme-background min-h-screen text-theme-text"
+    class="bg-theme-background min-h-screen text-theme-text relative"
   >
-    <navbar v-if="!isAccessRestricted" />
-    <div class="grid justify-items-center">
+    <navbar v-if="!store.isAccessRestricted" />
+    <div class="grid justify-items-center pb-14">
       <div class="p-4 w-full sm:w-sm md:w-md lg:w-lg xl:w-xl 2xl:w-2xl">
         <router-view />
       </div>
     </div>
+    <div
+      v-if="store.appProperties.git.commit"
+      class="bg-theme-background-highlight text-center p-2 absolute bottom-0 w-full border-t-2 border-theme-text"
+    >
+      Version: {{ store.appProperties?.git.build.version }} ({{
+        store.appProperties.git.commit.describeShort
+      }})
+    </div>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-import { mapState } from "pinia";
+<script setup lang="ts">
+import { onMounted } from "vue";
 import { useStore } from "@/store/pinia";
+import type { Store } from "@/store/pinia";
 import { ToastInterface, useToast } from "vue-toastification";
 import Coloris from "@melloware/coloris";
 import { themeService } from "@/service/theme";
 import { appService } from "@/service/app";
 import { userService } from "@/service/user";
 
+const store: Store = useStore();
+
 const toast: ToastInterface = useToast();
 
-export default defineComponent({
-  name: "App",
-  computed: {
-    ...mapState(useStore, ["isInitialized", "isAccessRestricted"]),
-  },
-  created(): void {
-    appService
-      .loadAppProperties()
-      .catch(() => toast.error("Error while loading application properties"));
-    userService
-      .loadCurrentUser()
-      .catch(() => toast.error("Error while loading current user"));
-    themeService
-      .loadActiveTheme()
-      .catch(() => toast.error("Error while loading active theme"));
-  },
-  mounted(): void {
-    Coloris.init();
-  },
+onMounted(() => Coloris.init());
+
+appService
+  .loadAppProperties()
+  .catch(() => toast.error("Error while loading application properties"));
+
+userService
+  .loadCurrentUser()
+  .catch(() => toast.error("Error while loading current user"));
+
+themeService
+  .loadActiveTheme()
+  .catch(() => toast.error("Error while loading active theme"));
+
+defineExpose({
+  store,
 });
 </script>

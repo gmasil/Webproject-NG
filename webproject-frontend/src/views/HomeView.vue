@@ -18,47 +18,48 @@
 
 -->
 <template>
-  <div v-if="isAllLoaded">
-    <div class="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-6">
+  <div
+    v-if="isAllLoaded"
+    class="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-6"
+  >
+    <div
+      class="md:col-start-1 md:col-end-3 md:row-span-2 lg:self-stretch relative lg:flex lg:justify-center rounded-lg"
+    >
       <div
-        class="md:col-start-1 md:col-end-3 md:row-span-2 lg:self-stretch relative lg:flex lg:justify-center rounded-lg"
+        class="z-20 xl:w-11/12 self-center rounded-lg bg-theme-background-highlight"
       >
-        <div
-          class="z-20 xl:w-11/12 self-center rounded-lg bg-theme-background-highlight"
-        >
-          <router-link class="w-full" :to="`/videos/${data.featuredVideo.id}`">
-            <h1 class="text-2xl text-center">Watch Now!</h1>
-            <img
-              class="w-full"
-              :src="data.featuredVideo.thumbnail"
-              :alt="data.featuredVideo.title"
-            />
-            <div class="w-full py-2">
-              <p class="text-center py-0 px-4 text-theme-text line-clamp-2">
-                {{ data.featuredVideo.title }}
-              </p>
-            </div>
-          </router-link>
-        </div>
-      </div>
-      <div
-        v-for="video in data.page.content"
-        :key="video.id"
-        class="w-full flex rounded-lg bg-theme-background-highlight"
-      >
-        <router-link class="w-full" :to="`/videos/${video.id}`">
+        <router-link class="w-full" :to="`/videos/${data.featuredVideo.id}`">
+          <h1 class="text-2xl text-center">Watch Now!</h1>
           <img
-            class="w-full rounded-t-lg"
-            :src="video.thumbnail"
-            :alt="video.title"
+            class="w-full"
+            :src="data.featuredVideo.thumbnail"
+            :alt="data.featuredVideo.title"
           />
           <div class="w-full py-2">
             <p class="text-center py-0 px-4 text-theme-text line-clamp-2">
-              {{ video.title }}
+              {{ data.featuredVideo.title }}
             </p>
           </div>
         </router-link>
       </div>
+    </div>
+    <div
+      v-for="video in data.page.content"
+      :key="video.id"
+      class="w-full flex rounded-lg bg-theme-background-highlight"
+    >
+      <router-link class="w-full" :to="`/videos/${video.id}`">
+        <img
+          class="w-full rounded-t-lg"
+          :src="video.thumbnail"
+          :alt="video.title"
+        />
+        <div class="w-full py-2">
+          <p class="text-center py-0 px-4 text-theme-text line-clamp-2">
+            {{ video.title }}
+          </p>
+        </div>
+      </router-link>
     </div>
   </div>
 </template>

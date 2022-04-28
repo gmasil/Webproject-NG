@@ -16,6 +16,25 @@
 /// https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt
 ///
 
+interface GitProperties {
+  build: GitBuildProperties;
+  commit: GitCommitProperties;
+}
+
+interface GitBuildProperties {
+  time: Date;
+  version: string;
+}
+
+interface GitCommitProperties {
+  id: string;
+  abbrev: string;
+  describe: string;
+  describeShort: string;
+  dirty: boolean;
+}
+
 export interface AppProperties {
   publicAccess: boolean;
+  git: GitProperties;
 }

@@ -36,6 +36,7 @@
       @playing="updatePaused"
       @pause="updatePaused"
       @timeupdate="updateTime"
+      @volumechange="updateVolume"
     >
       <source :src="data.video.files[0].name" type="video/mp4" />
     </video>
@@ -105,15 +106,15 @@
       <span class="videoTime relative"
         >{{ data.currentTime }} / {{ data.videoDuration }}</span
       >
+
       <vue-feather
-        v-if="!data.fullscreen"
-        type="maximize"
-        class="cursor-pointer absolute right-0"
-        @click="toggleFullscreen"
+        :type="`${data.muted ? 'volume-x' : 'volume-2'}`"
+        class="cursor-pointer relative"
+        @click="toggleMute"
       ></vue-feather>
+
       <vue-feather
-        v-if="data.fullscreen"
-        type="minimize"
+        :type="`${data.fullscreen ? 'minimize' : 'maximize'}`"
         class="cursor-pointer absolute right-0"
         @click="toggleFullscreen"
       ></vue-feather>
@@ -161,6 +162,7 @@ interface BaseComponentData {
   videoDuration: string;
   videoSliderDragging: boolean;
   videoSliderTime: number;
+  muted: boolean;
 }
 
 const data: BaseComponentData = reactive({
@@ -175,6 +177,7 @@ const data: BaseComponentData = reactive({
   videoDuration: formatTime(0),
   videoSliderDragging: false,
   videoSliderTime: 0,
+  muted: false,
 } as BaseComponentData);
 
 watch(props, updateData);
@@ -209,7 +212,22 @@ defineExpose({
   onMouseMove,
   onSliderChange,
   onVideoSliderMove,
+  updateVolume,
+  toggleMute,
 });
+
+function updateVolume(): void {
+  if (videoElement.value) {
+    data.muted = videoElement.value.muted;
+  }
+}
+
+function toggleMute(): void {
+  if (videoElement.value) {
+    videoElement.value.muted = !videoElement.value.muted;
+    updateVolume();
+  }
+}
 
 function updatePaused(): void {
   if (videoElement.value) {

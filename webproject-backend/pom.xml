@@ -389,11 +389,4 @@
             </build>
         </profile>
     </profiles>
-
-    <repositories>
-        <repository>
-            <id>gmasil-nexus</id>
-            <url>https://nexus.gmasil.de/repository/maven-releases/</url>
-        </repository>
-    </repositories>
 </project>

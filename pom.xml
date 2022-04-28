@@ -195,4 +195,25 @@
             <url>https://nexus.gmasil.de/repository/maven-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>gmasil-releases</id>
+            <name>Gmasil Releases</name>
+            <url>https://nexus.gmasil.de/repository/maven-releases/</url>
+        </repository>
+        <repository>
+            <id>spring-releases</id>
+            <name>Spring Releases</name>
+            <url>https://repo.spring.io/release</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>gmasil-nexus</id>
+            <name>Gmasil Nexus</name>
+            <url>https://nexus.gmasil.de/repository/maven-releases/</url>
+        </pluginRepository>
+    </pluginRepositories>
 </project>

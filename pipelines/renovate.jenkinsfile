@@ -58,7 +58,10 @@ pipeline {
     }
     post {
         always {
-          cleanWs()
+            cleanWs()
+            dir("${env.WORKSPACE}@tmp") {
+                deleteDir()
+            }
         }
     }
 }

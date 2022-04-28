@@ -79,7 +79,6 @@ pipeline {
               post {
                 always {
                   archiveArtifacts artifacts: '**/selenium-screenshots/**/*.png', fingerprint: true, allowEmptyArchive: true
-                  cleanWs()
                 }
               }
             }
@@ -124,6 +123,9 @@ pipeline {
                 always {
                   archiveArtifacts artifacts: '**/selenium-screenshots/**/*.png', fingerprint: true, allowEmptyArchive: true
                   cleanWs()
+                  dir("${env.WORKSPACE}@tmp") {
+                    deleteDir()
+                  }
                 }
               }
             }
@@ -148,6 +150,10 @@ pipeline {
       script {
         sh("docker image rm ${SUT_IMAGE_NAME}:${SUT_IMAGE_TAG_JIB} || true")
         sh("docker image rm ${SUT_IMAGE_NAME}:${SUT_IMAGE_TAG_NATIVE} || true")
+        cleanWs()
+        dir("${env.WORKSPACE}@tmp") {
+          deleteDir()
+        }
       }
     }
   }

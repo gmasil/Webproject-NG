@@ -215,5 +215,10 @@
             <name>Gmasil Nexus</name>
             <url>https://nexus.gmasil.de/repository/maven-releases/</url>
         </pluginRepository>
+        <pluginRepository>
+            <id>spring-releases</id>
+            <name>Spring Releases</name>
+            <url>https://repo.spring.io/release</url>
+        </pluginRepository>
     </pluginRepositories>
 </project>

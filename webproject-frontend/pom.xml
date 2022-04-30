@@ -31,7 +31,6 @@
 
     <properties>
         <node.version>v17.7.1</node.version>
-        <frontend-maven-plugin.version>1.12.0</frontend-maven-plugin.version>
         <!-- skip npm build -->
         <npm.build.skip>false</npm.build.skip>
         <npm.copy.skip>false</npm.copy.skip>
@@ -59,7 +58,6 @@
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
-                <version>${frontend-maven-plugin.version}</version>
                 <configuration>
                     <skip>${npm.build.skip}</skip>
                 </configuration>

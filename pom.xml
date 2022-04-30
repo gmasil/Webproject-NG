@@ -77,6 +77,7 @@
         <hibernate-enhance-plugin.version>5.6.4.Final</hibernate-enhance-plugin.version>
         <docker-plugin.version>0.39.1</docker-plugin.version>
         <gherkin-plugin.version>0.5</gherkin-plugin.version>
+        <frontend-maven-plugin.version>1.12.0</frontend-maven-plugin.version>
         <!-- image build -->
         <image.registry>registry.gmasil.de/docker</image.registry>
         <image.name>${project.parent.artifactId}</image.name>
@@ -84,9 +85,80 @@
         <target.tag>${project.version}</target.tag>
     </properties>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>de.gmasil</groupId>
+                <artifactId>webproject-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.gmasil</groupId>
+                <artifactId>webproject-frontend</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.experimental</groupId>
+                <artifactId>spring-native</artifactId>
+                <version>${spring-native.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tomcat.experimental</groupId>
+                <artifactId>tomcat-embed-programmatic</artifactId>
+                <version>${tomcat.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.modelmapper</groupId>
+                <artifactId>modelmapper</artifactId>
+                <version>${modelmapper.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.gmasil</groupId>
+                <artifactId>gherkin-extension-jupiter</artifactId>
+                <version>${gherkin-extension.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <build>
         <pluginManagement>
             <plugins>
+                <!-- just versions -->
+                <plugin>
+                    <groupId>de.gmasil</groupId>
+                    <artifactId>gherkin-maven-plugin</artifactId>
+                    <version>${gherkin-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>${jacoco-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.google.cloud.tools</groupId>
+                    <artifactId>jib-maven-plugin</artifactId>
+                    <version>${jib-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.hibernate.orm.tooling</groupId>
+                    <artifactId>hibernate-enhance-maven-plugin</artifactId>
+                    <version>${hibernate-enhance-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.springframework.experimental</groupId>
+                    <artifactId>spring-aot-maven-plugin</artifactId>
+                    <version>${spring-native.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.eirslett</groupId>
+                    <artifactId>frontend-maven-plugin</artifactId>
+                    <version>${frontend-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>io.fabric8</groupId>
+                    <artifactId>docker-maven-plugin</artifactId>
+                    <version>${docker-plugin.version}</version>
+                </plugin>
                 <!-- disable installation of java artifact for child modules-->
                 <plugin>
                     <artifactId>maven-install-plugin</artifactId>

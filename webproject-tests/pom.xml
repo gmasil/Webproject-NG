@@ -54,19 +54,20 @@
         <dependency>
             <groupId>de.gmasil</groupId>
             <artifactId>gherkin-extension-jupiter</artifactId>
-            <version>${gherkin-extension.version}</version>
             <scope>test</scope>
         </dependency>
         <!-- selenium -->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
+            <scope>test</scope>
         </dependency>
         <!-- utils -->
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>${commons-io.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -88,7 +89,6 @@
                     <plugin>
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
-                        <version>${docker-plugin.version}</version>
                         <configuration>
                             <images>
                                 <image>
@@ -117,7 +117,6 @@
                     <plugin>
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
-                        <version>${docker-plugin.version}</version>
                         <configuration>
                             <images>
                                 <image>
@@ -173,7 +172,6 @@
             <plugin>
                 <groupId>io.fabric8</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
-                <version>${docker-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>start-sut</id>

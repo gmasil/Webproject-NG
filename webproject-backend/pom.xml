@@ -42,19 +42,16 @@
         <dependency>
             <groupId>de.gmasil</groupId>
             <artifactId>webproject-api</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <!-- webproject frontend -->
         <dependency>
             <groupId>de.gmasil</groupId>
             <artifactId>webproject-frontend</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <!-- spring native -->
         <dependency>
             <groupId>org.springframework.experimental</groupId>
             <artifactId>spring-native</artifactId>
-            <version>${spring-native.version}</version>
         </dependency>
         <!-- spring -->
         <dependency>
@@ -74,7 +71,6 @@
         <dependency>
             <groupId>org.apache.tomcat.experimental</groupId>
             <artifactId>tomcat-embed-programmatic</artifactId>
-            <version>${tomcat.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -124,7 +120,6 @@
         <dependency>
             <groupId>org.modelmapper</groupId>
             <artifactId>modelmapper</artifactId>
-            <version>${modelmapper.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
@@ -146,7 +141,6 @@
         <dependency>
             <groupId>de.gmasil</groupId>
             <artifactId>gherkin-extension-jupiter</artifactId>
-            <version>${gherkin-extension.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -185,7 +179,6 @@
             <plugin>
                 <groupId>de.gmasil</groupId>
                 <artifactId>gherkin-maven-plugin</artifactId>
-                <version>${gherkin-plugin.version}</version>
                 <configuration>
                     <enforceStory>true</enforceStory>
                     <enforceScenario>true</enforceScenario>
@@ -211,7 +204,6 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>${jacoco-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>pre-unit-test</id>
@@ -237,7 +229,6 @@
                 <plugin>
                     <groupId>com.google.cloud.tools</groupId>
                     <artifactId>jib-maven-plugin</artifactId>
-                    <version>${jib-plugin.version}</version>
                     <configuration>
                         <from>
                             <image>openjdk:11-jre-slim@sha256:a1c0966d3dbb7c286832d376549a4c637bbb11576b5fe6a66df6100336f9b007</image>
@@ -271,7 +262,6 @@
                     <plugin>
                         <groupId>com.google.cloud.tools</groupId>
                         <artifactId>jib-maven-plugin</artifactId>
-                        <version>${jib-plugin.version}</version>
                         <executions>
                             <execution>
                                 <phase>package</phase>
@@ -297,7 +287,6 @@
                     <plugin>
                         <groupId>com.google.cloud.tools</groupId>
                         <artifactId>jib-maven-plugin</artifactId>
-                        <version>${jib-plugin.version}</version>
                         <executions>
                             <execution>
                                 <phase>package</phase>
@@ -321,7 +310,6 @@
                     <plugin>
                         <groupId>org.hibernate.orm.tooling</groupId>
                         <artifactId>hibernate-enhance-maven-plugin</artifactId>
-                        <version>${hibernate-enhance-plugin.version}</version>
                         <executions>
                             <execution>
                                 <configuration>
@@ -369,7 +357,6 @@
                     <plugin>
                         <groupId>org.springframework.experimental</groupId>
                         <artifactId>spring-aot-maven-plugin</artifactId>
-                        <version>${spring-native.version}</version>
                         <executions>
                             <execution>
                                 <id>test-generate</id>

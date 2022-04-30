@@ -19,7 +19,7 @@ pipeline {
         stage("Check for updates") {
             steps {
                 script {
-                    sh("mvn -B versions:display-parent-updates versions:display-property-updates --no-transfer-progress -Dmaven.version.rules=https://static.gmasil.de/maven-version-rules.xml | tee maven.log")
+                    sh("mvn -U -B versions:display-parent-updates versions:display-property-updates versions:display-plugin-updates --no-transfer-progress -Dmaven.version.rules=https://static.gmasil.de/maven-version-rules.xml | tee maven.log")
                     def list = parseLog(readFile('maven.log'))
                     env.HAS_UPDATES = list.size() == 0 ? "false" : "true"
                     printList(list)

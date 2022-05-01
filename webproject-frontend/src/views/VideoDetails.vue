@@ -25,29 +25,78 @@
       </div>
       <div v-else>
         <!--normal video page-->
-        <div class="w-full md:w-10/12 lg:w-8/12 mx-auto">
+        <div class="w-full md:w-10/12 lg:w-10/12 mx-auto pb-4">
           <webproject-video
             ref="videoElement"
             v-model="data.video"
           ></webproject-video>
-        </div>
-        <h1 class="text-center text-2xl">
-          {{ data.video.title }}
-        </h1>
-        <h1 class="text-center text-2xl">
-          {{ releaseDate }}
-        </h1>
-        <div>
-          <table>
-            <tr v-for="scene in data.video.scenes" :key="scene.id">
-              <td class="pr-4">{{ scene.name }}</td>
-              <td>
-                <a @click="jumpVideoTo(scene.time)">
-                  {{ formatSceneTime(scene.time) }}
-                </a>
-              </td>
-            </tr>
-          </table>
+          <h1 class="text-center text-2xl">
+            {{ data.video.title }}
+          </h1>
+          <h1 class="text-center">
+            {{ releaseDate }}
+          </h1>
+          <div
+            v-if="data.video.artists && data.video.artists.length > 0"
+            class="pt-4"
+          >
+            <p class="text-xl pb-2">Artists:</p>
+            <div class="flex flex-wrap gap-2">
+              <div
+                v-for="artist in data.video.artists"
+                :key="artist.id"
+                class="w-max inline-block select-none"
+              >
+                <span
+                  class="text-lg bg-theme-background-highlight rounded-lg px-2 py-1"
+                >
+                  {{ artist.name }}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div
+            v-if="data.video.categories && data.video.categories.length > 0"
+            class="pt-4"
+          >
+            <p class="text-xl pb-2">Categories:</p>
+            <div class="flex flex-wrap gap-2">
+              <div
+                v-for="category in data.video.categories"
+                :key="category"
+                class="w-max inline-block select-none"
+              >
+                <span
+                  class="text-lg bg-theme-background-highlight rounded-lg px-2 py-1"
+                >
+                  {{ category }}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div
+            v-if="data.video.scenes && data.video.scenes.length > 0"
+            class="pt-4"
+          >
+            <p class="text-xl pb-2">Scenes:</p>
+            <div class="flex flex-wrap gap-2">
+              <div
+                v-for="scene in data.video.scenes"
+                :key="scene.id"
+                class="w-max inline-block select-none"
+              >
+                <div
+                  class="text-lg bg-theme-background-highlight rounded-lg px-2 py-1 cursor-pointer"
+                  @click="jumpVideoTo(scene.time)"
+                >
+                  <div class="">{{ scene.name }}</div>
+                  <div class="text-center text-xs opacity-70 -mt-1">
+                    {{ formatSceneTime(scene.time) }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -123,6 +172,7 @@ defineExpose({
 function jumpVideoTo(time: number): void {
   if (videoElement.value) {
     videoElement.value.jumpVideoTo(time);
+    window.scrollTo(0, 0);
   }
 }
 

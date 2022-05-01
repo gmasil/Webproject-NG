@@ -32,9 +32,16 @@ SOURCE_FOLDER="$( cd "$( dirname "${BASH_SOURCE[0]}" )"/.. && pwd )"
 : "${BUILD:=true}"
 : "${FRONTEND:=false}"
 : "${POSTGRES:=false}"
+: "${BUILD_LOCAL:=true}"
+: "${USER_HOME:=~}"
+: "${DOCKER_VERSION:=20.10.9}"
 
 if [ ${NATIVE} == "true" ]; then
     IMAGE_TAG="${IMAGE_TAG}-native"
+fi
+
+if [ ${USER_HOME} == "~" ]; then
+    USER_HOME="$( cd ~ && pwd )"
 fi
 
 echo "IMAGE_NAME     = ${IMAGE_NAME}"
@@ -48,6 +55,9 @@ echo "NATIVE         = ${NATIVE}"
 echo "BUILD          = ${BUILD}"
 echo "FRONTEND       = ${FRONTEND}"
 echo "POSTGRES       = ${POSTGRES}"
+echo "BUILD_LOCAL    = ${BUILD}"
+echo "USER_HOME      = ${USER_HOME}"
+echo "DOCKER_VERSION = ${DOCKER_VERSION}"
 
 if [ ${BUILD} == "true" ]; then
     if [ ${NATIVE} == "true" ]; then
@@ -59,7 +69,24 @@ if [ ${BUILD} == "true" ]; then
     if [ ${FRONTEND} == "true" ]; then
         FRONTEND_ARGS=""
     fi
-    mvn -f ${SOURCE_FOLDER}/pom.xml clean package -pl webproject-backend -am --no-transfer-progress -DskipTests ${FRONTEND_ARGS} -Dtarget.image=${IMAGE_NAME} -Dtarget.tag=${IMAGE_TAG} -P ${PROFILE}
+    if [ ${BUILD_LOCAL} == "true" ]; then
+        mvn -f ${SOURCE_FOLDER}/pom.xml clean package -pl webproject-backend -am --no-transfer-progress -DskipTests ${FRONTEND_ARGS} -Dtarget.image=${IMAGE_NAME} -Dtarget.tag=${IMAGE_TAG} -P ${PROFILE}
+    else
+        docker pull registry.gmasil.de/docker/maven-build-container
+        MSYS_NO_PATHCONV=1 docker run --rm \
+            -v "${SOURCE_FOLDER}:/work:Z" \
+            -v "${USER_HOME}/.m2/:/maven/.m2" \
+            -v "/var/run/docker.sock:/var/run/docker.sock" \
+            -e JAVA_TOOL_OPTIONS='-Duser.home=/maven' \
+            registry.gmasil.de/docker/maven-build-container \
+            bash -c "
+            set -eu
+            curl -fsSLO https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz
+            tar xzvf docker-${DOCKER_VERSION}.tgz --strip 1 -C /usr/local/bin docker/docker
+            rm docker-${DOCKER_VERSION}.tgz
+            mvn clean package -pl webproject-backend -am --no-transfer-progress -DskipTests ${FRONTEND_ARGS} -Dtarget.image=${IMAGE_NAME} -Dtarget.tag=${IMAGE_TAG} -P ${PROFILE}
+            "
+    fi
 fi
 
 # check if previous container is still running

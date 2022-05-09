@@ -46,7 +46,7 @@
         </div>
         <div class="col-span-2">
           <label class="pl-2 block" for="inputRepeatPassword"
-            >New Password:</label
+            >Repeat Password:</label
           >
           <input
             id="input-repeat-password"
